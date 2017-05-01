@@ -1,4 +1,4 @@
-package com.megalabs;
+package com.turbo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
