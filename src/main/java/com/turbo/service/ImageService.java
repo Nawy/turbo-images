@@ -1,9 +1,7 @@
 package com.turbo.service;
 
 import com.turbo.model.Image;
-import com.turbo.model.Post;
 import com.turbo.repository.ImageRepository;
-import com.turbo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Autowired
-    public ImageService(PostRepository postRepository, ImageRepository imageRepository) {
+    public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
 
@@ -28,12 +26,8 @@ public class ImageService {
         return imageRepository.exists(hash);
     }
 
-    //FIXME
-    public long addImage(Post imageInfo) {
-        return 0;
-    }
-
-    public void addImageSource(long hash, byte[] source) {
-
+    public Image addImage(long hash, byte[] picture) {
+        // TODO NO PATH HERE!!!
+        return imageRepository.save(new Image(hash, null));
     }
 }

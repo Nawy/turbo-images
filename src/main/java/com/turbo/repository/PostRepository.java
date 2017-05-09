@@ -12,11 +12,13 @@ import java.util.List;
 public interface PostRepository extends CrudRepository<Post, Long> {
 
     @Query("SELECT * FROM post WHERE name LIKE ?0 OR description LIKE ?0")
-    List<Post> findImage(String value);
+    Iterable<Post> findPost(String value);
 
     @Query("SELECT * FROM post WHERE name LIKE ?0")
-    List<Post> findImageByName(String name);
+    Iterable<Post> findPostByName(String name);
 
     @Query("SELECT * FROM post WHERE description LIKE ?0")
-    List<Post> findImageByDescription(String description);
+    Iterable<Post> findPostByDescription(String description);
+
+
 }
