@@ -1,11 +1,9 @@
 package com.turbo.controller;
 
-import com.turbo.model.Image;
+import com.turbo.model.ImageInfo;
 import com.turbo.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by rakhmetov on 01.05.17.
@@ -20,13 +18,26 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/get/image/source/{id}")
-    public byte[] getImageSource(@PathVariable("id") long imageId) {
-        return null;
+    @GetMapping("/get/image/info/{id}")
+    public ImageInfo getImageInfo(@PathVariable("id") long imageId) {
+        return imageService.getImageInfo(imageId);
     }
 
-    @GetMapping("/get/image/info/{id}")
-    public Image getImageInfo(@PathVariable("id") long imageId) {
-        return imageService.getImageInfo(imageId);
+    @GetMapping("/check/image/exists")
+    public Boolean checkImageExists(@RequestParam("hash") String hash) {
+        return imageService.checkImageExists(hash);
+    }
+
+    @PostMapping("/add/image/source")
+    public void addImageSource(
+            @RequestParam("hash") String hash,
+            @RequestBody byte[] source
+    ) {
+        imageService.addImageSource(hash, source);
+    }
+
+    @PostMapping("/add/image/info")
+    public Integer addImageInfo(@RequestBody ImageInfo imageInfo) {
+        return imageService.addImageInfo(imageInfo);
     }
 }
