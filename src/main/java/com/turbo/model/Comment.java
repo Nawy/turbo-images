@@ -1,6 +1,7 @@
 package com.turbo.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -12,16 +13,9 @@ public class Comment {
     private String content;
     private LocalDateTime postTime;
     private int rating; // upvotes - downvotes
-    private Comment[] replies; // what other people reply on that comment
+    private List<Comment> replies; // what other people reply on that comment
 
-    public Comment(
-            long authorId,
-            ClientType authorDevice,
-            String content,
-            LocalDateTime postTime,
-            int rating,
-            Comment[] replies
-    ) {
+    public Comment(long authorId, ClientType authorDevice, String content, LocalDateTime postTime, int rating, List<Comment> replies) {
         this.authorId = authorId;
         this.authorDevice = authorDevice;
         this.content = content;
@@ -50,7 +44,7 @@ public class Comment {
         return rating;
     }
 
-    public Comment[] getReplies() {
+    public List<Comment> getReplies() {
         return replies;
     }
 }

@@ -3,6 +3,8 @@ package com.turbo.model.user;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
+import java.util.List;
+
 /**
  * Created by rakhmetov on 09.05.17.
  */
@@ -11,9 +13,12 @@ public class UserPosts {
 
     @PrimaryKey
     private long userId;
-    private long[] userPostIds; // user posts
+    private List<Long> userPostIds; // user posts
 
-    public UserPosts(long userId, long[] userPostIds) {
+    public UserPosts() {
+    }
+
+    public UserPosts(long userId, List<Long> userPostIds) {
         this.userId = userId;
         this.userPostIds = userPostIds;
     }
@@ -22,7 +27,7 @@ public class UserPosts {
         return userId;
     }
 
-    public long[] getUserPostIds() {
+    public List<Long> getUserPostIds() {
         return userPostIds;
     }
 }

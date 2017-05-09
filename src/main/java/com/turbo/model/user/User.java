@@ -1,6 +1,5 @@
 package com.turbo.model.user;
 
-import com.google.common.net.InetAddresses;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
@@ -16,24 +15,20 @@ public class User {
     private Long id;
     private String nickname;
     private String avatarPath;
-    private InetAddresses lastIp; // last lastIp from what was came in
-    private String token; //password hash
+    private String lastIp; // last lastIp from what was came in
+    private String email;
+    private String password;
 
     public User() {
     }
 
-    public User(
-            Long id,
-            String nickname,
-            String avatarPath,
-            InetAddresses lastIp,
-            String token
-    ) {
+    public User(Long id, String nickname, String avatarPath, String lastIp, String email, String password) {
         this.id = id;
         this.nickname = nickname;
         this.avatarPath = avatarPath;
         this.lastIp = lastIp;
-        this.token = token;
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -48,11 +43,15 @@ public class User {
         return avatarPath;
     }
 
-    public InetAddresses getLastIp() {
+    public String getLastIp() {
         return lastIp;
     }
 
-    public String getToken() {
-        return token;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
