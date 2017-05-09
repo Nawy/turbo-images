@@ -3,6 +3,8 @@ package com.turbo.model;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
+import java.util.List;
+
 /**
  * Created by rakhmetov on 09.05.17.
  * <p>
@@ -17,13 +19,25 @@ public class Post {
     private String description;
     private int rating; // upvotes - downvotes
     private int viewsAmount; // how often people view this post
-    private String[] picturePaths;
-    private Comment[] comments;
+    private List<String> picturePaths; // max 20
+    private List<Comment> comments;
+    private ClientType clientType;
+    private List<String> tag;
 
     public Post() {
     }
 
-    public Post(Long id, String name, String description, int rating, int viewsAmount, String[] picturePaths, Comment[] comments) {
+    public Post(
+            Long id,
+            String name,
+            String description,
+            int rating,
+            int viewsAmount,
+            List<String> picturePaths,
+            List<Comment> comments,
+            ClientType clientType,
+            List<String> tag
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,6 +45,8 @@ public class Post {
         this.viewsAmount = viewsAmount;
         this.picturePaths = picturePaths;
         this.comments = comments;
+        this.clientType = clientType;
+        this.tag = tag;
     }
 
     public Long getId() {
@@ -53,11 +69,19 @@ public class Post {
         return viewsAmount;
     }
 
-    public String[] getPicturePaths() {
+    public List<String> getPicturePaths() {
         return picturePaths;
     }
 
-    public Comment[] getComments() {
+    public List<Comment> getComments() {
         return comments;
+    }
+
+    public ClientType getClientType() {
+        return clientType;
+    }
+
+    public List<String> getTag() {
+        return tag;
     }
 }

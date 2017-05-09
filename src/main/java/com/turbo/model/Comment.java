@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  */
 public class Comment {
 
-    private long authorId; // user public data identifier
+    private long authorId;
     private ClientType authorDevice; // from what was posted
     private String content;
     private LocalDateTime postTime;
