@@ -6,22 +6,22 @@ import org.springframework.data.cassandra.mapping.Table;
 /**
  * Created by ermolaev on 5/9/17.
  */
-@Table("image_source")
-public class ImageSource {
+@Table("image")
+public class Image {
 
     @PrimaryKey
-    private String hash;
+    private long hash;
     private String path;
 
-    public ImageSource() {
+    public Image() {
     }
 
-    public ImageSource(String hash, String path) {
+    public Image(long hash, String path) {
         this.hash = hash;
         this.path = path;
     }
 
-    public String getHash() {
+    public long getHash() {
         return hash;
     }
 

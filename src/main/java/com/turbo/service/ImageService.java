@@ -1,9 +1,9 @@
 package com.turbo.service;
 
-import com.turbo.model.ImageInfo;
-import com.turbo.model.UserInfo;
-import com.turbo.repository.ImageInfoRepository;
-import com.turbo.repository.ImageSourceRepository;
+import com.turbo.model.Image;
+import com.turbo.model.Post;
+import com.turbo.repository.ImageRepository;
+import com.turbo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,28 +13,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class ImageService {
 
-    private final ImageInfoRepository imageInfoRepository;
-    private final ImageSourceRepository imageSourceRepository;
+    private final ImageRepository imageRepository;
 
     @Autowired
-    public ImageService(ImageInfoRepository imageInfoRepository, ImageSourceRepository imageSourceRepository) {
-        this.imageInfoRepository = imageInfoRepository;
-        this.imageSourceRepository = imageSourceRepository;
+    public ImageService(PostRepository postRepository, ImageRepository imageRepository) {
+        this.imageRepository = imageRepository;
     }
 
-    public ImageInfo getImageInfo(final long imageId) {
-        return imageInfoRepository.getImageById(imageId);
+    public Image getImage(long hash) {
+        return imageRepository.findOne(hash);
     }
 
-    public Boolean checkImageExists(final String hash) {
-        return imageSourceRepository.exists(hash);
+    public boolean imageExists(long hash) {
+        return imageRepository.exists(hash);
     }
 
-    public Integer addImageInfo(final ImageInfo imageInfo) {
+    //FIXME
+    public long addImage(Post imageInfo) {
         return 0;
     }
 
-    public void addImageSource(final String hash, final byte[] source) {
+    public void addImageSource(long hash, byte[] source) {
 
     }
 }
