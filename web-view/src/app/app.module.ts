@@ -2,9 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { RouterModule } from '@angular/router'
 
 import { AppComponent } from './components/app.component';
 import {LoginComponent} from "./components/login.component";
+import {SigninComponent} from "./components/signin.component";
 import {PostComponent} from "./components/post.component";
 import {NavbarComponent} from "./components/navbar.component";
 import {ImagesComponent} from "./components/images.component";
@@ -15,6 +17,7 @@ import {SettingsComponent} from "./components/settings.component";
   declarations: [
     AppComponent,
     LoginComponent,
+    SigninComponent,
     PostComponent,
     NavbarComponent,
     ImagesComponent,
@@ -24,7 +27,21 @@ import {SettingsComponent} from "./components/settings.component";
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    RouterModule.forRoot([
+      {
+        path: "",
+        component: ImagesComponent
+      },
+      {
+        path: "new",
+        component: LoginComponent
+      },
+      {
+        path: "signin",
+        component: SigninComponent
+      }
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]
