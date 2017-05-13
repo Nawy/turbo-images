@@ -3,28 +3,14 @@
  */
 
 export class Image {
-  private _hash: string;
-  private _path: string;
+  hash: string;
+  path: string;
+  rating: number;
 
 
-  constructor(hash: string, path: string) {
-    this._hash = hash;
-    this._path = path;
-  }
-
-  get hash(): string {
-    return this._hash;
-  }
-
-  set hash(value: string) {
-    this._hash = value;
-  }
-
-  get path(): string {
-    return this._path;
-  }
-
-  set path(value: string) {
-    this._path = value;
+  constructor(hash: string, path: string, rating: number) {
+    this.hash = hash;
+    this.path = path;
+    this.rating = rating;
   }
 }

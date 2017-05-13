@@ -1,19 +1,21 @@
-<div class="row">
-  <div class="col-sm-2 col-sm-offset-5">
-    <div class="panel panel-default">
-      <div class="panel-body">
-
-        <form>
-          <div class="form-group">
-            <input type="text" class="form-control" id="nicknameInput" placeholder="nickname">
-          </div>
-          <div class="form-group">
-            <input type="password" class="form-control" id="passwordInput" placeholder="password">
-          </div>
-          <button type="submit" class="btn btn-primary">Come in</button>
-          <a class="btn btn-default btn-sm" routerLink="/new">I need account</a>
-        </form>
-
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-4">
+      <div class="card">
+        <div class="card-block">
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" id="nicknameInput" placeholder="nickname">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" id="passwordInput" placeholder="password">
+            </div>
+            <div class="btn-group" role="group">
+              <button type="submit" class="btn btn-primary">Come in</button>
+              <a class="btn btn-success" routerLink="/new" role="button">I need account</a>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

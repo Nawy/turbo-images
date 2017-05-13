@@ -3,6 +3,7 @@
  */
 
 import {Component} from '@angular/core'
+import { Router } from '@angular/router';
 
 @Component({
   selector: "s-navbar",
@@ -11,4 +12,9 @@ import {Component} from '@angular/core'
 })
 export class NavbarComponent {
 
+  constructor(private router: Router) {}
+
+  logout(): void {
+    this.router.navigateByUrl("signin");
+  }
 }

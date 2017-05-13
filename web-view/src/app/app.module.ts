@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router'
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 import { AppComponent } from './components/app.component';
 import {LoginComponent} from "./components/login.component";
@@ -28,6 +30,8 @@ import {SettingsComponent} from "./components/settings.component";
     BrowserModule,
     FormsModule,
     HttpModule,
+    BsDropdownModule.forRoot(),
+    ButtonsModule.forRoot(),
     RouterModule.forRoot([
       {
         path: "",
