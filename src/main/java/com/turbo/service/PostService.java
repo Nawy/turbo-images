@@ -1,7 +1,6 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
-import com.turbo.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

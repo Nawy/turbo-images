@@ -1,7 +1,6 @@
 package com.turbo.service;
 
 import com.turbo.model.Image;
-import com.turbo.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
