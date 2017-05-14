@@ -3,7 +3,7 @@
  */
 
 import {Component} from '@angular/core';
-import {Image} from '../models/image.model';
+import {PostPreview} from '../models/postpreview.model';
 
 @Component({
   selector: "s-images",
@@ -12,17 +12,17 @@ import {Image} from '../models/image.model';
 })
 export class ImagesComponent {
 
-  images: Image[];
+  postPreviews: PostPreview[];
 
   constructor() {
     const count: number = 100;
-    this.images = new Array<Image>(count);
+    this.postPreviews = new Array<PostPreview>(count);
     var pathes: string[] = ["https://i.imgur.com/uuh9RZ9b.jpg", "https://i.imgur.com/djKgENAb.jpg"];
 
     for(var i = 0; i < count;) {
       var path:string;
       for(path in pathes) {
-        this.images[i] = new Image("1", pathes[path], i);
+        this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random()*100));
         i++;
         if(i >= count) break;
       }

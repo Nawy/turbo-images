@@ -2,14 +2,13 @@
  * Created by ermolaev on 5/9/17.
  */
 
-export class Image {
-  hash: string;
+export class PostPreview {
+  id: number;
   path: string;
   rating: number;
 
-
-  constructor(hash: string, path: string, rating: number) {
-    this.hash = hash;
+  constructor(id: number, path: string, rating: number) {
+    this.id = id;
     this.path = path;
     this.rating = rating;
   }

@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router'
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { PopoverModule } from 'ngx-bootstrap/popover';
 
 import { AppComponent } from './components/app.component';
 import {LoginComponent} from "./components/login.component";
@@ -15,6 +16,7 @@ import {ImagesComponent} from "./components/images.component";
 import {CommentComponent} from "./components/comment.component";
 import {SettingsComponent} from "./components/settings.component";
 import {MaterialsComponent} from "./components/materials.component";
+import {PostPreviewComponent} from "./components/postpreview.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import {MaterialsComponent} from "./components/materials.component";
     ImagesComponent,
     CommentComponent,
     SettingsComponent,
-    MaterialsComponent
+    MaterialsComponent,
+    PostPreviewComponent
   ],
   imports: [
     BrowserModule,
@@ -34,6 +37,7 @@ import {MaterialsComponent} from "./components/materials.component";
     HttpModule,
     BsDropdownModule.forRoot(),
     ButtonsModule.forRoot(),
+    PopoverModule.forRoot(),
     RouterModule.forRoot([
       {
         path: "",
