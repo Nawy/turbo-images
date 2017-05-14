@@ -14,6 +14,7 @@ import {NavbarComponent} from "./components/navbar.component";
 import {ImagesComponent} from "./components/images.component";
 import {CommentComponent} from "./components/comment.component";
 import {SettingsComponent} from "./components/settings.component";
+import {MaterialsComponent} from "./components/materials.component";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {SettingsComponent} from "./components/settings.component";
     NavbarComponent,
     ImagesComponent,
     CommentComponent,
-    SettingsComponent
+    SettingsComponent,
+    MaterialsComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,14 @@ import {SettingsComponent} from "./components/settings.component";
       {
         path: "signin",
         component: SigninComponent
+      },
+      {
+        path: "settings",
+        component: SettingsComponent
+      },
+      {
+        path: "materials",
+        component: MaterialsComponent
       }
     ])
   ],

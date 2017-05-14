@@ -1,2 +1,11 @@
 @import 'variables';
 @import '../node_modules/bootstrap/scss/bootstrap';
+
+.col-right {
+  text-align: right;
+  align-content: flex-end;
+}
+
+.space-top {
+  padding-top: $space-on-top;
+}
