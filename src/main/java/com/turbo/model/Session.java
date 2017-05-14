@@ -1,16 +1,14 @@
 package com.turbo.model;
 
 import com.turbo.model.user.User;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
+
+import java.util.UUID;
 
 /**
  * Created by rakhmetov on 09.05.17.
  */
-@Table("session")
 public class Session {
 
-    @PrimaryKey
     private long id;
     private User user;
 
@@ -18,6 +16,12 @@ public class Session {
     }
 
     public Session(User user) {
+        id = UUID.randomUUID().getMostSignificantBits();
+        this.user = user;
+    }
+
+    public Session(long id, User user) {
+        this.id = id;
         this.user = user;
     }
 
