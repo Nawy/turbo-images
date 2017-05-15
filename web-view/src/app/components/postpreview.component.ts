@@ -11,4 +11,31 @@ import {PostPreview} from "../models/postpreview.model";
 })
 export class PostPreviewComponent {
   @Input("postdata") postdata: PostPreview;
+
+  //style
+  activeClass : string;
+  defaultClass : string;
+  useClass : string;
+
+  //data
+  hintHeaderString: string;
+
+  constructor() {
+    this.activeClass = "postpreview-active";
+    this.defaultClass = "postpreview-default";
+
+    this.useClass = this.defaultClass;
+  }
+
+  getHeaderString() : string {
+    return "Rating " + this.postdata.rating;
+  }
+
+  onMouseOver() : void {
+    this.useClass = this.activeClass;
+  }
+
+  onMouseOut() : void {
+    this.useClass = this.defaultClass;
+  }
 }

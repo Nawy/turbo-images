@@ -9,3 +9,21 @@
 .space-top {
   padding-top: $space-on-top;
 }
+
+//POST PREVIEW
+
+.postpreview-margin {
+  margin: $postpreview-margin-size;
+}
+
+.postpreview-default {
+  border: $postpreview-border-default;
+}
+
+.postpreview-active {
+  border: $postpreview-border-active;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
