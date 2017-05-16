@@ -10,7 +10,14 @@
   padding-top: $space-on-top;
 }
 
+.medium-margin {
+  margin: 1em;
+}
+
 //POST PREVIEW
+.postpreview-medium-size {
+  width: 200px;
+}
 
 .postpreview-margin {
   margin: $postpreview-margin-size;

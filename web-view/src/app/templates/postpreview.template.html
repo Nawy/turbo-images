@@ -1,10 +1,12 @@
-<img
-  src="{{postdata.path}}"
-  alt="{{postdata.path}}"
-  class="rounded postpreview-margin cursor-pointer {{useClass}}"
-  (mouseover)="onMouseOver()"
-  (mouseout)="onMouseOut()"
-  popoverTitle="{{getHeaderString()}}"
-  popover="Description long or not, but description"
-  placement="bottom"
-  triggers="mouseenter:mouseleave">
+<a [routerLink]="['/post', postdata.id]">
+  <img
+    src="{{postdata.path}}"
+    alt="{{postdata.path}}"
+    class="rounded postpreview-margin postpreview-medium-size {{useClass}}"
+    (mouseover)="onMouseOver()"
+    (mouseout)="onMouseOut()"
+    popoverTitle="{{getHeaderString()}}"
+    popover="Description long or not, but description"
+    placement="bottom"
+    triggers="mouseenter:mouseleave">
+</a>

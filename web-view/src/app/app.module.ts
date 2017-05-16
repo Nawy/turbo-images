@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router'
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 import { AppComponent } from './components/app.component';
 import {LoginComponent} from "./components/login.component";
@@ -38,6 +39,7 @@ import {PostPreviewComponent} from "./components/postpreview.component";
     BsDropdownModule.forRoot(),
     ButtonsModule.forRoot(),
     PopoverModule.forRoot(),
+    CollapseModule.forRoot(),
     RouterModule.forRoot([
       {
         path: "",
@@ -58,6 +60,10 @@ import {PostPreviewComponent} from "./components/postpreview.component";
       {
         path: "materials",
         component: MaterialsComponent
+      },
+      {
+        path: 'post/:id',
+        component: PostComponent
       }
     ])
   ],
