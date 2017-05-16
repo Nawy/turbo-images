@@ -1,5 +1,8 @@
 package com.turbo.repository;
 
+import com.turbo.config.ElasticsearchConfig;
+import org.elasticsearch.client.transport.TransportClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -7,4 +10,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class ElasticsearchRepository {
+
+    private final TransportClient elasticClient;
+
+    @Autowired
+    public ElasticsearchRepository(ElasticsearchConfig config) {
+        this.elasticClient = config.getElasticClient();
+    }
 }
