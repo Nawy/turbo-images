@@ -1,16 +1,17 @@
 package com.turbo.model;
 
 import com.turbo.model.user.User;
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
+
+import java.io.Serializable;
+import java.util.UUID;
 
 /**
- * Created by rakhmetov on 09.05.17.
+ * Implements serializable for Aerospike serialization
  */
-@Table("session")
-public class Session {
+public class Session implements Serializable {
 
-    @PrimaryKey
+    private final static long serialVersionUID = 42L;
+
     private long id;
     private User user;
 
@@ -18,6 +19,12 @@ public class Session {
     }
 
     public Session(User user) {
+        id = UUID.randomUUID().getMostSignificantBits();
+        this.user = user;
+    }
+
+    public Session(long id, User user) {
+        this.id = id;
         this.user = user;
     }
 

@@ -1,8 +1,5 @@
 package com.turbo.model;
 
-import org.springframework.data.cassandra.mapping.PrimaryKey;
-import org.springframework.data.cassandra.mapping.Table;
-
 import java.util.List;
 
 /**
@@ -10,22 +7,17 @@ import java.util.List;
  * <p>
  * Just post on site with picture and comments
  */
-@Table("post")
 public class Post {
 
-    @PrimaryKey
     private Long id;
     private String name;
     private String description;
     private int rating; // upvotes - downvotes
     private int viewsAmount; // how often people view this post
     private List<String> picturePaths; // max 20
-    private List<Comment> comments;
     private ClientType clientType;
     private List<String> tag;
-
-    public Post() {
-    }
+    private long authorId;
 
     public Post(
             Long id,
@@ -34,9 +26,9 @@ public class Post {
             int rating,
             int viewsAmount,
             List<String> picturePaths,
-            List<Comment> comments,
             ClientType clientType,
-            List<String> tag
+            List<String> tag,
+            long authorId
     ) {
         this.id = id;
         this.name = name;
@@ -44,9 +36,9 @@ public class Post {
         this.rating = rating;
         this.viewsAmount = viewsAmount;
         this.picturePaths = picturePaths;
-        this.comments = comments;
         this.clientType = clientType;
         this.tag = tag;
+        this.authorId = authorId;
     }
 
     public Long getId() {
@@ -73,15 +65,15 @@ public class Post {
         return picturePaths;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
     public ClientType getClientType() {
         return clientType;
     }
 
     public List<String> getTag() {
         return tag;
+    }
+
+    public long getAuthorId() {
+        return authorId;
     }
 }
