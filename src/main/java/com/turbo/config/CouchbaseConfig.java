@@ -4,6 +4,7 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -13,7 +14,7 @@ import java.util.Objects;
 /**
  * Created by ermolaev on 5/17/17.
  */
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "couchbase")
 public class CouchbaseConfig {
 
