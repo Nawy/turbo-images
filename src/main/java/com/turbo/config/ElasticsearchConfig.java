@@ -4,7 +4,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -12,17 +12,16 @@ import javax.annotation.PreDestroy;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by ermolaev on 5/15/17.
  */
 @Configuration
+@ConfigurationProperties(prefix = "elasticsearch")
 public class ElasticsearchConfig {
 
-    @Value("${elasticsearch.hosts}")
-    private List<String> hosts;
-
-    @Value("${elasticsearch.cluster-name}")
+    private String[] hosts;
     private String clusterName;
 
     private TransportClient elasticClient;
@@ -51,15 +50,32 @@ public class ElasticsearchConfig {
     }
 
     private InetSocketTransportAddress[] getAddresses() throws UnknownHostException {
-        InetSocketTransportAddress[] addresses = new InetSocketTransportAddress[hosts.size()];
-        for(int i = 0; i < hosts.size(); i++) {
-            String[] datas = hosts.get(i).split(":");
+        Objects.requireNonNull(hosts, "Elasticsearch hosts in properties cannot be empty");
+        InetSocketTransportAddress[] addresses = new InetSocketTransportAddress[hosts.length];
+        for(int i = 0; i < hosts.length; i++) {
+            String[] addr = hosts[i].split(":");
             addresses[i] = new InetSocketTransportAddress(
-                    InetAddress.getByName(datas[0]),
-                    Integer.valueOf(datas[1])
+                    InetAddress.getByName(addr[0]),
+                    Integer.valueOf(addr[1])
             );
         }
 
         return addresses;
+    }
+
+    public String[] getHosts() {
+        return hosts;
+    }
+
+    public void setHosts(String[] hosts) {
+        this.hosts = hosts;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 }
