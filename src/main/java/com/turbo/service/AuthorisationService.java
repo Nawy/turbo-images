@@ -4,7 +4,6 @@ import com.turbo.model.Session;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.model.user.User;
-import com.turbo.repository.HazelcastSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
