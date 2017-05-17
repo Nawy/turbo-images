@@ -3,10 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router'
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { PopoverModule } from 'ngx-bootstrap/popover';
-import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './components/app.component';
 import {LoginComponent} from "./components/login.component";
@@ -36,10 +33,7 @@ import {PostPreviewComponent} from "./components/postpreview.component";
     BrowserModule,
     FormsModule,
     HttpModule,
-    BsDropdownModule.forRoot(),
-    ButtonsModule.forRoot(),
-    PopoverModule.forRoot(),
-    CollapseModule.forRoot(),
+    NgbModule.forRoot(),
     RouterModule.forRoot([
       {
         path: "",

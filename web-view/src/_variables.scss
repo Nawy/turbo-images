@@ -1,6 +1,10 @@
 $space-on-top: 20px !global;
 
-// POST PREVIEW
+// Post Preview
 $postpreview-margin-size: 4px !global;
 $postpreview-border-default: 3px solid black !global; //mouse out
 $postpreview-border-active: 3px solid #ffa500 !global; //mouse over
+
+// ScrollBar
+$scrollbar-width: 7px !global;
+$scrollbar-background-color: rgba(0,0,0,.5) !global;
