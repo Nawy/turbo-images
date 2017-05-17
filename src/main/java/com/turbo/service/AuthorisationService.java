@@ -4,6 +4,7 @@ import com.turbo.model.Session;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.model.user.User;
+import com.turbo.repository.AerospikeSessionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -16,11 +17,11 @@ import org.springframework.util.Assert;
 @Service
 public class AuthorisationService {
 
-    private final HazelcastSessionRepository sessionRepository;
+    private final AerospikeSessionRepo sessionRepository;
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthorisationService(HazelcastSessionRepository sessionRepository, UserRepository userRepository) {
+    public AuthorisationService(AerospikeSessionRepo sessionRepository, UserRepository userRepository) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
     }

@@ -2,12 +2,15 @@ package com.turbo.model;
 
 import com.turbo.model.user.User;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Created by rakhmetov on 09.05.17.
+ * Implements serializable for Aerospike serialization
  */
-public class Session {
+public class Session implements Serializable {
+
+    private final static long serialVersionUID = 42L;
 
     private long id;
     private User user;

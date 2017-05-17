@@ -2,12 +2,13 @@ package com.turbo.model.comment;
 
 import com.turbo.model.ClientType;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * Created by rakhmetov on 09.05.17.
+ * Implements serializable for Aerospike serialization
  */
-public class Comment {
+public class Comment implements Serializable {
 
     private Long id;
     private long authorId;
