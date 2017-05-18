@@ -14,7 +14,11 @@ export class ImagesComponent {
 
   postPreviews: PostPreview[];
 
+  isStateTop: boolean;
+
   constructor() {
+    this.isStateTop = true;
+
     const count: number = 100;
     this.postPreviews = new Array<PostPreview>(count);
     var pathes: string[] = ["https://i.imgur.com/uuh9RZ9b.jpg", "https://i.imgur.com/djKgENAb.jpg"];
@@ -27,6 +31,26 @@ export class ImagesComponent {
         if(i >= count) break;
       }
     }
+  }
+
+  getClassState(name: string) : string {
+    if(name.match("TOP") && this.isStateTop) {
+      return "active";
+    }
+
+    if(name.match("NEW") && !this.isStateTop) {
+      return "active";
+    }
+
+    return "";
+  }
+
+  chooseTopState() : void {
+    this.isStateTop = true;
+  }
+
+  chooseNewState() : void {
+    this.isStateTop = false;
   }
 }
 

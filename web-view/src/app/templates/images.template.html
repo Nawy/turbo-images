@@ -1,5 +1,16 @@
 <div class="container space-top">
   <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-pills card-header-pills">
+        <li class="nav-item">
+          <a class="nav-link cursor-pointer {{getClassState('TOP')}}" (click)="chooseTopState()">Top</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link cursor-pointer {{getClassState('NEW')}}" (click)="chooseNewState()">New</a>
+        </li>
+      </ul>
+    </div>
+
     <div class="card-block medium-margin">
       <div class="row justify-content-center">
         <div class="col-auto" *ngFor="let postPreview of postPreviews">
