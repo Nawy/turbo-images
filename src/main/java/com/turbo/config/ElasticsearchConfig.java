@@ -8,7 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
@@ -22,6 +21,8 @@ public class ElasticsearchConfig {
 
     private String[] hosts;
     private String clusterName;
+    private String postIndexName;
+    private String postTypeName;
 
     private TransportClient elasticClient;
 
@@ -37,11 +38,6 @@ public class ElasticsearchConfig {
         } catch (UnknownHostException e) {
             throw new RuntimeException("Can't create elastic transport client!", e);
         }
-    }
-
-    @PreDestroy
-    public void closeConnection() {
-        elasticClient.close();
     }
 
     public TransportClient getElasticClient() {
@@ -76,5 +72,21 @@ public class ElasticsearchConfig {
 
     public void setClusterName(String clusterName) {
         this.clusterName = clusterName;
+    }
+
+    public String getPostIndexName() {
+        return postIndexName;
+    }
+
+    public void setPostIndexName(String postIndexName) {
+        this.postIndexName = postIndexName;
+    }
+
+    public String getPostTypeName() {
+        return postTypeName;
+    }
+
+    public void setPostTypeName(String postTypeName) {
+        this.postTypeName = postTypeName;
     }
 }

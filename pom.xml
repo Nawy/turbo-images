@@ -25,6 +25,7 @@
 		<springfox.version>2.5.0</springfox.version>
 		<elasticsearch.version>5.4.0</elasticsearch.version>
 		<couchbase.version>2.4.5</couchbase.version>
+		<apache.commons.version>3.5</apache.commons.version>
 	</properties>
 
 	<dependencies>
@@ -100,6 +101,12 @@
 			<groupId>com.couchbase.client</groupId>
 			<artifactId>couchbase-client</artifactId>
 			<version>${couchbase.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons.version}</version>
 		</dependency>
 
 	</dependencies>
