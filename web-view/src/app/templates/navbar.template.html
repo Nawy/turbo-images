@@ -8,30 +8,30 @@
           aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+  <div class="container">
+    <div class="row">
+      <div class="col-4">
+        <a class="navbar-brand" routerLink="/">Turbo Images</a>
+      </div>
+      <div class="col-6 col-right">
+        <div class="collapse navbar-collapse" id="navbarMain">
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-success">Add Images</button>
 
-  <div class="collapse navbar-collapse" id="navbarMain">
-      <div class="container">
-        <div class="row">
-          <div class="col-6">
-            <a class="navbar-brand" routerLink="/">Turbo Images</a>
-          </div>
-          <div class="col-6 col-right">
-            <div class="btn-group" role="group">
-              <button type="submit" class="btn btn-success">Add Images</button>
-              <div class="btn-group" dropdown>
-                <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
-                  @ermolaev <span class="caret"></span>
-                </button>
-                <ul *dropdownMenu class="dropdown-menu" role="menu">
-                  <li role="menuitem"><a class="dropdown-item" routerLink="/materials">My Materials</a></li>
-                  <li role="menuitem"><a class="dropdown-item" routerLink="/settings">Settings</a></li>
-                  <li class="divider dropdown-divider"></li>
-                  <li role="menuitem"><a class="dropdown-item" (click)="logout()">Log Out</a></li>
-                </ul>
+            <div ngbDropdown class="btn-group" role="group">
+              <button type="button" class="btn btn-primary" id="userMenu" ngbDropdownToggle>
+                @ermolaev <span class="caret"></span>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="userMenu">
+                <a class="dropdown-item" routerLink="/materials">My Materials</a>
+                <a class="dropdown-item" routerLink="/settings">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" (click)="logout()">Log Out</a>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </nav>
