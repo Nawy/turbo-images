@@ -2,7 +2,47 @@
   <div class="card">
     <div class="card-block">
       <h3 class="card-title">Settings</h3>
-      <p class="card-text">Settings will be here</p>
+        <div class="row">
+          <div class="col-sm-6">
+            <form>
+              <h4 class="card-title">Password Change</h4>
+              <div class="form-group">
+                <input type="password" class="form-control" id="oldPassword" placeholder="old password">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="passwordInput" placeholder="new password">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="passwordRepeatInput" placeholder="repeat password">
+              </div>
+              <button type="submit" class="btn btn-primary">Change</button>
+            </form>
+          </div>
+          <div class="col-sm-6">
+            <form>
+              <h4 class="card-title">Personal Info</h4>
+
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon" id="sizing-addon1">@</span>
+                  <input type="text" class="form-control" placeholder="nickname">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button">Save</button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="email">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button">Save</button>
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
     </div>
   </div>
 </div>
