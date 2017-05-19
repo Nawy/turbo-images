@@ -1,5 +1,6 @@
 package com.turbo.repository;
 
+import com.turbo.model.Post;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -8,5 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CouchbaseRepository {
 
-
+    public Post addPost(final Post post) {
+        //add post
+        return post;
+    }
 }

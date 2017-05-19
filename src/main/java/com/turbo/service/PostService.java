@@ -26,11 +26,13 @@ public class PostService {
 
 
     public Post addPost(final Post post) {
-        return elasticsearchRepository.addPost(post);
+        final Post postWithId = couchbaseRepository.addPost(post);
+        elasticsearchRepository.addPost(postWithId);
+        return postWithId;
     }
 
     public Post getPostById(final long id) {
-        return postRepository.findOne(id);
+        return null;
     }
 
     public Post getPostByElasticId(final String elasticId) {
