@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * Just post on site with picture and comments
  */
-public class Post {
+public class Post implements IdHolder {
 
     private String elasticId;
     private Long id;
@@ -49,6 +49,11 @@ public class Post {
     @JsonProperty("id")
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @JsonProperty("name")

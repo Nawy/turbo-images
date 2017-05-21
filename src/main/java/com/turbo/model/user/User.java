@@ -1,11 +1,13 @@
 package com.turbo.model.user;
 
+import com.turbo.model.IdHolder;
+
 /**
  * Created by ermolaev on 5/6/17.
  * <p>
  * This data for every foreign user
  */
-public class User {
+public class User implements IdHolder {
 
     private Long id;
     private String nickname;
@@ -28,6 +30,11 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNickname() {

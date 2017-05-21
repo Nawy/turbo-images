@@ -4,7 +4,8 @@ import com.turbo.model.Session;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.model.user.User;
-import com.turbo.repository.AerospikeSessionRepo;
+import com.turbo.repository.aerospike.AerospikeSessionRepo;
+import com.turbo.repository.couchbase.CouchbaseUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -18,16 +19,16 @@ import org.springframework.util.Assert;
 public class AuthorisationService {
 
     private final AerospikeSessionRepo sessionRepository;
-    private final UserRepository userRepository;
+    private final CouchbaseUserRepository userRepository;
 
     @Autowired
-    public AuthorisationService(AerospikeSessionRepo sessionRepository, UserRepository userRepository) {
+    public AuthorisationService(AerospikeSessionRepo sessionRepository, CouchbaseUserRepository userRepository) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
     }
 
     public Session getSession(long sessionId) {
-        return sessionRepository.findOne(sessionId);
+        return sessionRepository.get(sessionId);
     }
 
     public Session login(String email, String password) {
@@ -38,17 +39,11 @@ public class AuthorisationService {
     private Session login(User user) {
         Assert.notNull(user, "user can't be null");
         Session session = new Session(user);
-        int maxRetryCount = 3;
-        for (int i = 0; i < maxRetryCount; i++) {
-            boolean saveSuccess = sessionRepository.save(session);
-            if (saveSuccess) {
-                return session;
-            } else {
-                // every constructor creation generates new random UUID
-                session = new Session(user);
-            }
+        try {
+            return sessionRepository.save(session);
+        } catch (InternalServerErrorHttpException e) {
+            throw new InternalServerErrorHttpException("Failed to login");
         }
-        throw new InternalServerErrorHttpException("Failed to login");
     }
 
     public Session signup(User user) {

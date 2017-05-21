@@ -1,6 +1,7 @@
 package com.turbo.model.comment;
 
 import com.turbo.model.ClientType;
+import com.turbo.model.IdHolder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Implements serializable for Aerospike serialization
  */
-public class Comment implements Serializable {
+public class Comment implements Serializable,IdHolder {
 
     private Long id;
     private long authorId;
@@ -41,6 +42,11 @@ public class Comment implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public long getAuthorId() {

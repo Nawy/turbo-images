@@ -4,11 +4,9 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.Objects;
 
 /**
@@ -19,37 +17,22 @@ import java.util.Objects;
 public class CouchbaseConfig {
 
     private String[] clusters;
-    private String bucketName;
+    private String postBucketName;
+    private String userBucketName;
 
-    private Cluster cluster;
-    private Bucket bucket;
-
-    @PostConstruct
-    public void init() {
+    @Bean(destroyMethod = "disconnect")
+    public Cluster cluster() {
         Objects.requireNonNull(clusters, "Couchbase clusters in properties cannot be empty");
-        this.cluster = CouchbaseCluster.create(clusters);
-        this.bucket = cluster.openBucket(bucketName);
+        return CouchbaseCluster.create(clusters);
     }
 
-    @PreDestroy
-    public void closeConnections() {
-        this.bucket.close();
-        this.cluster.disconnect();
+    @Bean(name = "post-bucket", destroyMethod = "close")
+    public Bucket postBucket(Cluster cluster) {
+        return cluster.openBucket(postBucketName);
     }
 
-    public String[] getClusters() {
-        return clusters;
-    }
-
-    public void setClusters(String[] clusters) {
-        this.clusters = clusters;
-    }
-
-    public String getBucketName() {
-        return bucketName;
-    }
-
-    public void setBucketName(String bucketName) {
-        this.bucketName = bucketName;
+    @Bean(name = "user-bucket", destroyMethod = "close")
+    public Bucket userBucket(Cluster cluster) {
+        return cluster.openBucket(userBucketName);
     }
 }

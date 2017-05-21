@@ -1,7 +1,7 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
-import com.turbo.repository.CouchbaseRepository;
+import com.turbo.repository.couchbase.CouchbasePostRepository;
 import com.turbo.repository.ElasticsearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +16,17 @@ import java.util.List;
 public class PostService {
 
     private final ElasticsearchRepository elasticsearchRepository;
-    private final CouchbaseRepository couchbaseRepository;
+    private final CouchbasePostRepository couchbasePostRepository;
 
     @Autowired
-    public PostService(ElasticsearchRepository elasticsearchRepository, CouchbaseRepository couchbaseRepository) {
+    public PostService(ElasticsearchRepository elasticsearchRepository, CouchbasePostRepository couchbasePostRepository) {
         this.elasticsearchRepository = elasticsearchRepository;
-        this.couchbaseRepository = couchbaseRepository;
+        this.couchbasePostRepository = couchbasePostRepository;
     }
 
 
     public Post addPost(final Post post) {
-        final Post postWithId = couchbaseRepository.addPost(post);
+        final Post postWithId = couchbasePostRepository.addPost(post);
         elasticsearchRepository.addPost(postWithId);
         return postWithId;
     }

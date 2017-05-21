@@ -8,18 +8,17 @@ import java.util.UUID;
 /**
  * Implements serializable for Aerospike serialization
  */
-public class Session implements Serializable {
+public class Session implements Serializable,IdHolder {
 
     private final static long serialVersionUID = 42L;
 
-    private long id;
+    private Long id;
     private User user;
 
     public Session() {
     }
 
     public Session(User user) {
-        id = UUID.randomUUID().getMostSignificantBits();
         this.user = user;
     }
 
@@ -28,8 +27,13 @@ public class Session implements Serializable {
         this.user = user;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getUser() {
