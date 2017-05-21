@@ -41,6 +41,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         long sessionId = entity.getId() != null ?
                 entity.getId() :
                 generateRandomId();
+        entity.setId(sessionId);
 
         WritePolicy writePolicy = null;
         if (expiration > 0) {
@@ -54,24 +55,23 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
                 generateBin(entity)
         );
 
-        entity.setId(sessionId);
         return entity;
     }
 
     @SuppressWarnings("unchecked")
-    public T get(long sessionId) {
-        Record record = client.get(null, generateKey(sessionId));
+    public T get(long id) {
+        Record record = client.get(null, generateKey(id));
         return record != null ?
                 (T) record.getValue(defaultBinName) :
                 null;
     }
 
-    public boolean contains(long sessionId) {
-        return client.exists(null, generateKey(sessionId));
+    public boolean exists(long id) {
+        return client.exists(null, generateKey(id));
     }
 
-    public void delete(long sessionId) {
-        client.delete(null, generateKey(sessionId));
+    public void delete(long id) {
+        client.delete(null, generateKey(id));
     }
 
     private Key generateKey(long sessionId) {

@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
  * Created by ermolaev on 5/17/17.
  */
 @Repository
-public class CouchbasePostRepository extends AbstractCouchbaseRepository<Post> {
+public class PostRepository extends AbstractCouchbaseRepository<Post> {
 
     private final Bucket bucket;
 
     @Autowired
-    public CouchbasePostRepository(@Qualifier("post-bucket") Bucket bucket) {
+    public PostRepository(@Qualifier("post-bucket") Bucket bucket) {
         super(bucket, Post.class);
         this.bucket = bucket;
     }

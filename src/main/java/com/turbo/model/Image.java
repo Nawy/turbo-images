@@ -1,17 +1,19 @@
 package com.turbo.model;
 
+import java.io.Serializable;
+
 /**
  * Created by ermolaev on 5/9/17.
  */
-public class Image {
+public class Image implements Serializable, IdHolder {
 
-    private long hash;
+    private Long hash;
     private String path;
 
     public Image() {
     }
 
-    public Image(long hash, String path) {
+    public Image(Long hash, String path) {
         this.hash = hash;
         this.path = path;
     }
@@ -24,4 +26,13 @@ public class Image {
         return path;
     }
 
+    @Override
+    public Long getId() {
+        return hash;
+    }
+
+    @Override
+    public void setId(Long id) {
+        hash = id;
+    }
 }

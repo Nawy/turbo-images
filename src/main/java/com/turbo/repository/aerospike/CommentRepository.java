@@ -15,13 +15,13 @@ import org.springframework.stereotype.Repository;
  * Created by rakhmetov on 17.05.17.
  */
 @Repository
-public class AerospikeCommentRepo extends AbstractAerospikeRepo<Comment> {
+public class CommentRepository extends AbstractAerospikeRepo<Comment> {
 
     private final AerospikeClient client;
     private final String namespace;
 
     @Autowired
-    public AerospikeCommentRepo(
+    public CommentRepository(
             AerospikeClient client,
             @Value("${aerospike.comment.namespace}") String namespace
     ) {

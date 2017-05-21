@@ -19,6 +19,7 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
         this.bucket = bucket;
         this.collectionName = bucket.name();
         this.clazz = clazz;
+        bucket.bucketManager().createN1qlPrimaryIndex(true, false);
     }
 
     public T save(T entity) {
@@ -52,6 +53,13 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
     protected T parse(JsonDocument jsonDocument) {
         return JsonParser.parse(
                 jsonDocument.content().toString(),
+                clazz
+        );
+    }
+
+    protected T parse(JsonObject jsonObject) {
+        return JsonParser.parse(
+                jsonObject.toString(),
                 clazz
         );
     }

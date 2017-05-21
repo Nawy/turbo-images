@@ -1,6 +1,7 @@
 package com.turbo.service;
 
 import com.turbo.model.Image;
+import com.turbo.repository.aerospike.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class ImageService {
     }
 
     public Image getImage(long hash) {
-        return imageRepository.findOne(hash);
+        return imageRepository.get(hash);
     }
 
     public boolean imageExists(long hash) {

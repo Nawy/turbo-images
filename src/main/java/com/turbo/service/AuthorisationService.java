@@ -1,11 +1,13 @@
 package com.turbo.service;
 
 import com.turbo.model.Session;
+import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.model.user.User;
-import com.turbo.repository.aerospike.AerospikeSessionRepo;
-import com.turbo.repository.couchbase.CouchbaseUserRepository;
+import com.turbo.repository.aerospike.SessionRepository;
+import com.turbo.repository.couchbase.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -18,11 +20,11 @@ import org.springframework.util.Assert;
 @Service
 public class AuthorisationService {
 
-    private final AerospikeSessionRepo sessionRepository;
-    private final CouchbaseUserRepository userRepository;
+    private final SessionRepository sessionRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public AuthorisationService(AerospikeSessionRepo sessionRepository, CouchbaseUserRepository userRepository) {
+    public AuthorisationService(SessionRepository sessionRepository, UserRepository userRepository) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
     }
@@ -32,7 +34,15 @@ public class AuthorisationService {
     }
 
     public Session login(String email, String password) {
-        User user = userRepository.findUser(email);
+        User user;
+        try {
+            user = userRepository.findByEmail(email);
+        } catch (NotFoundHttpException e) {
+            throw new ForbiddenHttpException("Wrong credentials!");
+        }
+        if (!user.getPassword().equals(password)) {
+            throw new ForbiddenHttpException("Wrong credentials!");
+        }
         return login(user);
     }
 

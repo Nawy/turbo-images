@@ -24,7 +24,6 @@
 		<java.version>1.8</java.version>
 		<springfox.version>2.5.0</springfox.version>
 		<elasticsearch.version>5.4.0</elasticsearch.version>
-		<couchbase.version>2.4.5</couchbase.version>
 		<apache.commons.version>3.5</apache.commons.version>
 	</properties>
 
@@ -50,16 +49,6 @@
 			<groupId>com.aerospike</groupId>
 			<artifactId>aerospike-client</artifactId>
 			<version>3.3.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
 		</dependency>
 
 		<dependency>
@@ -94,13 +83,6 @@
 		<dependency>
 			<groupId>com.couchbase.client</groupId>
 			<artifactId>java-client</artifactId>
-			<version>${couchbase.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.couchbase.client</groupId>
-			<artifactId>couchbase-client</artifactId>
-			<version>${couchbase.version}</version>
 		</dependency>
 
 		<dependency>
