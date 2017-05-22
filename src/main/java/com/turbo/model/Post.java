@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * Just post on site with picture and comments
  */
-public class Post implements IdHolder {
+public class Post implements IdHolder, ElasticIdentifier {
 
     private String elasticId;
     private Long id;
@@ -96,6 +96,12 @@ public class Post implements IdHolder {
         return authorId;
     }
 
+    @Override
+    public String getElasticId() {
+        return this.elasticId;
+    }
+
+    @Override
     public void setElasticId(String elasticId) {
         this.elasticId = elasticId;
     }
