@@ -2,7 +2,7 @@ package com.turbo.service;
 
 import com.turbo.model.Post;
 import com.turbo.repository.couchbase.PostRepository;
-import com.turbo.repository.ElasticsearchRepository;
+import com.turbo.repository.elasticsearch.ElasticsearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
