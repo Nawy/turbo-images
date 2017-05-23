@@ -33,7 +33,7 @@ public class AuthorisationService {
         return sessionRepository.get(sessionId);
     }
 
-    public Session login(String email, String password) {
+    public Session signin(String email, String password) {
         User user;
         try {
             user = userRepository.findByEmail(email);
@@ -43,22 +43,22 @@ public class AuthorisationService {
         if (!user.getPassword().equals(password)) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
-        return login(user);
+        return signin(user);
     }
 
-    private Session login(User user) {
+    private Session signin(User user) {
         Assert.notNull(user, "user can't be null");
         Session session = new Session(user);
         try {
             return sessionRepository.save(session);
         } catch (InternalServerErrorHttpException e) {
-            throw new InternalServerErrorHttpException("Failed to login");
+            throw new InternalServerErrorHttpException("Failed to signin");
         }
     }
 
     public Session signup(User user) {
         User dbUser = userRepository.save(user);
-        return login(dbUser);
+        return signin(dbUser);
     }
 
     public User getCurrentUser() {

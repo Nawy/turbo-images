@@ -1,5 +1,7 @@
 package com.turbo.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.IdHolder;
 
 /**
@@ -10,24 +12,31 @@ import com.turbo.model.IdHolder;
 public class User implements IdHolder {
 
     private String id;
-    private String nickname;
+    private String name;
     private String avatarPath;
-    private String lastIp; // last lastIp from what was came in
+    private String ip; // last ip from what was came in
     private String email;
     private String password;
 
     public User() {
     }
 
-    public User(String id, String nickname, String avatarPath, String lastIp, String email, String password) {
+    public User(
+            @JsonProperty("id") String id,
+            @JsonProperty(value = "name", required = true) String name,
+            @JsonProperty(value = "avatar_path") String avatarPath,
+            @JsonProperty(value = "ip", required = true) String ip,
+            @JsonProperty(value = "email", required = true) String email,
+            @JsonProperty(value = "password", required = true) String password) {
         this.id = id;
-        this.nickname = nickname;
+        this.name = name;
         this.avatarPath = avatarPath;
-        this.lastIp = lastIp;
+        this.ip = ip;
         this.email = email;
         this.password = password;
     }
 
+    @JsonIgnore
     public String getId() {
         return id;
     }
@@ -37,22 +46,27 @@ public class User implements IdHolder {
         this.id = id;
     }
 
-    public String getNickname() {
-        return nickname;
+    @JsonProperty(value = "name")
+    public String getName() {
+        return name;
     }
 
+    @JsonProperty(value = "avatar_path")
     public String getAvatarPath() {
         return avatarPath;
     }
 
-    public String getLastIp() {
-        return lastIp;
+    @JsonProperty(value = "ip")
+    public String getIp() {
+        return ip;
     }
 
+    @JsonProperty(value = "email")
     public String getEmail() {
         return email;
     }
 
+    @JsonProperty(value = "password")
     public String getPassword() {
         return password;
     }
