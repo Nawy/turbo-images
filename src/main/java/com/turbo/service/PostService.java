@@ -2,12 +2,13 @@ package com.turbo.service;
 
 import com.turbo.model.Post;
 import com.turbo.repository.couchbase.PostRepository;
-import com.turbo.repository.elasticsearch.ElasticsearchRepository;
+import com.turbo.repository.elasticsearch.PostElasticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -15,28 +16,31 @@ import java.util.List;
 @Service
 public class PostService {
 
-    private final ElasticsearchRepository elasticsearchRepository;
+    private final PostElasticRepository postElasticRepository;
     private final PostRepository postRepository;
 
     @Autowired
-    public PostService(ElasticsearchRepository elasticsearchRepository, PostRepository postRepository) {
-        this.elasticsearchRepository = elasticsearchRepository;
+    public PostService(PostElasticRepository postElasticRepository, PostRepository postRepository) {
+        this.postElasticRepository = postElasticRepository;
         this.postRepository = postRepository;
     }
 
 
     public Post addPost(final Post post) {
         final Post postWithId = postRepository.addPost(post);
-        elasticsearchRepository.addPost(postWithId);
+        postElasticRepository.addPost(postWithId);
         return postWithId;
     }
 
-    public Post getPostById(final long id) {
-        return null;
-    }
+    public Post getPostById(final String id) {
+        Post post = postElasticRepository.getPostById(id);
 
-    public Post getPostByElasticId(final String elasticId) {
-        return null;
+        if(Objects.isNull(post)) {
+            // TODO request post from couchbase by id
+            // post = postRepository.get(1); MOCK
+            postElasticRepository.addPost(post);
+        }
+        return postElasticRepository.getPostById(id);
     }
 
     public List<Post> getLastPost() {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -22,6 +23,7 @@ public class Post implements IdHolder, ElasticIdentifier {
     private List<String> picturePaths;
     private ClientType clientType;
     private List<String> tags;
+    private LocalDate createDate;
     private String authorId;
 
     public Post(

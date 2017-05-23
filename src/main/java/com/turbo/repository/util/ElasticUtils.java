@@ -51,6 +51,17 @@ public abstract class ElasticUtils {
         return result.toString();
     }
 
+    public static String getElasticTypeWithDay(final String typeName, LocalDate postDate) {
+        StringBuilder result = new StringBuilder(typeName.length()+11);
+            result.append(
+                    String.format("%s-%s",
+                            typeName,
+                            formatter.format(postDate)
+                    )
+            );
+        return result.toString();
+    }
+
     public static String getElasticTypeWithoutDate(final String typeName) {
         return String.format("%s-*", typeName);
     }
