@@ -17,6 +17,7 @@ import java.util.UUID;
  * Created by rakhmetov on 17.05.17.
  */
 @Repository
+//TODO make comment index somehow by date and popularity
 public class CommentRepository extends AbstractAerospikeRepo<Comment> {
 
 
