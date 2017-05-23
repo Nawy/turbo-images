@@ -10,6 +10,8 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
@@ -17,7 +19,7 @@ import java.util.UUID;
  */
 public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
-    private static final int ITERATIONS_TO_GENERATE_ID = 3;
+    protected static final int ITERATIONS_TO_GENERATE_ID = 3;
 
     private final String defaultBinName;
     private final AerospikeClient client;
@@ -38,9 +40,9 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     public T save(T entity, int expiration) {
-        long sessionId = entity.getId() != null ?
+        String sessionId = entity.getId() != null ?
                 entity.getId() :
-                generateRandomId();
+                generateId();
         entity.setId(sessionId);
 
         WritePolicy writePolicy = null;
@@ -59,37 +61,36 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     @SuppressWarnings("unchecked")
-    public T get(long id) {
+    public T get(String id) {
         Record record = client.get(null, generateKey(id));
         return record != null ?
                 (T) record.getValue(defaultBinName) :
                 null;
     }
 
-    public boolean exists(long id) {
+    public boolean exists(String id) {
         return client.exists(null, generateKey(id));
     }
 
-    public void delete(long id) {
+    public void delete(String id) {
         client.delete(null, generateKey(id));
     }
 
-    private Key generateKey(long sessionId) {
-        return new Key(namespace, null, sessionId);
+    protected Key generateKey(String id) {
+        return new Key(namespace, null, id);
     }
 
-    private Bin generateBin(T entity) {
+    protected Bin generateBin(T entity) {
         return new Bin(defaultBinName, entity);
     }
 
-    private Long generateRandomId() {
+    protected String generateId() {
         int iterations = 0;
         do {
-            long id = UUID.randomUUID().getMostSignificantBits();
+            String id = UUID.randomUUID().toString();
             if (get(id) == null) return id;
             iterations++;
         } while (ITERATIONS_TO_GENERATE_ID > iterations);
         throw new InternalServerErrorHttpException("Can't save entity");
     }
-
 }

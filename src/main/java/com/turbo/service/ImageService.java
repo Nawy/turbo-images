@@ -18,15 +18,15 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public Image getImage(long hash) {
+    public Image getImage(String hash) {
         return imageRepository.get(hash);
     }
 
-    public boolean imageExists(long hash) {
+    public boolean imageExists(String hash) {
         return imageRepository.exists(hash);
     }
 
-    public Image addImage(long hash, byte[] picture) {
+    public Image addImage(String hash, byte[] picture) {
         // TODO NO PATH HERE!!!
         return imageRepository.save(new Image(hash, null));
     }

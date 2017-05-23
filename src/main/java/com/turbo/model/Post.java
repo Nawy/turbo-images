@@ -14,7 +14,7 @@ import java.util.List;
 public class Post implements IdHolder, ElasticIdentifier {
 
     private String elasticId;
-    private Long id;
+    private String id;
     private String name;
     private String description;
     private int rating;
@@ -22,10 +22,10 @@ public class Post implements IdHolder, ElasticIdentifier {
     private List<String> picturePaths;
     private ClientType clientType;
     private List<String> tags;
-    private long authorId;
+    private String authorId;
 
     public Post(
-            @JsonProperty(value = "id", required = true) Long id,
+            @JsonProperty(value = "id", required = true) String id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "rating", required = true) int rating,
@@ -33,7 +33,7 @@ public class Post implements IdHolder, ElasticIdentifier {
             @JsonProperty(value = "picture_paths", required = true) List<String> picturePaths,
             @JsonProperty(value = "client_type", required = true) ClientType clientType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "author_id", required = true) long authorId
+            @JsonProperty(value = "author_id", required = true) String authorId
     ) {
         this.id = id;
         this.name = name;
@@ -47,12 +47,12 @@ public class Post implements IdHolder, ElasticIdentifier {
     }
 
     @JsonProperty("id")
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -92,7 +92,7 @@ public class Post implements IdHolder, ElasticIdentifier {
     }
 
     @JsonProperty("author_id")
-    public long getAuthorId() {
+    public String getAuthorId() {
         return authorId;
     }
 

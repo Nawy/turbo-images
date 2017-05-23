@@ -29,7 +29,7 @@ public class AuthorisationService {
         this.userRepository = userRepository;
     }
 
-    public Session getSession(long sessionId) {
+    public Session getSession(String sessionId) {
         return sessionRepository.get(sessionId);
     }
 

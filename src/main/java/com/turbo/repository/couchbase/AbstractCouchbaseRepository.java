@@ -6,6 +6,8 @@ import com.couchbase.client.java.document.json.JsonObject;
 import com.turbo.model.IdHolder;
 import com.turbo.utils.JsonParser;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by rakhmetov on 21.05.17.
  */
@@ -81,7 +83,7 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
         }
     }
 
-    private Long generateId(String collectionName) {
-        return bucket.counter(collectionName + "-counter", 1).content();
+    protected String generateId(String collectionName) {
+        return bucket.counter(collectionName + "-counter", 1).content().toString();
     }
 }

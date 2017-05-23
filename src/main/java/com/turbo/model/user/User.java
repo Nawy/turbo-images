@@ -9,7 +9,7 @@ import com.turbo.model.IdHolder;
  */
 public class User implements IdHolder {
 
-    private Long id;
+    private String id;
     private String nickname;
     private String avatarPath;
     private String lastIp; // last lastIp from what was came in
@@ -19,7 +19,7 @@ public class User implements IdHolder {
     public User() {
     }
 
-    public User(Long id, String nickname, String avatarPath, String lastIp, String email, String password) {
+    public User(String id, String nickname, String avatarPath, String lastIp, String email, String password) {
         this.id = id;
         this.nickname = nickname;
         this.avatarPath = avatarPath;
@@ -28,12 +28,12 @@ public class User implements IdHolder {
         this.password = password;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

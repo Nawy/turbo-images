@@ -12,7 +12,7 @@ public class Session implements Serializable,IdHolder {
 
     private final static long serialVersionUID = 42L;
 
-    private Long id;
+    private String id;
     private User user;
 
     public Session() {
@@ -22,17 +22,17 @@ public class Session implements Serializable,IdHolder {
         this.user = user;
     }
 
-    public Session(long id, User user) {
+    public Session(String id, User user) {
         this.id = id;
         this.user = user;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

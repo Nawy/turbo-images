@@ -22,12 +22,12 @@ public class ImageController {
     }
 
     @GetMapping("/get/image/{hash}")
-    public Image getImageInfo(@PathVariable("hash") long hash) {
+    public Image getImageInfo(@PathVariable("hash") String hash) {
         return imageService.getImage(hash);
     }
 
     @GetMapping("/image/exists")
-    public Map<String,Boolean> checkImageExists(@RequestParam("hash") long hash) {
+    public Map<String,Boolean> checkImageExists(@RequestParam("hash") String hash) {
         return Collections.singletonMap(
                 "exists",
                 imageService.imageExists(hash)
@@ -36,7 +36,7 @@ public class ImageController {
 
     @PostMapping("/add/image")
     public void addImageSource(
-            @RequestParam("hash") long hash,
+            @RequestParam("hash") String hash,
             @RequestBody byte[] source
     ) {
         imageService.addImage(hash, source);
