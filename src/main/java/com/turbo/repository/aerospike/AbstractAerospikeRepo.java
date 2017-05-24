@@ -10,8 +10,6 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**

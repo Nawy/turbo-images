@@ -1,10 +1,12 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
+import com.turbo.model.page.Page;
 import com.turbo.repository.couchbase.PostRepository;
 import com.turbo.repository.elasticsearch.PostElasticRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -36,14 +38,25 @@ public class PostService {
         Post post = postElasticRepository.getPostById(id);
 
         if(Objects.isNull(post)) {
-            // TODO request post from couchbase by id
-            // post = postRepository.get(1); MOCK
+            post = postRepository.get(id);
             postElasticRepository.addPost(post);
         }
         return postElasticRepository.getPostById(id);
     }
 
-    public List<Post> getLastPost() {
+    //FIXME it's only mock
+    //return not Paginator, because we shouldn't count all posts, just upload additional
+    public List<Post> getLastPost(Page page) {
         return Collections.emptyList();
+    }
+
+    //FIXME it's only mock
+    public Post update(Post post){
+        return null;
+    }
+
+    //FIXME it's only mock
+    public void delete(String id){
+
     }
 }

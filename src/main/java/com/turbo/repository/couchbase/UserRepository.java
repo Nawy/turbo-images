@@ -6,6 +6,7 @@ import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryRow;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.user.User;
+import com.turbo.repository.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -23,8 +24,8 @@ public class UserRepository extends AbstractCouchbaseRepository<User> {
     private final Bucket bucket;
 
     @Autowired
-    public UserRepository(@Qualifier("user-bucket") Bucket bucket) {
-        super(bucket, User.class);
+    public UserRepository(@Qualifier("user-bucket") Bucket bucket, JsonParser jsonParser) {
+        super(bucket, jsonParser, User.class);
         this.bucket = bucket;
         bucket.bucketManager().createN1qlIndex("email_index", true, false, EMAIL_FIELD_NAME);
     }

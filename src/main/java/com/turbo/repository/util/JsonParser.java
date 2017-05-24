@@ -1,8 +1,9 @@
-package com.turbo.utils;
+package com.turbo.repository.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.exception.InternalServerErrorHttpException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -13,9 +14,14 @@ import java.io.IOException;
 @Repository
 public class JsonParser {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    public static <T> T parse(String string, Class<T> clazz) {
+    @Autowired
+    public JsonParser(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    public <T> T parse(String string, Class<T> clazz) {
         try {
             return objectMapper.readValue(string, clazz);
         } catch (IOException e) {
@@ -23,7 +29,7 @@ public class JsonParser {
         }
     }
 
-    public static String write(Object value) {
+    public String write(Object value) {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {

@@ -1,11 +1,14 @@
 package com.turbo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -27,7 +30,8 @@ public class Post implements IdHolder, ElasticIdentifier {
     private String authorId;
 
     public Post(
-            @JsonProperty(value = "id", required = true) String id,
+            @JsonProperty(value = "id") String id,
+            @JsonProperty("elastic_id") String elasticId,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "rating", required = true) int rating,
@@ -35,9 +39,11 @@ public class Post implements IdHolder, ElasticIdentifier {
             @JsonProperty(value = "picture_paths", required = true) List<String> picturePaths,
             @JsonProperty(value = "client_type", required = true) ClientType clientType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "author_id", required = true) String authorId
+            @JsonProperty(value = "author_id", required = true) String authorId,
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd") LocalDate createDate
     ) {
         this.id = id;
+        this.elasticId = elasticId;
         this.name = name;
         this.description = description;
         this.rating = rating;
@@ -46,7 +52,7 @@ public class Post implements IdHolder, ElasticIdentifier {
         this.clientType = clientType;
         this.tags = tags;
         this.authorId = authorId;
-        this.createDate = LocalDate.now();
+        this.createDate = firstNonNull(createDate, LocalDate.now());
     }
 
     @JsonProperty("id")

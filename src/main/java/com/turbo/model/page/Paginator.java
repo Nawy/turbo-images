@@ -1,4 +1,4 @@
-package com.turbo.model.dto;
+package com.turbo.model.page;
 
 import java.util.List;
 

@@ -4,20 +4,20 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
 import com.turbo.model.IdHolder;
-import com.turbo.utils.JsonParser;
-
-import java.time.LocalDateTime;
+import com.turbo.repository.util.JsonParser;
 
 /**
  * Created by rakhmetov on 21.05.17.
  */
 public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
 
+    protected final JsonParser jsonParser;
     protected final Bucket bucket;
     private final String collectionName;
     private final Class<T> clazz;
 
-    public AbstractCouchbaseRepository(Bucket bucket, Class<T> clazz) {
+    public AbstractCouchbaseRepository(Bucket bucket, JsonParser jsonParser, Class<T> clazz) {
+        this.jsonParser = jsonParser;
         this.bucket = bucket;
         this.collectionName = bucket.name();
         this.clazz = clazz;
@@ -46,28 +46,28 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
         return bucket.exists(Long.toString(id));
     }
 
-    public T get(long id) {
-        JsonDocument jsonDocument = bucket.get(Long.toString(id));
+    public T get(String id) {
+        JsonDocument jsonDocument = bucket.get(id);
         return parse(jsonDocument);
     }
 
 
     protected T parse(JsonDocument jsonDocument) {
-        return JsonParser.parse(
+        return jsonParser.parse(
                 jsonDocument.content().toString(),
                 clazz
         );
     }
 
     protected T parse(JsonObject jsonObject) {
-        return JsonParser.parse(
+        return jsonParser.parse(
                 jsonObject.toString(),
                 clazz
         );
     }
 
     protected JsonDocument write(IdHolder entity, int expiry) {
-        JsonObject jsonObject = JsonObject.fromJson(JsonParser.write(entity));
+        JsonObject jsonObject = JsonObject.fromJson(jsonParser.write(entity));
         return JsonDocument.create(
                 entity.getId().toString(),
                 expiry,
