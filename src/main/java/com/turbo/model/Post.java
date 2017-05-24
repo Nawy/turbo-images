@@ -46,6 +46,7 @@ public class Post implements IdHolder, ElasticIdentifier {
         this.clientType = clientType;
         this.tags = tags;
         this.authorId = authorId;
+        this.createDate = LocalDate.now();
     }
 
     @JsonProperty("id")
@@ -108,6 +109,10 @@ public class Post implements IdHolder, ElasticIdentifier {
         this.elasticId = elasticId;
     }
 
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,15 +122,10 @@ public class Post implements IdHolder, ElasticIdentifier {
         Post post = (Post) o;
 
         return new EqualsBuilder()
-                .append(rating, post.rating)
-                .append(viewCount, post.viewCount)
                 .append(authorId, post.authorId)
-                .append(elasticId, post.elasticId)
                 .append(id, post.id)
                 .append(name, post.name)
-                .append(description, post.description)
                 .append(picturePaths, post.picturePaths)
-                .append(clientType, post.clientType)
                 .append(tags, post.tags)
                 .isEquals();
     }
@@ -133,14 +133,9 @@ public class Post implements IdHolder, ElasticIdentifier {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(elasticId)
                 .append(id)
                 .append(name)
-                .append(description)
-                .append(rating)
-                .append(viewCount)
                 .append(picturePaths)
-                .append(clientType)
                 .append(tags)
                 .append(authorId)
                 .toHashCode();
