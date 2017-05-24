@@ -61,6 +61,10 @@ public class AuthorisationService {
         return signin(dbUser);
     }
 
+    public void logout(){
+        //FIXME
+    }
+
     public User getCurrentUser() {
         SecurityContextImpl securityContext =
                 (SecurityContextImpl) SecurityContextHolder.getContext();

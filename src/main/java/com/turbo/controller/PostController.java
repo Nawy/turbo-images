@@ -43,6 +43,7 @@ public class PostController {
 
     @PostMapping("/update/post")
     public Post update(@RequestBody Post post) {
+        if (post.getId() == null) throw new BadRequestHttpException("id can't be null");
         return postService.update(post);
     }
 

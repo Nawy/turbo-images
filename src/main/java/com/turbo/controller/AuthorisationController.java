@@ -1,10 +1,12 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
 import com.turbo.model.user.User;
 import com.turbo.service.AuthorisationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,12 @@ public class AuthorisationController {
                 userCredentialsDto.getEmail(),
                 userCredentialsDto.getPassword()
         );
+    }
+
+    @PostMapping("/logout")
+    @Secured(SecurityRole.USER)
+    public void logout() {
+        authorisationService.logout();
     }
 
     @PostMapping("/signup")

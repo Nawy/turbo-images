@@ -35,7 +35,11 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
      * @param entity
      */
     public T save(T entity, int expiry) {
-        generateIdIfNotExists(entity);
+        if (entity.getId() == null) {
+            entity.setId(
+                    generateId(collectionName)
+            );
+        }
         bucket.upsert(
                 write(entity, expiry)
         );
@@ -44,6 +48,10 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
 
     public boolean exists(long id) {
         return bucket.exists(Long.toString(id));
+    }
+
+    public void delete(String id) {
+        bucket.remove(id);
     }
 
     public T get(String id) {
@@ -73,14 +81,6 @@ public abstract class AbstractCouchbaseRepository<T extends IdHolder> {
                 expiry,
                 jsonObject
         );
-    }
-
-    private void generateIdIfNotExists(T entity) {
-        if (entity.getId() == null) {
-            entity.setId(
-                    generateId(collectionName)
-            );
-        }
     }
 
     protected String generateId(String collectionName) {

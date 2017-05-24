@@ -1,5 +1,6 @@
 package com.turbo.repository;
 
+import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
 import com.turbo.service.AuthorisationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
                         new UsernamePasswordAuthenticationToken(
                                 session,
                                 null,
-                                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                                Collections.singletonList(new SimpleGrantedAuthority(SecurityRole.USER))
                         )
                 );
             }
