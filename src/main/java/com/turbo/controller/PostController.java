@@ -28,7 +28,7 @@ public class PostController {
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (size <= 0 || page < 0) throw new BadRequestHttpException("page and size can't be negative");
-        return postService.getLastPost(new Page(page, size));
+        return postService.getLastPosts(new Page(page, size));
     }
 
     @GetMapping("/get/post/{id}")

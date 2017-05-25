@@ -7,70 +7,73 @@ import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.model.user.User;
 import com.turbo.repository.aerospike.SessionRepository;
-import com.turbo.repository.couchbase.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-/**
- * Created by rakhmetov on 09.05.17.
- */
+
 @Service
-public class AuthorisationService {
+public class AuthorizationService {
 
     private final SessionRepository sessionRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public AuthorisationService(SessionRepository sessionRepository, UserRepository userRepository) {
+    public AuthorizationService(SessionRepository sessionRepository, UserService userService) {
         this.sessionRepository = sessionRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public Session getSession(String sessionId) {
         return sessionRepository.get(sessionId);
     }
 
-    public Session signin(String email, String password) {
+    public Session login(String email, String password) {
         User user;
         try {
-            user = userRepository.findByEmail(email);
+            user = userService.findByEmail(email);
         } catch (NotFoundHttpException e) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
         if (!user.getPassword().equals(password)) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
-        return signin(user);
+        return login(user);
     }
 
-    private Session signin(User user) {
+    private Session login(User user) {
         Assert.notNull(user, "user can't be null");
         Session session = new Session(user);
         try {
             return sessionRepository.save(session);
         } catch (InternalServerErrorHttpException e) {
-            throw new InternalServerErrorHttpException("Failed to signin");
+            throw new InternalServerErrorHttpException("Failed to login");
         }
     }
 
     public Session signup(User user) {
-        User dbUser = userRepository.save(user);
-        return signin(dbUser);
+        User dbUser = userService.add(user);
+        return login(dbUser);
     }
 
-    public void logout(){
-        //FIXME
+    public void logout() {
+        Session session = getCurrentSession();
+        sessionRepository.delete(session.getId());
     }
 
     public User getCurrentUser() {
+        return getCurrentSession().getUser();
+    }
+
+    private Session getCurrentSession() {
         SecurityContextImpl securityContext =
                 (SecurityContextImpl) SecurityContextHolder.getContext();
         if (securityContext == null || securityContext.getAuthentication() == null) {
             throw new UnauthorizedHttpException("User not authorized");
         }
-        return ((Session) securityContext.getAuthentication().getPrincipal()).getUser();
+        return ((Session) securityContext.getAuthentication().getPrincipal());
     }
+
 }
