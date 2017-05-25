@@ -1,4 +1,4 @@
-package com.turbo.repository.elasticsearch;
+package com.turbo.repository.elasticsearch.utils;
 
 /**
  * Created by ermolaev on 5/23/17.

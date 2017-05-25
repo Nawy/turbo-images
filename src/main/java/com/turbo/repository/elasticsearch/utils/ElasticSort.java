@@ -1,4 +1,4 @@
-package com.turbo.repository.elasticsearch;
+package com.turbo.repository.elasticsearch.utils;
 
 import org.elasticsearch.search.sort.SortOrder;
 

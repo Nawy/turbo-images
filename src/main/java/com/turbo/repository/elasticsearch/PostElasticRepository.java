@@ -3,6 +3,8 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
+import com.turbo.repository.elasticsearch.utils.ElasticSort;
+import com.turbo.repository.elasticsearch.utils.PostFields;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -42,6 +44,9 @@ public class PostElasticRepository {
                 )
                 .setSource(ElasticUtils.writeAsJsonBytes(post), XContentType.JSON)
                 .get();
+    }
+
+    public void updatePost(final Post post) {
     }
 
     public Post getPostByElasticId(final String elasticId) {
@@ -130,6 +135,8 @@ public class PostElasticRepository {
                 elasticSort
         );
     }
+
+
 
 
     private List<Post> searchPostByDate(
