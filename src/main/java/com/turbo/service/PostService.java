@@ -43,7 +43,7 @@ public class PostService {
     }
 
     //return not Paginator, because we shouldn't count all posts, just upload additional
-    public List<Post> getLastPost(Page page) {
+    public List<Post> getLastPosts(Page page) {
         //FIXME elastic should be here!
         return Collections.emptyList();
     }
@@ -51,6 +51,11 @@ public class PostService {
     public Post update(Post post) {
         //TODO update elastic here
         return postRepository.save(post);
+    }
+
+    public List<Post> getUserPosts(long userId){
+        //TODO update elastic here
+        return Collections.emptyList();
     }
 
     public void delete(String id) {

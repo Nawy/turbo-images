@@ -3,8 +3,10 @@ package com.turbo.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.user.User;
-import com.turbo.service.AuthorisationService;
+import com.turbo.service.AuthorizationService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthorisationController {
 
-    private final AuthorisationService authorisationService;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public AuthorisationController(AuthorisationService authorisationService) {
-        this.authorisationService = authorisationService;
+    public AuthorisationController(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
     }
 
     @PostMapping("/signin")
     public void signin(@RequestBody UserCredentialsDto userCredentialsDto) {
-        authorisationService.signin(
+        if (StringUtils.isBlank(userCredentialsDto.getEmail())
+                || StringUtils.isBlank(userCredentialsDto.getPassword())) {
+            throw new BadRequestHttpException("Bad credentials");
+        }
+        authorizationService.login(
                 userCredentialsDto.getEmail(),
                 userCredentialsDto.getPassword()
         );
@@ -35,12 +41,12 @@ public class AuthorisationController {
     @PostMapping("/logout")
     @Secured(SecurityRole.USER)
     public void logout() {
-        authorisationService.logout();
+        authorizationService.logout();
     }
 
     @PostMapping("/signup")
     public Session signup(@RequestBody User user) {
-        return authorisationService.signup(user);
+        return authorizationService.signup(user);
     }
 
     private static class UserCredentialsDto {

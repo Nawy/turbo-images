@@ -44,7 +44,7 @@ import {PostPreviewComponent} from "./components/postpreview.component";
         component: LoginComponent
       },
       {
-        path: "signin",
+        path: "login",
         component: SigninComponent
       },
       {

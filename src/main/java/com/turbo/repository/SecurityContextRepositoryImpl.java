@@ -2,7 +2,7 @@ package com.turbo.repository;
 
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.service.AuthorisationService;
+import com.turbo.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,11 +23,11 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
 
     private static final String SESSION_COOKIE_NAME = "x-session-id";
 
-    private final AuthorisationService authorisationService;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public SecurityContextRepositoryImpl(AuthorisationService authorisationService) {
-        this.authorisationService = authorisationService;
+    public SecurityContextRepositoryImpl(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
         SecurityContext securityContext = new SecurityContextImpl();
 
         if (sessionId != null) {
-            Session session = authorisationService.getSession(sessionId);
+            Session session = authorizationService.getSession(sessionId);
             if (session != null) {
                 securityContext.setAuthentication(
                         new UsernamePasswordAuthenticationToken(
