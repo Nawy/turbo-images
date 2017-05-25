@@ -3,13 +3,11 @@ package com.turbo.repository.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.ElasticIdentifier;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +50,10 @@ public abstract class ElasticUtils {
     }
 
     public static String getElasticTypeWithDay(final String typeName, LocalDate postDate) {
-        StringBuilder result = new StringBuilder(typeName.length()+11);
-            result.append(
-                    String.format("%s-%s",
-                            typeName,
-                            formatter.format(postDate)
-                    )
-            );
-        return result.toString();
+        return String.format("%s-%s",
+                typeName,
+                formatter.format(postDate)
+        );
     }
 
     public static String getElasticTypeWithoutDate(final String typeName) {
@@ -69,7 +63,7 @@ public abstract class ElasticUtils {
     public static <T extends ElasticIdentifier> T parseGetResponse(GetResponse response, Class<T> clazz) {
         try {
             final T jsonBody = jsonMapper.readValue(response.getSourceAsString(), clazz);
-            jsonBody.setElasticId(response.getId());
+            jsonBody.setSearchId(response.getId());
             return jsonBody;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -83,7 +77,7 @@ public abstract class ElasticUtils {
 
             for(SearchHit hit : hints) {
                 final T jsonBody = jsonMapper.readValue(hit.getSourceAsString(), clazz);
-                jsonBody.setElasticId(hit.getId());
+                jsonBody.setSearchId(hit.getId());
                 resultList.add(jsonBody);
             }
             return resultList;

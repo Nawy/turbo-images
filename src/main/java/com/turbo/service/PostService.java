@@ -37,7 +37,7 @@ public class PostService {
 
         if (Objects.isNull(post)) {
             post = postRepository.get(id);
-            postElasticRepository.addPost(post);
+            postElasticRepository.addPost(post); //overhead
         }
         return postElasticRepository.getPostById(id);
     }

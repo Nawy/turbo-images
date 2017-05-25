@@ -5,6 +5,6 @@ package com.turbo.model;
  */
 public interface ElasticIdentifier {
 
-    String getElasticId();
-    void setElasticId(String elasticId);
+    String getSearchId();
+    void setSearchId(String searchId);
 }

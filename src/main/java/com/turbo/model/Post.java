@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
@@ -17,7 +18,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  */
 public class Post implements IdHolder, ElasticIdentifier {
 
-    private String elasticId;
+    private String searchId;
     private String id;
     private String name;
     private String description;
@@ -26,12 +27,13 @@ public class Post implements IdHolder, ElasticIdentifier {
     private List<String> picturePaths;
     private ClientType clientType;
     private List<String> tags;
-    private LocalDate createDate;
+    private LocalDateTime createDate;
+
     private String authorId;
 
     public Post(
             @JsonProperty(value = "id") String id,
-            @JsonProperty("elastic_id") String elasticId,
+            @JsonProperty("search_id") String searchId,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "rating", required = true) int rating,
@@ -40,10 +42,10 @@ public class Post implements IdHolder, ElasticIdentifier {
             @JsonProperty(value = "client_type", required = true) ClientType clientType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "author_id", required = true) String authorId,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd") LocalDate createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
         this.id = id;
-        this.elasticId = elasticId;
+        this.searchId = searchId;
         this.name = name;
         this.description = description;
         this.rating = rating;
@@ -52,7 +54,7 @@ public class Post implements IdHolder, ElasticIdentifier {
         this.clientType = clientType;
         this.tags = tags;
         this.authorId = authorId;
-        this.createDate = firstNonNull(createDate, LocalDate.now());
+        this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
 
     @JsonProperty("id")
@@ -106,16 +108,17 @@ public class Post implements IdHolder, ElasticIdentifier {
     }
 
     @Override
-    public String getElasticId() {
-        return this.elasticId;
+    @JsonProperty("search_id")
+    public String getSearchId() {
+        return this.searchId;
     }
 
     @Override
-    public void setElasticId(String elasticId) {
-        this.elasticId = elasticId;
+    public void setSearchId(String searchId) {
+        this.searchId = searchId;
     }
 
-    public LocalDate getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
