@@ -1,7 +1,7 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
-import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.page.Page;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;

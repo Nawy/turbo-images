@@ -1,15 +1,15 @@
-package com.turbo.repository.elasticsearch.utils;
+package com.turbo.repository.elasticsearch.helper;
 
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
  * Created by ermolaev on 5/23/17.
  */
-public class ElasticSort {
+public class SearchSort {
     private String fieldName;
     private SortOrder order;
 
-    public ElasticSort(String fieldName, SortOrder order) {
+    public SearchSort(String fieldName, SortOrder order) {
         this.fieldName = fieldName;
         this.order = order;
     }

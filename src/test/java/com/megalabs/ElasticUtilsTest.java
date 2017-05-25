@@ -33,4 +33,10 @@ public class ElasticUtilsTest {
 
         assertThat(goldResult).isEqualTo(result);
     }
+
+    @Test
+    public void test() {
+        Object val = Math.ceil(30/(double)20);
+        System.out.println(val);
+    }
 }

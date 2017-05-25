@@ -4,7 +4,7 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.json.JsonArray;
 import com.couchbase.client.java.query.N1qlQuery;
 import com.couchbase.client.java.query.N1qlQueryRow;
-import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.model.exception.http.NotFoundHttpException;
 import com.turbo.model.user.User;
 import com.turbo.repository.util.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;

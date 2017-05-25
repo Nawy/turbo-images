@@ -1,6 +1,6 @@
 package com.turbo.service;
 
-import com.turbo.model.exception.ForbiddenHttpException;
+import com.turbo.model.exception.http.ForbiddenHttpException;
 import com.turbo.model.user.User;
 import com.turbo.repository.couchbase.UserRepository;
 import com.turbo.repository.elasticsearch.UserElasticRepository;

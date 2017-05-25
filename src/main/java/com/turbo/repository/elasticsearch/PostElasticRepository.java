@@ -3,8 +3,8 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
-import com.turbo.repository.elasticsearch.utils.ElasticSort;
-import com.turbo.repository.elasticsearch.utils.PostFields;
+import com.turbo.repository.elasticsearch.helper.SearchSort;
+import com.turbo.repository.elasticsearch.helper.PostFields;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -47,6 +47,10 @@ public class PostElasticRepository {
     }
 
     public void updatePost(final Post post) {
+//        elasticClient
+//                .prepareUpdate(
+//                        ElasticUtils.getElasticTypeWithoutDate(config.getPostIndexName()),
+//                        post.
     }
 
     public Post getPostByElasticId(final String elasticId) {
@@ -75,25 +79,25 @@ public class PostElasticRepository {
             final String name,
             final int from,
             final int size,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
-        return searchPostByField(PostFields.NAME, name, from, size, elasticSort);
+        return searchPostByField(PostFields.NAME, name, from, size, searchSort);
     }
 
     public List<Post> getPostByDescription(
             final String description,
             final int from,
             final int size,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
-        return searchPostByField(PostFields.DESCRIPTION, description, from, size, elasticSort);
+        return searchPostByField(PostFields.DESCRIPTION, description, from, size, searchSort);
     }
 
     public List<Post> getLastPosts(
             final int from,
             final int size,
             final int lastDays,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
         return searchPostByDate(
                 from,
@@ -102,7 +106,7 @@ public class PostElasticRepository {
                         config.getPostTypeName(),
                         lastDays
                 ),
-                elasticSort
+                searchSort
         );
     }
 
@@ -110,7 +114,7 @@ public class PostElasticRepository {
             final int from,
             final int size,
             LocalDate postDate,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
         return searchPostByDate(
                 from,
@@ -119,20 +123,20 @@ public class PostElasticRepository {
                         config.getPostTypeName(),
                         postDate
                 ),
-                elasticSort
+                searchSort
         );
     }
 
     public List<Post> getPosts(
             final int from,
             final int size,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
         return searchPostByDate(
                 from,
                 size,
                 ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
-                elasticSort
+                searchSort
         );
     }
 
@@ -143,7 +147,7 @@ public class PostElasticRepository {
             final int from,
             final int size,
             final String typeName,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getPostIndexName())
@@ -154,11 +158,11 @@ public class PostElasticRepository {
                 .setFrom(from)
                 .setSize(size);
 
-        if(Objects.nonNull(elasticSort)) {
+        if(Objects.nonNull(searchSort)) {
             request.addSort(
                     SortBuilders
-                            .fieldSort(elasticSort.getFieldName())
-                            .order(elasticSort.getOrder())
+                            .fieldSort(searchSort.getFieldName())
+                            .order(searchSort.getOrder())
             );
         }
         final SearchResponse response = request.get();
@@ -171,7 +175,7 @@ public class PostElasticRepository {
             final String fieldValue,
             final int from,
             final int size,
-            @Nullable final ElasticSort elasticSort
+            @Nullable final SearchSort searchSort
     ) {
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getPostIndexName())
@@ -182,11 +186,11 @@ public class PostElasticRepository {
                 .setFrom(from)
                 .setSize(size);
 
-        if(Objects.nonNull(elasticSort)) {
+        if(Objects.nonNull(searchSort)) {
             request.addSort(
                     SortBuilders
-                            .fieldSort(elasticSort.getFieldName())
-                            .order(elasticSort.getOrder())
+                            .fieldSort(searchSort.getFieldName())
+                            .order(searchSort.getOrder())
             );
         }
 

@@ -6,24 +6,17 @@ import java.util.List;
  * Created by ermolaev on 5/24/17.
  */
 public class Paginator<T> {
-    private long from;
-    private long size;
+    private Page page;
     private long total;
     private List<T> items;
 
-    public Paginator(long from, long size, long total, List<T> items) {
-        this.from = from;
-        this.size = size;
+    public Paginator(Page page, long total, List<T> items) {
         this.total = total;
         this.items = items;
     }
 
-    public long getFrom() {
-        return from;
-    }
-
-    public long getSize() {
-        return size;
+    public Page getPage() {
+        return page;
     }
 
     public long getTotal() {

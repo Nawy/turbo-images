@@ -3,7 +3,7 @@ package com.turbo.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.user.User;
 import com.turbo.service.AuthorizationService;
 import org.apache.commons.lang3.StringUtils;

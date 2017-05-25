@@ -1,6 +1,6 @@
 package com.turbo.config;
 
-import com.turbo.model.exception.HttpException;
+import com.turbo.model.exception.http.HttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

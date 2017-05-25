@@ -3,15 +3,11 @@ package com.turbo.repository.aerospike;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.policy.WritePolicy;
 import com.turbo.model.comment.Comment;
-import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.model.exception.http.InternalServerErrorHttpException;
 import com.turbo.repository.util.UserIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 /**
  * Created by rakhmetov on 17.05.17.
