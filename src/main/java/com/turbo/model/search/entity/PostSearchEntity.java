@@ -1,24 +1,21 @@
-package com.turbo.model;
+package com.turbo.model.search.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.search.SearchIdentifier;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.turbo.model.ClientType;
+import com.turbo.model.Post;
+import com.turbo.model.search.SearchConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
+import static com.google.common.base.MoreObjects.firstNonNull;
 
 /**
- * Created by rakhmetov on 09.05.17.
- * <p>
- * Just post on site with picture and comments
+ * Created by ermolaev on 5/27/17.
+ * Needs for send enough data in search engine
  */
-public class Post implements IdHolder, SearchIdentifier {
-
-    private String searchId;
+public class PostSearchEntity implements SearchConverter<Post> {
     private String id;
     private String name;
     private String description;
@@ -26,51 +23,50 @@ public class Post implements IdHolder, SearchIdentifier {
     private long downs;
     private long viewCount;
     private String previewPath;
-    private List<String> picturePaths;
     private ClientType clientType;
     private List<String> tags;
     private LocalDateTime createDate;
 
-    private String authorId;
-
-    public Post(
+    public PostSearchEntity(
             @JsonProperty(value = "id") String id,
-            @JsonProperty("search_id") String searchId,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "ups", required = true) long ups,
             @JsonProperty(value = "downs", required = true) long downs,
             @JsonProperty(value = "view_count", required = true) long viewCount,
             @JsonProperty(value = "preview_path", required = true) String previewPath,
-            @JsonProperty(value = "picture_paths", required = true) List<String> picturePaths,
             @JsonProperty(value = "client_type", required = true) ClientType clientType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "author_id", required = true) String authorId,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
         this.id = id;
-        this.searchId = searchId;
         this.name = name;
         this.description = description;
         this.ups = ups;
         this.downs = downs;
         this.viewCount = viewCount;
         this.previewPath = previewPath;
-        this.picturePaths = picturePaths;
         this.clientType = clientType;
         this.tags = tags;
-        this.authorId = authorId;
+        this.createDate = firstNonNull(createDate, LocalDateTime.now());
+    }
+
+    public PostSearchEntity(final Post post) {
+        this.id = post.getId();
+        this.name = post.getName();
+        this.description = post.getDescription();
+        this.ups = post.getUps();
+        this.downs = post.getDowns();
+        this.viewCount = post.getViewCount();
+        this.previewPath = post.getPreviewPath();
+        this.clientType = post.getClientType();
+        this.tags = post.getTags();
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
 
     @JsonProperty("id")
     public String getId() {
         return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
     }
 
     @JsonProperty("name")
@@ -93,19 +89,14 @@ public class Post implements IdHolder, SearchIdentifier {
         return downs;
     }
 
-    @JsonProperty("preview_path")
-    public String getPreviewPath() {
-        return previewPath;
-    }
-
     @JsonProperty("view_count")
     public long getViewCount() {
         return viewCount;
     }
 
-    @JsonProperty("picture_paths")
-    public List<String> getPicturePaths() {
-        return picturePaths;
+    @JsonProperty("preview_path")
+    public String getPreviewPath() {
+        return previewPath;
     }
 
     @JsonProperty("client_type")
@@ -118,51 +109,26 @@ public class Post implements IdHolder, SearchIdentifier {
         return tags;
     }
 
-    @JsonProperty("author_id")
-    public String getAuthorId() {
-        return authorId;
-    }
-
-    @Override
-    @JsonProperty("search_id")
-    public String getSearchId() {
-        return this.searchId;
-    }
-
-    @Override
-    public void setSearchId(String searchId) {
-        this.searchId = searchId;
-    }
-
+    @JsonProperty("create_date")
     public LocalDateTime getCreateDate() {
         return createDate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Post post = (Post) o;
-
-        return new EqualsBuilder()
-                .append(authorId, post.authorId)
-                .append(id, post.id)
-                .append(name, post.name)
-                .append(picturePaths, post.picturePaths)
-                .append(tags, post.tags)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(name)
-                .append(picturePaths)
-                .append(tags)
-                .append(authorId)
-                .toHashCode();
+    public Post getCorrectData() {
+        return new Post(
+                id,
+                null,
+                name,
+                description,
+                ups,
+                downs,
+                viewCount,
+                previewPath,
+                null,
+                clientType,
+                tags,
+                null,
+                createDate
+        );
     }
 }

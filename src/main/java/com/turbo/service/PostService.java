@@ -3,7 +3,7 @@ package com.turbo.service;
 import com.turbo.model.Post;
 import com.turbo.model.page.Page;
 import com.turbo.repository.couchbase.PostRepository;
-import com.turbo.repository.elasticsearch.PostElasticRepository;
+import com.turbo.repository.elasticsearch.PostSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,29 +17,29 @@ import java.util.Objects;
 @Service
 public class PostService {
 
-    private final PostElasticRepository postElasticRepository;
+    private final PostSearchRepository postSearchRepository;
     private final PostRepository postRepository;
 
     @Autowired
-    public PostService(PostElasticRepository postElasticRepository, PostRepository postRepository) {
-        this.postElasticRepository = postElasticRepository;
+    public PostService(PostSearchRepository postSearchRepository, PostRepository postRepository) {
+        this.postSearchRepository = postSearchRepository;
         this.postRepository = postRepository;
     }
 
     public Post addPost(final Post post) {
         final Post postWithId = postRepository.addPost(post);
-        postElasticRepository.addPost(postWithId);
+        postSearchRepository.addPost(postWithId);
         return postWithId;
     }
 
     public Post getPostById(final String id) {
-        Post post = postElasticRepository.getPostById(id);
+        Post post = postSearchRepository.getPostById(id);
 
         if (Objects.isNull(post)) {
             post = postRepository.get(id);
-            postElasticRepository.addPost(post); //overhead
+            postSearchRepository.addPost(post); //overhead
         }
-        return postElasticRepository.getPostById(id);
+        return postSearchRepository.getPostById(id);
     }
 
     //return not Paginator, because we shouldn't count all posts, just upload additional

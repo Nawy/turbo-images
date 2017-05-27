@@ -3,8 +3,10 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
+import com.turbo.model.exception.data.PageSizeLimitException;
 import com.turbo.model.page.Page;
-import com.turbo.repository.elasticsearch.helper.PostField;
+import com.turbo.model.search.entity.PostSearchEntity;
+import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.get.GetResponse;
@@ -27,17 +29,22 @@ import java.util.Objects;
  * Created by ermolaev on 5/15/17.
  */
 @Repository
-public class PostElasticRepository {
+public class PostSearchRepository {
 
     private final TransportClient elasticClient;
     private final ElasticsearchConfig config;
 
     @Autowired
-    public PostElasticRepository(ElasticsearchConfig config) {
+    public PostSearchRepository(ElasticsearchConfig config) {
         this.elasticClient = config.getElasticClient();
         this.config = config;
     }
 
+    /**
+     * Add new post to search engine
+     * @param post
+     * @return
+     */
     public void addPost(final Post post) {
         elasticClient
                 .prepareIndex(
@@ -48,24 +55,46 @@ public class PostElasticRepository {
                 .get();
     }
 
+    /**
+     * Update post by search_id
+     * ATTENTION! may take a log time and cause optimistic locking exception
+     * @param post
+     * @return
+     */
     public void updatePost(final Post post) {
-//        elasticClient
-//                .prepareUpdate(
-//                        ElasticUtils.getElasticTypeWithoutDate(config.getPostIndexName()),
-//                        post.
+        Objects.requireNonNull(post.getSearchId(), "for update you need have search id");
+        elasticClient
+                .prepareUpdate(
+                        config.getPostIndexName(),
+                        ElasticUtils.getElasticTypeWithoutDate(config.getPostIndexName()),
+                        post.getSearchId()
+                )
+                .setDoc(ElasticUtils.writeAsJsonBytes(post), XContentType.JSON)
+                .get();
     }
 
-    public Post getPostByElasticId(final String elasticId) {
+    /**
+     * Find post by search_id
+     * @param searchId
+     * @return
+     */
+    public Post getPostByElasticId(final String searchId) {
         GetResponse response = elasticClient
                 .prepareGet(
                         config.getPostIndexName(),
                         config.getPostIndexName(),
-                        elasticId
+                        searchId
                 ).get();
 
-        return ElasticUtils.parseGetResponse(response, Post.class);
+        return ElasticUtils.parseGetResponse(response, PostSearchEntity.class);
     }
 
+
+    /**
+     * Find post by id (not search id)
+     * @param id
+     * @return
+     */
     public Post getPostById(final String id) {
         SearchResponse response = elasticClient
                 .prepareSearch(config.getPostIndexName())
@@ -73,10 +102,19 @@ public class PostElasticRepository {
                 .setQuery(QueryBuilders.termQuery(PostField.ID.getFieldName(), id))
                 .get();
 
-        List<Post> results = ElasticUtils.parseSearchResponse(response, Post.class);
+        List<Post> results = ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
         return CollectionUtils.isEmpty(results) ? null : results.get(0);
     }
 
+    /**
+     * Find posts by name
+     * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     * @param name
+     * @param page
+     * @param postField
+     * @param searchOrder
+     * @return list of post
+     */
     public List<Post> getPostByName(
             final String name,
             final Page page,
@@ -92,6 +130,15 @@ public class PostElasticRepository {
         );
     }
 
+    /**
+     * Find post by description
+     * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     * @param description
+     * @param page
+     * @param postField
+     * @param searchOrder
+     * @return list of post
+     */
     public List<Post> getPostByDescription(
             final String description,
             final Page page,
@@ -107,6 +154,15 @@ public class PostElasticRepository {
         );
     }
 
+    /**
+     * Find last posts from current(inclusive)
+     * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     * @param lastDays counts of last days from current (inclusive)
+     * @param page
+     * @param postField
+     * @param searchOrder
+     * @return list of post
+     */
     public List<Post> getLastPosts(
             final Page page,
             final int lastDays,
@@ -124,6 +180,15 @@ public class PostElasticRepository {
         );
     }
 
+    /**
+     * Find posts in specific date
+     * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     * @param postDate
+     * @param page
+     * @param postField
+     * @param searchOrder
+     * @return list of post
+     */
     public List<Post> getPostsByDate(
             final Page page,
             LocalDate postDate,
@@ -141,6 +206,14 @@ public class PostElasticRepository {
         );
     }
 
+    /**
+     * Get all posts
+     * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     * @param page
+     * @param postField
+     * @param searchOrder
+     * @return list of post
+     */
     public List<Post> getPosts(
             final Page page,
             @Nullable final PostField postField,
@@ -154,18 +227,18 @@ public class PostElasticRepository {
         );
     }
 
-
-
-
     private List<Post> searchPostByDate(
             final Page page,
             final String typeName,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
+        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
+            throw new PageSizeLimitException();
+        }
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getPostIndexName())
-                .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()))
+                .setTypes(typeName)
                 .setQuery(
                         QueryBuilders.matchAllQuery()
                 )
@@ -185,7 +258,7 @@ public class PostElasticRepository {
         }
         final SearchResponse response = request.get();
 
-        return ElasticUtils.parseSearchResponse(response, Post.class);
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     private List<Post> searchPostByField(
@@ -195,6 +268,9 @@ public class PostElasticRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
+        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
+            throw new PageSizeLimitException();
+        }
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getPostIndexName())
                 .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()))
@@ -218,6 +294,6 @@ public class PostElasticRepository {
 
         final SearchResponse response = request.get();
 
-        return ElasticUtils.parseSearchResponse(response, Post.class);
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 }

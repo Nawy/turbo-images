@@ -1,9 +1,8 @@
 package com.turbo.model.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.ElasticIdentifier;
+import com.turbo.model.search.SearchIdentifier;
 import com.turbo.model.IdHolder;
 
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * This data for every foreign user
  */
-public class User implements IdHolder, ElasticIdentifier {
+public class User implements IdHolder, SearchIdentifier {
 
     private String searchId;
     private String id;

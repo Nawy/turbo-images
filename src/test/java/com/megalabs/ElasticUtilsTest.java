@@ -26,7 +26,9 @@ public class ElasticUtilsTest {
     @Test
     public void test_generateManyDataTypes() {
         PowerMockito.mockStatic(LocalDate.class);
-        given(LocalDate.now()).willReturn(currentDate);
+        given(LocalDate.now().minusDays(0)).willReturn(currentDate);
+        given(LocalDate.now().minusDays(1)).willReturn(currentDate.minusDays(1));
+        given(LocalDate.now().minusDays(2)).willReturn(currentDate.minusDays(2));
 
         final String goldResult = "name-2017-05-23,name-2017-05-22,name-2017-05-21";
         final String result = ElasticUtils.getElasticTypeWithLastDays("name", 3);

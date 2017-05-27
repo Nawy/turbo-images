@@ -1,4 +1,4 @@
-package com.turbo.repository.elasticsearch.helper;
+package com.turbo.repository.elasticsearch.field;
 
 /**
  * Created by ermolaev on 5/23/17.

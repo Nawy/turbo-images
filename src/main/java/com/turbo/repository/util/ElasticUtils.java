@@ -1,7 +1,8 @@
 package com.turbo.repository.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.turbo.model.ElasticIdentifier;
+import com.turbo.model.search.SearchConverter;
+import com.turbo.model.search.SearchIdentifier;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
@@ -60,25 +61,31 @@ public abstract class ElasticUtils {
         return String.format("%s-*", typeName);
     }
 
-    public static <T extends ElasticIdentifier> T parseGetResponse(GetResponse response, Class<T> clazz) {
+    public static <T extends SearchIdentifier> T parseGetResponse(GetResponse response, Class<? extends SearchConverter<T>> clazz) {
         try {
-            final T jsonBody = jsonMapper.readValue(response.getSourceAsString(), clazz);
-            jsonBody.setSearchId(response.getId());
-            return jsonBody;
+            final SearchConverter<T> jsonBody = jsonMapper.readValue(response.getSourceAsString(), clazz);
+
+            T result = jsonBody.getCorrectData();
+            result.setSearchId(response.getId());
+
+            return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T extends ElasticIdentifier> List<T> parseSearchResponse(SearchResponse response, Class<T> clazz) {
+    public static <T extends SearchIdentifier> List<T> parseSearchResponse(SearchResponse response, Class<? extends SearchConverter<T>> clazz) {
         try {
             List<T> resultList = new ArrayList<>();
             SearchHit[] hints = response.getHits().getHits();
 
             for(SearchHit hit : hints) {
-                final T jsonBody = jsonMapper.readValue(hit.getSourceAsString(), clazz);
-                jsonBody.setSearchId(hit.getId());
-                resultList.add(jsonBody);
+                final SearchConverter<T> jsonBody = jsonMapper.readValue(hit.getSourceAsString(), clazz);
+
+                T result = jsonBody.getCorrectData();
+                result.setSearchId(hit.getId());
+
+                resultList.add(result);
             }
             return resultList;
         } catch (Exception e) {

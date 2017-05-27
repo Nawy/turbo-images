@@ -11,13 +11,13 @@ import org.springframework.stereotype.Repository;
  * Created by ermolaev on 5/25/17.
  */
 @Repository
-public class UserElasticRepository {
+public class UserSearchRepository {
 
     private final TransportClient elasticClient;
     private final ElasticsearchConfig config;
 
     @Autowired
-    public UserElasticRepository(ElasticsearchConfig config) {
+    public UserSearchRepository(ElasticsearchConfig config) {
         this.elasticClient = config.getElasticClient();
         this.config = config;
     }
