@@ -21,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 public class ElasticUtilsTest {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final LocalDate currentDate = LocalDate.from(formatter.parse("2017-01-01"));
+    private static final LocalDate currentDate = LocalDate.from(formatter.parse("2017-05-23"));
 
     @Test
     public void test_generateManyDataTypes() {
@@ -32,11 +32,5 @@ public class ElasticUtilsTest {
         final String result = ElasticUtils.getElasticTypeWithLastDays("name", 3);
 
         assertThat(goldResult).isEqualTo(result);
-    }
-
-    @Test
-    public void test() {
-        Object val = Math.ceil(30/(double)20);
-        System.out.println(val);
     }
 }

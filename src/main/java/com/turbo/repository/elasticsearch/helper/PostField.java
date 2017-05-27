@@ -3,7 +3,7 @@ package com.turbo.repository.elasticsearch.helper;
 /**
  * Created by ermolaev on 5/23/17.
  */
-public enum PostFields {
+public enum PostField {
 
     ID("id"),
     NAME("name"),
@@ -12,7 +12,7 @@ public enum PostFields {
 
     private String fieldName;
 
-    PostFields(String fieldName) {
+    PostField(String fieldName) {
         this.fieldName = fieldName;
     }
 
