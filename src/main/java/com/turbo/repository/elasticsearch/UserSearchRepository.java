@@ -2,8 +2,11 @@ package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.page.Paginator;
+import com.turbo.model.search.entity.UserSearchEntity;
 import com.turbo.model.user.User;
+import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +26,15 @@ public class UserSearchRepository {
     }
 
     public void addUser(final User user) {
+        final UserSearchEntity entity = new UserSearchEntity(user);
+
+        elasticClient
+                .prepareIndex(
+                        config.getUserIndexName(),
+                        ElasticUtils.getElasticTypeWithCurrentDate(config.getUserTypeName())
+                )
+                .setSource(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
+                .get();
     }
 
     public void updateUser(final User user) {

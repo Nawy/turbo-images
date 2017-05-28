@@ -2,7 +2,7 @@ package com.turbo.model.search.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.ClientType;
+import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.search.SearchConverter;
 
@@ -23,7 +23,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
     private long downs;
     private long viewCount;
     private String previewPath;
-    private ClientType clientType;
+    private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
 
@@ -35,7 +35,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
             @JsonProperty(value = "downs", required = true) long downs,
             @JsonProperty(value = "view_count", required = true) long viewCount,
             @JsonProperty(value = "preview_path", required = true) String previewPath,
-            @JsonProperty(value = "client_type", required = true) ClientType clientType,
+            @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
@@ -46,7 +46,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
         this.downs = downs;
         this.viewCount = viewCount;
         this.previewPath = previewPath;
-        this.clientType = clientType;
+        this.deviceType = deviceType;
         this.tags = tags;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
@@ -59,7 +59,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
         this.downs = post.getDowns();
         this.viewCount = post.getViewCount();
         this.previewPath = post.getPreviewPath();
-        this.clientType = post.getClientType();
+        this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
@@ -100,8 +100,8 @@ public class PostSearchEntity implements SearchConverter<Post> {
     }
 
     @JsonProperty("client_type")
-    public ClientType getClientType() {
-        return clientType;
+    public DeviceType getDeviceType() {
+        return deviceType;
     }
 
     @JsonProperty("tags")
@@ -114,7 +114,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
         return createDate;
     }
 
-    public Post getCorrectData() {
+    public Post getEntity() {
         return new Post(
                 id,
                 null,
@@ -125,7 +125,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
                 viewCount,
                 previewPath,
                 null,
-                clientType,
+                deviceType,
                 tags,
                 null,
                 createDate

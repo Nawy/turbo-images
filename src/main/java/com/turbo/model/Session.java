@@ -13,6 +13,8 @@ public class Session implements Serializable,IdHolder {
     private final static long serialVersionUID = 42L;
 
     private String id;
+    private DeviceType deviceType;
+    private String lastIp;
     private User user;
 
     public Session() {
@@ -38,5 +40,13 @@ public class Session implements Serializable,IdHolder {
 
     public User getUser() {
         return user;
+    }
+
+    public DeviceType getDeviceType() {
+        return deviceType;
+    }
+
+    public String getLastIp() {
+        return lastIp;
     }
 }

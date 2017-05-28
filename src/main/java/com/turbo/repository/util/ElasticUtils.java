@@ -65,7 +65,7 @@ public abstract class ElasticUtils {
         try {
             final SearchConverter<T> jsonBody = jsonMapper.readValue(response.getSourceAsString(), clazz);
 
-            T result = jsonBody.getCorrectData();
+            T result = jsonBody.getEntity();
             result.setSearchId(response.getId());
 
             return result;
@@ -74,6 +74,13 @@ public abstract class ElasticUtils {
         }
     }
 
+    /**
+     * Parses date from elasticsearch to search entities and after that, converts them to business objects for service layer
+     * @param response
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public static <T extends SearchIdentifier> List<T> parseSearchResponse(SearchResponse response, Class<? extends SearchConverter<T>> clazz) {
         try {
             List<T> resultList = new ArrayList<>();
@@ -82,7 +89,7 @@ public abstract class ElasticUtils {
             for(SearchHit hit : hints) {
                 final SearchConverter<T> jsonBody = jsonMapper.readValue(hit.getSourceAsString(), clazz);
 
-                T result = jsonBody.getCorrectData();
+                T result = jsonBody.getEntity();
                 result.setSearchId(hit.getId());
 
                 resultList.add(result);

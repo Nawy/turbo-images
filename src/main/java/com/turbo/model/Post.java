@@ -27,7 +27,7 @@ public class Post implements IdHolder, SearchIdentifier {
     private long viewCount;
     private String previewPath;
     private List<String> picturePaths;
-    private ClientType clientType;
+    private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
 
@@ -43,7 +43,7 @@ public class Post implements IdHolder, SearchIdentifier {
             @JsonProperty(value = "view_count", required = true) long viewCount,
             @JsonProperty(value = "preview_path", required = true) String previewPath,
             @JsonProperty(value = "picture_paths", required = true) List<String> picturePaths,
-            @JsonProperty(value = "client_type", required = true) ClientType clientType,
+            @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "author_id", required = true) String authorId,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
@@ -57,7 +57,7 @@ public class Post implements IdHolder, SearchIdentifier {
         this.viewCount = viewCount;
         this.previewPath = previewPath;
         this.picturePaths = picturePaths;
-        this.clientType = clientType;
+        this.deviceType = deviceType;
         this.tags = tags;
         this.authorId = authorId;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
@@ -109,8 +109,8 @@ public class Post implements IdHolder, SearchIdentifier {
     }
 
     @JsonProperty("client_type")
-    public ClientType getClientType() {
-        return clientType;
+    public DeviceType getDeviceType() {
+        return deviceType;
     }
 
     @JsonProperty("tags")

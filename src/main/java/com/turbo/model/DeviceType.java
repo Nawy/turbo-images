@@ -3,7 +3,7 @@ package com.turbo.model;
 /**
  * Created by rakhmetov on 09.05.17.
  */
-public enum ClientType {
+public enum DeviceType {
 
     IPHONE,
     ANDROID,

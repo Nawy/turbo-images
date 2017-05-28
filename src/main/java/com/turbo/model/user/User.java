@@ -1,11 +1,14 @@
 package com.turbo.model.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.Session;
 import com.turbo.model.search.SearchIdentifier;
 import com.turbo.model.IdHolder;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -20,7 +23,7 @@ public class User implements IdHolder, SearchIdentifier {
     private String id;
     private String name;
     private String avatarPath;
-    private String ip; // last ip from what was came in
+    private Map<String, Session> sessions; // last ip from what was came in
     private String email;
     private String password;
     private LocalDateTime createDate;
@@ -33,16 +36,17 @@ public class User implements IdHolder, SearchIdentifier {
             @JsonProperty("id") String id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
-            @JsonProperty(value = "ip", required = true) String ip,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "password", required = true) String password,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
+            Map<String, Session> sessions
+
     ) {
         this.searchId = searchId;
         this.id = id;
         this.name = name;
         this.avatarPath = avatarPath;
-        this.ip = ip;
+        this.sessions = sessions;
         this.email = email;
         this.password = password;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
@@ -71,11 +75,6 @@ public class User implements IdHolder, SearchIdentifier {
         return avatarPath;
     }
 
-    @JsonProperty(value = "ip")
-    public String getIp() {
-        return ip;
-    }
-
     @JsonProperty(value = "email")
     public String getEmail() {
         return email;
@@ -90,6 +89,12 @@ public class User implements IdHolder, SearchIdentifier {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public LocalDateTime getCreateDate() {
         return createDate;
+    }
+
+    //don't return this to front-end
+    @JsonIgnore
+    public Map<String, Session> getSessions() {
+        return sessions;
     }
 
     // setters

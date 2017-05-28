@@ -3,20 +3,15 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
-import com.turbo.model.exception.data.PageSizeLimitException;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.entity.PostSearchEntity;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -29,15 +24,11 @@ import java.util.Objects;
  * Created by ermolaev on 5/15/17.
  */
 @Repository
-public class PostSearchRepository {
-
-    private final TransportClient elasticClient;
-    private final ElasticsearchConfig config;
+public class PostSearchRepository extends AbstractSearchRepository {
 
     @Autowired
     public PostSearchRepository(ElasticsearchConfig config) {
-        this.elasticClient = config.getElasticClient();
-        this.config = config;
+        super(config.getElasticClient(), config);
     }
 
     /**
@@ -46,12 +37,14 @@ public class PostSearchRepository {
      * @return
      */
     public void addPost(final Post post) {
+        final PostSearchEntity entity = new PostSearchEntity(post);
+
         elasticClient
                 .prepareIndex(
                         config.getPostIndexName(),
                         ElasticUtils.getElasticTypeWithCurrentDate(config.getPostTypeName())
                 )
-                .setSource(ElasticUtils.writeAsJsonBytes(post), XContentType.JSON)
+                .setSource(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
                 .get();
     }
 
@@ -63,13 +56,15 @@ public class PostSearchRepository {
      */
     public void updatePost(final Post post) {
         Objects.requireNonNull(post.getSearchId(), "for update you need have search id");
+        final PostSearchEntity entity = new PostSearchEntity(post);
+
         elasticClient
                 .prepareUpdate(
                         config.getPostIndexName(),
                         ElasticUtils.getElasticTypeWithoutDate(config.getPostIndexName()),
                         post.getSearchId()
                 )
-                .setDoc(ElasticUtils.writeAsJsonBytes(post), XContentType.JSON)
+                .setDoc(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
                 .get();
     }
 
@@ -121,13 +116,15 @@ public class PostSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        return searchPostByField(
+        SearchResponse response = searchByField(
                 PostField.NAME.getFieldName(),
                 name,
                 page,
                 postField,
                 searchOrder
         );
+
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -145,13 +142,15 @@ public class PostSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        return searchPostByField(
+        final SearchResponse response = searchByField(
                 PostField.DESCRIPTION.getFieldName(),
                 description,
                 page,
                 postField,
                 searchOrder
         );
+
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -169,7 +168,7 @@ public class PostSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        return searchPostByDate(
+        SearchResponse response = searchByDate(
                 page,
                 ElasticUtils.getElasticTypeWithLastDays(
                         config.getPostTypeName(),
@@ -178,6 +177,8 @@ public class PostSearchRepository {
                 postField,
                 searchOrder
         );
+
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -195,7 +196,7 @@ public class PostSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        return searchPostByDate(
+        SearchResponse response = searchByDate(
                 page,
                 ElasticUtils.getElasticTypeWithDay(
                         config.getPostTypeName(),
@@ -204,6 +205,8 @@ public class PostSearchRepository {
                 postField,
                 searchOrder
         );
+
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -219,81 +222,15 @@ public class PostSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        return searchPostByDate(
+        SearchResponse response = searchByDate(
                 page,
                 ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
                 postField,
                 searchOrder
         );
-    }
-
-    private List<Post> searchPostByDate(
-            final Page page,
-            final String typeName,
-            @Nullable final PostField postField,
-            @Nullable final SearchOrder searchOrder
-    ) {
-        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
-            throw new PageSizeLimitException();
-        }
-        SearchRequestBuilder request = elasticClient
-                .prepareSearch(config.getPostIndexName())
-                .setTypes(typeName)
-                .setQuery(
-                        QueryBuilders.matchAllQuery()
-                )
-                .setFrom(page.getOffset())
-                .setSize(page.getSize());
-
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
-            request.addSort(
-                    SortBuilders
-                            .fieldSort(postField.getFieldName())
-                            .order(
-                                    searchOrder == SearchOrder.DESC ?
-                                            SortOrder.DESC :
-                                            SortOrder.ASC
-                            )
-            );
-        }
-        final SearchResponse response = request.get();
 
         return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
-    private List<Post> searchPostByField(
-            final String fieldName,
-            final String fieldValue,
-            final Page page,
-            @Nullable final PostField postField,
-            @Nullable final SearchOrder searchOrder
-    ) {
-        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
-            throw new PageSizeLimitException();
-        }
-        SearchRequestBuilder request = elasticClient
-                .prepareSearch(config.getPostIndexName())
-                .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()))
-                .setQuery(
-                        QueryBuilders.matchQuery(fieldName, fieldValue)
-                )
-                .setFrom(page.getOffset())
-                .setSize(page.getSize());
 
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
-            request.addSort(
-                    SortBuilders
-                            .fieldSort(postField.getFieldName())
-                            .order(
-                                    searchOrder == SearchOrder.DESC ?
-                                            SortOrder.DESC :
-                                            SortOrder.ASC
-                            )
-            );
-        }
-
-        final SearchResponse response = request.get();
-
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
-    }
 }

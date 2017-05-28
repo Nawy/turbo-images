@@ -1,6 +1,6 @@
 package com.turbo.model.comment;
 
-import com.turbo.model.ClientType;
+import com.turbo.model.DeviceType;
 import com.turbo.model.IdHolder;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ public class Comment implements Serializable,IdHolder {
     private String authorId;
     private String replyId;
     private CommentReplyType replyType;
-    private ClientType authorDevice; // from what was posted
+    private DeviceType authorDevice; // from what was posted
     private String content;
     private LocalDateTime postTime;
     private int rating; // upvotes - downvotes
@@ -25,7 +25,7 @@ public class Comment implements Serializable,IdHolder {
             String authorId,
             String replyId,
             CommentReplyType replyType,
-            ClientType authorDevice,
+            DeviceType authorDevice,
             String content,
             LocalDateTime postTime,
             int rating
@@ -61,7 +61,7 @@ public class Comment implements Serializable,IdHolder {
         return replyType;
     }
 
-    public ClientType getAuthorDevice() {
+    public DeviceType getAuthorDevice() {
         return authorDevice;
     }
 
