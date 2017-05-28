@@ -4,6 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
 import com.turbo.model.page.Page;
+import com.turbo.model.page.Paginator;
 import com.turbo.model.search.entity.PostSearchEntity;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
@@ -55,7 +56,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @return
      */
     public void updatePost(final Post post) {
-        Objects.requireNonNull(post.getSearchId(), "for update you need have search id");
+        Objects.requireNonNull(post.getSearchId(), "for update post you need have search id");
         final PostSearchEntity entity = new PostSearchEntity(post);
 
         elasticClient
@@ -77,7 +78,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         GetResponse response = elasticClient
                 .prepareGet(
                         config.getPostIndexName(),
-                        config.getPostIndexName(),
+                        ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
                         searchId
                 ).get();
 
@@ -110,7 +111,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<Post> getPostByName(
+    public Paginator<Post> getPostByName(
             final String name,
             final Page page,
             @Nullable final PostField postField,
@@ -120,11 +121,14 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 PostField.NAME.getFieldName(),
                 name,
                 page,
-                postField,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
     }
 
     /**
@@ -136,7 +140,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<Post> getPostByDescription(
+    public Paginator<Post> getPostByDescription(
             final String description,
             final Page page,
             @Nullable final PostField postField,
@@ -146,11 +150,14 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 PostField.DESCRIPTION.getFieldName(),
                 description,
                 page,
-                postField,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
     }
 
     /**
@@ -162,7 +169,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<Post> getLastPosts(
+    public Paginator<Post> getLastPosts(
             final Page page,
             final int lastDays,
             @Nullable final PostField postField,
@@ -174,11 +181,14 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         config.getPostTypeName(),
                         lastDays
                 ),
-                postField,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
     }
 
     /**
@@ -190,7 +200,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<Post> getPostsByDate(
+    public Paginator<Post> getPostsByDate(
             final Page page,
             LocalDate postDate,
             @Nullable final PostField postField,
@@ -202,11 +212,14 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         config.getPostTypeName(),
                         postDate
                 ),
-                postField,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
     }
 
     /**
@@ -217,7 +230,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<Post> getPosts(
+    public Paginator<Post> getPosts(
             final Page page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
@@ -225,12 +238,13 @@ public class PostSearchRepository extends AbstractSearchRepository {
         SearchResponse response = searchByDate(
                 page,
                 ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
-                postField,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
     }
-
-
 }

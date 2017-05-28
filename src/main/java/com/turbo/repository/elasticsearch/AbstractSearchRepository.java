@@ -2,11 +2,8 @@ package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.Post;
 import com.turbo.model.exception.data.PageSizeLimitException;
 import com.turbo.model.page.Page;
-import com.turbo.model.search.entity.PostSearchEntity;
-import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -16,7 +13,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,7 +30,7 @@ public abstract class AbstractSearchRepository {
     protected SearchResponse searchByDate(
             final Page page,
             final String typeName,
-            @Nullable final PostField postField,
+            @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
         if(page.getSize() >= config.getMaxSizePostsPerPage()) {
@@ -49,10 +45,10 @@ public abstract class AbstractSearchRepository {
                 .setFrom(page.getOffset())
                 .setSize(page.getSize());
 
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+        if(Objects.nonNull(fieldNameSort) && Objects.nonNull(searchOrder)) {
             request.addSort(
                     SortBuilders
-                            .fieldSort(postField.getFieldName())
+                            .fieldSort(fieldNameSort)
                             .order(
                                     searchOrder == SearchOrder.DESC ?
                                             SortOrder.DESC :
@@ -68,7 +64,7 @@ public abstract class AbstractSearchRepository {
             final String fieldName,
             final String fieldValue,
             final Page page,
-            @Nullable final PostField postField,
+            @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
         if(page.getSize() >= config.getMaxSizePostsPerPage()) {
@@ -83,10 +79,10 @@ public abstract class AbstractSearchRepository {
                 .setFrom(page.getOffset())
                 .setSize(page.getSize());
 
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+        if(Objects.nonNull(fieldNameSort) && Objects.nonNull(searchOrder)) {
             request.addSort(
                     SortBuilders
-                            .fieldSort(postField.getFieldName())
+                            .fieldSort(fieldNameSort)
                             .order(
                                     searchOrder == SearchOrder.DESC ?
                                             SortOrder.DESC :

@@ -7,20 +7,14 @@ import java.util.List;
  */
 public class Paginator<T> {
     private Page page;
-    private long total;
     private List<T> items;
 
-    public Paginator(Page page, long total, List<T> items) {
-        this.total = total;
+    public Paginator(Page page, List<T> items) {
         this.items = items;
     }
 
     public Page getPage() {
         return page;
-    }
-
-    public long getTotal() {
-        return total;
     }
 
     public List<T> getItems() {

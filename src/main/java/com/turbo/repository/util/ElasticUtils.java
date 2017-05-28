@@ -9,6 +9,7 @@ import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,10 @@ public abstract class ElasticUtils {
 
     public static String getElasticTypeWithCurrentDate(final String typeName) {
         return String.format("%s-%s", typeName, formatter.format(LocalDate.now()));
+    }
+
+    public static String getElasticTypeWithDate(final String typeName, final LocalDateTime currentTime) {
+        return String.format("%s-%s", typeName, formatter.format(currentTime));
     }
 
     public static String getElasticTypeWithLastDays(final String typeName, final int days) {
