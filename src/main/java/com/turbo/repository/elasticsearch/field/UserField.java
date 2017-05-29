@@ -8,7 +8,6 @@ public enum UserField {
     ID("id"),
     NAME("name"),
     EMAIL("email"),
-    IP("ip"),
     CREATE_DATE("create_date");
 
     private String fieldName;

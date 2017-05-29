@@ -35,7 +35,7 @@ public abstract class ElasticUtils {
         return String.format("%s-%s", typeName, formatter.format(LocalDate.now()));
     }
 
-    public static String getElasticTypeWithDate(final String typeName, final LocalDateTime currentTime) {
+    public static String getElasticTypeWithDate(final String typeName, final LocalDate currentTime) {
         return String.format("%s-%s", typeName, formatter.format(currentTime));
     }
 
@@ -53,13 +53,6 @@ public abstract class ElasticUtils {
             }
         }
         return result.toString();
-    }
-
-    public static String getElasticTypeWithDay(final String typeName, LocalDate postDate) {
-        return String.format("%s-%s",
-                typeName,
-                formatter.format(postDate)
-        );
     }
 
     public static String getElasticTypeWithoutDate(final String typeName) {

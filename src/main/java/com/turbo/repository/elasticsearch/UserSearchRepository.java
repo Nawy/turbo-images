@@ -1,18 +1,16 @@
 package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
-import com.turbo.model.Post;
+import com.turbo.model.Nullable;
 import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.entity.PostSearchEntity;
 import com.turbo.model.search.entity.UserSearchEntity;
 import com.turbo.model.user.User;
-import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.field.UserField;
+import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +50,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         elasticClient
                 .prepareUpdate(
                         config.getUserIndexName(),
-                        ElasticUtils.getElasticTypeWithDate(config.getUserTypeName(), user.getCreateDate()),
+                        ElasticUtils.getElasticTypeWithDate(config.getUserTypeName(), user.getCreateDate().toLocalDate()),
                         user.getSearchId()
                 )
                 .setDoc(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
@@ -81,13 +79,20 @@ public class UserSearchRepository extends AbstractSearchRepository {
         return CollectionUtils.isEmpty(results) ? null : results.get(0);
     }
 
-    public Paginator<User> findUserByName(final String name, final Page page) {
+    public Paginator<User> findUserByName(
+            final String name,
+            final Page page,
+            @Nullable final UserField userField,
+            @Nullable final SearchOrder searchOrder
+    ) {
         SearchResponse response = searchByField(
+                config.getUserIndexName(),
+                ElasticUtils.getElasticTypeWithoutDate(config.getUserTypeName()),
                 UserField.NAME.getFieldName(),
                 name,
                 page,
-                null,
-                null
+                Objects.isNull(userField) ? null : userField.getFieldName(),
+                searchOrder
         );
         return new Paginator<>(
                 page,

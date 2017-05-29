@@ -28,8 +28,9 @@ public abstract class AbstractSearchRepository {
     }
 
     protected SearchResponse searchByDate(
-            final Page page,
+            final String indexName,
             final String typeName,
+            final Page page,
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
@@ -37,7 +38,7 @@ public abstract class AbstractSearchRepository {
             throw new PageSizeLimitException();
         }
         SearchRequestBuilder request = elasticClient
-                .prepareSearch(config.getPostIndexName())
+                .prepareSearch(indexName)
                 .setTypes(typeName)
                 .setQuery(
                         QueryBuilders.matchAllQuery()
@@ -61,6 +62,8 @@ public abstract class AbstractSearchRepository {
     }
 
     protected SearchResponse searchByField(
+            final String indexName,
+            final String typeName,
             final String fieldName,
             final String fieldValue,
             final Page page,
@@ -71,8 +74,8 @@ public abstract class AbstractSearchRepository {
             throw new PageSizeLimitException();
         }
         SearchRequestBuilder request = elasticClient
-                .prepareSearch(config.getPostIndexName())
-                .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()))
+                .prepareSearch(indexName)
+                .setTypes(ElasticUtils.getElasticTypeWithoutDate(typeName))
                 .setQuery(
                         QueryBuilders.matchQuery(fieldName, fieldValue)
                 )

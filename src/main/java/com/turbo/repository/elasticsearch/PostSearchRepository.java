@@ -3,6 +3,7 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
+import com.turbo.model.exception.data.NotFoundException;
 import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.entity.PostSearchEntity;
@@ -99,7 +100,11 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .get();
 
         List<Post> results = ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
-        return CollectionUtils.isEmpty(results) ? null : results.get(0);
+        if(CollectionUtils.isEmpty(results)) {
+            throw new NotFoundException();
+        } else {
+            return results.get(0);
+        }
     }
 
     /**
@@ -118,6 +123,8 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final SearchOrder searchOrder
     ) {
         SearchResponse response = searchByField(
+                config.getPostIndexName(),
+                ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
                 PostField.NAME.getFieldName(),
                 name,
                 page,
@@ -147,7 +154,9 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final SearchOrder searchOrder
     ) {
         final SearchResponse response = searchByField(
-                PostField.DESCRIPTION.getFieldName(),
+                config.getPostIndexName(),
+                ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
+                PostField.NAME.getFieldName(),
                 description,
                 page,
                 Objects.isNull(postField) ? null : postField.getFieldName(),
@@ -175,12 +184,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        SearchResponse response = searchByDate(
+        final SearchResponse response = searchByDate(
+                config.getPostIndexName(),
+                ElasticUtils.getElasticTypeWithLastDays(config.getPostTypeName(), lastDays),
                 page,
-                ElasticUtils.getElasticTypeWithLastDays(
-                        config.getPostTypeName(),
-                        lastDays
-                ),
                 Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
@@ -206,12 +213,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        SearchResponse response = searchByDate(
+        final SearchResponse response = searchByDate(
+                config.getPostIndexName(),
+                ElasticUtils.getElasticTypeWithDate(config.getPostTypeName(), postDate),
                 page,
-                ElasticUtils.getElasticTypeWithDay(
-                        config.getPostTypeName(),
-                        postDate
-                ),
                 Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
@@ -235,9 +240,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        SearchResponse response = searchByDate(
-                page,
+        final SearchResponse response = searchByDate(
+                config.getPostIndexName(),
                 ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
+                page,
                 Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
