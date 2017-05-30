@@ -30,6 +30,7 @@ public class Post implements IdHolder, SearchIdentifier {
     private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
+    private boolean visible;
 
     private String authorId;
 
@@ -46,7 +47,8 @@ public class Post implements IdHolder, SearchIdentifier {
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "author_id", required = true) String authorId,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
+            @JsonProperty(value = "visible", defaultValue = "false") boolean visible
     ) {
         this.id = id;
         this.searchId = searchId;
@@ -60,6 +62,7 @@ public class Post implements IdHolder, SearchIdentifier {
         this.deviceType = deviceType;
         this.tags = tags;
         this.authorId = authorId;
+        this.visible = visible;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
 
@@ -134,8 +137,14 @@ public class Post implements IdHolder, SearchIdentifier {
         this.searchId = searchId;
     }
 
+    @JsonProperty("create_date")
     public LocalDateTime getCreateDate() {
         return createDate;
+    }
+
+    @JsonProperty("visible")
+    public boolean isVisible() {
+        return visible;
     }
 
     @Override

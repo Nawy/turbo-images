@@ -2,12 +2,14 @@ package com.turbo.service;
 
 import com.turbo.model.Post;
 import com.turbo.model.page.Page;
+import com.turbo.model.page.Paginator;
 import com.turbo.repository.couchbase.PostRepository;
 import com.turbo.repository.elasticsearch.PostSearchRepository;
+import com.turbo.repository.elasticsearch.field.PostField;
+import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,20 +44,18 @@ public class PostService {
         return postSearchRepository.getPostById(id);
     }
 
-    //return not Paginator, because we shouldn't count all posts, just upload additional
-    public List<Post> getLastPosts(Page page) {
-        //FIXME elastic should be here!
-        return Collections.emptyList();
+    public Paginator<Post> getLastPosts(Page page, int lastDays) {
+        //TODO scylla ?
+        return postSearchRepository.getLastPosts(page, lastDays, PostField.RAITING, SearchOrder.DESC);
     }
 
     public Post update(Post post) {
-        //TODO update elastic here
+        postSearchRepository.updatePost(post);
         return postRepository.save(post);
     }
 
-    public List<Post> getUserPosts(long userId){
-        //TODO update elastic here
-        return Collections.emptyList();
+    public Paginator<Post> getUserPosts(Page page, String userId, PostField postField, SearchOrder searchOrder) {
+       return postSearchRepository.getPostByAuthor(userId, page, postField, searchOrder);
     }
 
     public void delete(String id) {

@@ -138,6 +138,28 @@ public class PostSearchRepository extends AbstractSearchRepository {
         );
     }
 
+    public Paginator<Post> getPostByAuthor(
+            final String authorId,
+            final Page page,
+            @Nullable final PostField postField,
+            @Nullable final SearchOrder searchOrder
+    ) {
+        SearchResponse response = searchByField(
+                config.getPostIndexName(),
+                ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
+                PostField.AUTHOR.getFieldName(),
+                authorId,
+                page,
+                Objects.isNull(postField) ? null : postField.getFieldName(),
+                searchOrder
+        );
+
+        return new Paginator<>(
+                page,
+                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
+        );
+    }
+
     /**
      * Find post by description
      * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
@@ -156,7 +178,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         final SearchResponse response = searchByField(
                 config.getPostIndexName(),
                 ElasticUtils.getElasticTypeWithoutDate(config.getPostTypeName()),
-                PostField.NAME.getFieldName(),
+                PostField.DESCRIPTION.getFieldName(),
                 description,
                 page,
                 Objects.isNull(postField) ? null : postField.getFieldName(),

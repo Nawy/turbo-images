@@ -3,8 +3,10 @@ package com.turbo.controller;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.exception.http.BadRequestHttpException;
+import com.turbo.model.page.Page;
 import com.turbo.model.user.User;
 import com.turbo.service.AuthorizationService;
+import com.turbo.service.PostService;
 import com.turbo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -20,11 +22,13 @@ public class UserController {
 
     private final AuthorizationService authorizationService;
     private final UserService userService;
+    private final PostService postService;
 
     @Autowired
-    public UserController(AuthorizationService authorizationService, UserService userService) {
+    public UserController(AuthorizationService authorizationService, UserService userService, PostService postService) {
         this.authorizationService = authorizationService;
         this.userService = userService;
+        this.postService = postService;
     }
 
     @Secured(SecurityRole.USER)
@@ -40,7 +44,9 @@ public class UserController {
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (size <= 0 || page < 0) throw new BadRequestHttpException("page and size can't be negative");
-        //FIXME NOTHING HERE
+        User user = authorizationService.getCurrentUser();
+        //fixme
+        postService.getUserPosts(new Page(page, size), user.getId(), null, null);
         return null;
     }
 
@@ -50,5 +56,4 @@ public class UserController {
         if (user.getId() == null) throw new BadRequestHttpException("No id was found!");
         return userService.update(user);
     }
-
 }
