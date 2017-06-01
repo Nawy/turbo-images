@@ -1,14 +1,13 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
+import com.turbo.model.SearchSort;
 import com.turbo.model.exception.http.BadRequestHttpException;
-import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
+import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -17,24 +16,27 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final HashIdService hashIdService;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, HashIdService hashIdService) {
         this.postService = postService;
+        this.hashIdService = hashIdService;
     }
 
-    @GetMapping("/get/post")
-    public Paginator<Post> getLastPost(
+    @GetMapping("/get/viral/post")
+    public Paginator<Post> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort
     ) {
-        if (size <= 0 || page < 0) throw new BadRequestHttpException("page and size can't be negative");
-        return postService.getLastPosts(new Page(page, size),3);
+        return postService.getMostViral(page, searchSort);
     }
 
     @GetMapping("/get/post/{id}")
     public Post get(@PathVariable("id") String id) {
-        return postService.getPostById(id);
+        return postService.getPostById(
+                hashIdService.decodeHashId(id)
+        );
     }
 
     @PostMapping("/add/post")
@@ -50,7 +52,9 @@ public class PostController {
 
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") String id) {
-        postService.delete(id);
+        postService.delete(
+                hashIdService.decodeHashId(id)
+        );
     }
 
 }

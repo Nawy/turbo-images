@@ -26,7 +26,7 @@ public class AuthorizationService {
         this.userService = userService;
     }
 
-    public Session getSession(String sessionId) {
+    public Session getSession(Long sessionId) {
         return sessionRepository.get(sessionId);
     }
 

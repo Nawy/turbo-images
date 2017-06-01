@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 public class Comment implements Serializable,IdHolder {
 
-    private String id;
+    private Long id;
     private String authorId;
     private String replyId;
     private CommentReplyType replyType;
@@ -21,7 +21,7 @@ public class Comment implements Serializable,IdHolder {
     private int rating; // upvotes - downvotes
 
     public Comment(
-            String id,
+            Long id,
             String authorId,
             String replyId,
             CommentReplyType replyType,
@@ -40,12 +40,12 @@ public class Comment implements Serializable,IdHolder {
         this.rating = rating;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -5,7 +5,7 @@ package com.turbo.model;
  */
 public interface IdHolder {
 
-    String getId();
+    Long getId();
 
-    void setId(String id);
+    void setId(Long id);
 }

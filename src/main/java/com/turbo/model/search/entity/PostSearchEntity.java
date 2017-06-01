@@ -16,7 +16,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
  * Needs for send enough data in search engine
  */
 public class PostSearchEntity implements SearchConverter<Post> {
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private long ups;
@@ -28,7 +28,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
     private LocalDateTime createDate;
 
     public PostSearchEntity(
-            @JsonProperty(value = "id") String id,
+            @JsonProperty(value = "id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "ups", required = true) long ups,
@@ -65,7 +65,7 @@ public class PostSearchEntity implements SearchConverter<Post> {
     }
 
     @JsonProperty("id")
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

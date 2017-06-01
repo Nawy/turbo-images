@@ -1,16 +1,16 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
+import com.turbo.model.SearchSort;
 import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
-import com.turbo.repository.couchbase.PostRepository;
+import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.PostSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,12 +29,12 @@ public class PostService {
     }
 
     public Post addPost(final Post post) {
-        final Post postWithId = postRepository.addPost(post);
+        final Post postWithId = postRepository.save(post);
         postSearchRepository.addPost(postWithId);
         return postWithId;
     }
 
-    public Post getPostById(final String id) {
+    public Post getPostById(final long id) {
         Post post = postSearchRepository.getPostById(id);
 
         if (Objects.isNull(post)) {
@@ -44,9 +44,9 @@ public class PostService {
         return postSearchRepository.getPostById(id);
     }
 
-    public Paginator<Post> getLastPosts(Page page, int lastDays) {
-        //TODO scylla ?
-        return postSearchRepository.getLastPosts(page, lastDays, PostField.RAITING, SearchOrder.DESC);
+    public Paginator<Post> getMostViral(int page, SearchSort sort) {
+        //fixme
+        return postSearchRepository.getLastPosts(page, 0, PostField.RAITING, SearchOrder.DESC);
     }
 
     public Post update(Post post) {
@@ -54,11 +54,12 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public Paginator<Post> getUserPosts(Page page, String userId, PostField postField, SearchOrder searchOrder) {
-       return postSearchRepository.getPostByAuthor(userId, page, postField, searchOrder);
+    public Paginator<Post> getUserPosts(int page, long userId, SearchSort sort) {
+        //FIXME
+        return null;//postSearchRepository.getPostByAuthor(userId, page, postField, searchOrder);
     }
 
-    public void delete(String id) {
+    public void delete(long id) {
         postRepository.delete(id);
     }
 }

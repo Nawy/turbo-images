@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 public class User implements IdHolder, SearchIdentifier {
 
     private String searchId;
-    private String id;
+    private Long id;
     private String name;
     private String avatarPath;
     private Map<String, Session> sessions; // last ip from what was came in
@@ -33,7 +33,7 @@ public class User implements IdHolder, SearchIdentifier {
 
     public User(
             @JsonProperty("search_id") String searchId,
-            @JsonProperty("id") String id,
+            @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
             @JsonProperty(value = "email", required = true) String email,
@@ -61,7 +61,7 @@ public class User implements IdHolder, SearchIdentifier {
     }
 
     @JsonProperty(value = "id")
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -100,7 +100,7 @@ public class User implements IdHolder, SearchIdentifier {
     // setters
 
     @Override
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

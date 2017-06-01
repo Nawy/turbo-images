@@ -92,7 +92,8 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param id
      * @return
      */
-    public Post getPostById(final String id) {
+    //FIXME changed String id on Long id, don't does it will work
+    public Post getPostById(final long id) {
         SearchResponse response = elasticClient
                 .prepareSearch(config.getPostIndexName())
                 .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getPostIndexName()))
@@ -118,7 +119,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      */
     public Paginator<Post> getPostByName(
             final String name,
-            final Page page,
+            final int page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
@@ -140,7 +141,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
     public Paginator<Post> getPostByAuthor(
             final String authorId,
-            final Page page,
+            final int page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
@@ -171,7 +172,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      */
     public Paginator<Post> getPostByDescription(
             final String description,
-            final Page page,
+            final int page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
@@ -201,7 +202,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @return list of post
      */
     public Paginator<Post> getLastPosts(
-            final Page page,
+            final int page,
             final int lastDays,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
@@ -230,7 +231,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @return list of post
      */
     public Paginator<Post> getPostsByDate(
-            final Page page,
+            final int page,
             LocalDate postDate,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
@@ -258,7 +259,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @return list of post
      */
     public Paginator<Post> getPosts(
-            final Page page,
+            final int page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {

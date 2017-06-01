@@ -1,6 +1,7 @@
 package com.megalabs;
 
-import com.turbo.service.GeneratorService;
+import com.turbo.repository.util.IdGenerator;
+import com.turbo.service.HashIdService;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,14 +11,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HashGenTest {
 
-    private GeneratorService generatorService = new GeneratorService("Test salt");
+    private HashIdService hashIdService = new HashIdService("Test salt");
 
     @Test
-    public void test_simpleHash() {
-        long id = generatorService.generateId();
+    public void hashIdWork() {
+        long id = IdGenerator.generateRandomId();
 
-        String encodedId = generatorService.encodeHashId(id);
-        long decodedId = generatorService.decodeHashId(encodedId);
+        String encodedId = hashIdService.encodeHashId(id);
+        long decodedId = hashIdService.decodeHashId(encodedId);
 
         assertThat(decodedId).isEqualTo(id);
     }

@@ -30,11 +30,12 @@ public abstract class AbstractSearchRepository {
     protected SearchResponse searchByDate(
             final String indexName,
             final String typeName,
-            final Page page,
+            final int page,
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
-        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
+        Page pageObject = new Page(page);
+        if(pageObject.getSize() >= config.getMaxSizePostsPerPage()) {
             throw new PageSizeLimitException();
         }
         SearchRequestBuilder request = elasticClient
@@ -43,8 +44,8 @@ public abstract class AbstractSearchRepository {
                 .setQuery(
                         QueryBuilders.matchAllQuery()
                 )
-                .setFrom(page.getOffset())
-                .setSize(page.getSize());
+                .setFrom(pageObject.getOffset())
+                .setSize(pageObject.getSize());
 
         if(Objects.nonNull(fieldNameSort) && Objects.nonNull(searchOrder)) {
             request.addSort(
@@ -66,11 +67,12 @@ public abstract class AbstractSearchRepository {
             final String typeName,
             final String fieldName,
             final String fieldValue,
-            final Page page,
+            final int page,
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
-        if(page.getSize() >= config.getMaxSizePostsPerPage()) {
+        Page pageObject = new Page(page);
+        if(pageObject.getSize() >= config.getMaxSizePostsPerPage()) {
             throw new PageSizeLimitException();
         }
         SearchRequestBuilder request = elasticClient
@@ -79,8 +81,8 @@ public abstract class AbstractSearchRepository {
                 .setQuery(
                         QueryBuilders.matchQuery(fieldName, fieldValue)
                 )
-                .setFrom(page.getOffset())
-                .setSize(page.getSize());
+                .setFrom(pageObject.getOffset())
+                .setSize(pageObject.getSize());
 
         if(Objects.nonNull(fieldNameSort) && Objects.nonNull(searchOrder)) {
             request.addSort(

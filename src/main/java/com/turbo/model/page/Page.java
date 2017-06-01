@@ -6,11 +6,10 @@ import org.springframework.util.Assert;
 public class Page {
 
     private final int page;
-    private final int size;
+    private static final int SIZE = 50;
 
-    public Page(int page, int size) {
+    public Page(int page) {
         this.page = page < 0 ? 0 : page;
-        this.size = size;
     }
 
     public int getPage() {
@@ -18,7 +17,7 @@ public class Page {
     }
 
     public int getSize() {
-        return size;
+        return SIZE;
     }
 
     @JsonIgnore

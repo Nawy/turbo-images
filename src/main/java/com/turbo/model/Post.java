@@ -6,6 +6,7 @@ import com.turbo.model.search.SearchIdentifier;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,10 +17,10 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * Just post on site with picture and comments
  */
-public class Post implements IdHolder, SearchIdentifier {
+public class Post implements Serializable, IdHolder, SearchIdentifier {
 
     private String searchId;
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private long ups;
@@ -35,7 +36,7 @@ public class Post implements IdHolder, SearchIdentifier {
     private String authorId;
 
     public Post(
-            @JsonProperty(value = "id") String id,
+            @JsonProperty(value = "id") Long id,
             @JsonProperty("search_id") String searchId,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
@@ -67,12 +68,12 @@ public class Post implements IdHolder, SearchIdentifier {
     }
 
     @JsonProperty("id")
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

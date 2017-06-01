@@ -7,10 +7,10 @@ import com.aerospike.client.Record;
 import com.aerospike.client.policy.WritePolicy;
 import com.turbo.model.IdHolder;
 import com.turbo.model.exception.http.InternalServerErrorHttpException;
+import com.turbo.repository.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Created by rakhmetov on 21.05.17.
@@ -38,7 +38,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     public T save(T entity, int expiration) {
-        String sessionId = entity.getId() != null ?
+        Long sessionId = entity.getId() != null ?
                 entity.getId() :
                 generateId();
         entity.setId(sessionId);
@@ -59,22 +59,22 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     @SuppressWarnings("unchecked")
-    public T get(String id) {
+    public T get(long id) {
         Record record = client.get(null, generateKey(id));
         return record != null ?
                 (T) record.getValue(defaultBinName) :
                 null;
     }
 
-    public boolean exists(String id) {
+    public boolean exists(long id) {
         return client.exists(null, generateKey(id));
     }
 
-    public void delete(String id) {
+    public void delete(long id) {
         client.delete(null, generateKey(id));
     }
 
-    protected Key generateKey(String id) {
+    protected Key generateKey(long id) {
         return new Key(namespace, null, id);
     }
 
@@ -82,10 +82,10 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         return new Bin(defaultBinName, entity);
     }
 
-    protected String generateId() {
+    protected Long generateId() {
         int iterations = 0;
         do {
-            String id = UUID.randomUUID().toString();
+            Long id = IdGenerator.generateRandomId();
             if (get(id) == null) return id;
             iterations++;
         } while (ITERATIONS_TO_GENERATE_ID > iterations);

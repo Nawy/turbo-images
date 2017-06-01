@@ -31,19 +31,19 @@ public class ImageService {
         this.imageStoragePath = imageStoragePath;
     }
 
-    public Image getImage(String hash) {
+    public Image getImage(Long hash) {
         return imageRepository.get(hash);
     }
 
-    public boolean imageExists(String hash) {
+    public boolean imageExists(Long hash) {
         return imageRepository.exists(hash);
     }
 
-    public Image addImage(String hash, byte[] picture) {
+    public Image addImage(long hash, byte[] picture) {
         int tries = 0;
         File file;
         do {
-             file = new File(imageStoragePath + File.separator + hash.substring(0, 10) + File.separator + generateRandomName());
+             file = new File(imageStoragePath + File.separator + hash + File.separator + generateRandomName());
              tries++;
              if (FILE_GENERATION_TRIES <= tries){
                  throw new InternalServerErrorHttpException("Exhausted file unique name generations attempts");

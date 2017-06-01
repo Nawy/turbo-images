@@ -32,7 +32,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
-        String sessionId = getSessionIdFromRequest(
+        Long sessionId = getSessionIdFromRequest(
                 requestResponseHolder.getRequest()
         );
         SecurityContext securityContext = new SecurityContextImpl();
@@ -62,11 +62,11 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
         return false;
     }
 
-    private String getSessionIdFromRequest(HttpServletRequest req) {
+    private Long getSessionIdFromRequest(HttpServletRequest req) {
         if (req.getCookies() == null) return null;
         Cookie cookie = Arrays.stream(req.getCookies())
                 .filter((c) -> SESSION_COOKIE_NAME.equals(c.getName()))
                 .findFirst().orElse(null);
-        return cookie == null ? null : cookie.getValue();
+        return cookie == null ? null : Long.valueOf(cookie.getValue());
     }
 }

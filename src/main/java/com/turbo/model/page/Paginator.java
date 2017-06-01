@@ -9,7 +9,8 @@ public class Paginator<T> {
     private Page page;
     private List<T> items;
 
-    public Paginator(Page page, List<T> items) {
+    public Paginator(int page, List<T> items) {
+        this.page = new Page(page);
         this.items = items;
     }
 

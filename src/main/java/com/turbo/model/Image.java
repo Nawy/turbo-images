@@ -7,18 +7,18 @@ import java.io.Serializable;
  */
 public class Image implements Serializable, IdHolder {
 
-    private String hash;
+    private Long hash;
     private String path;
 
     public Image() {
     }
 
-    public Image(String hash, String path) {
+    public Image(Long hash, String path) {
         this.hash = hash;
         this.path = path;
     }
 
-    public String getHash() {
+    public Long getHash() {
         return hash;
     }
 
@@ -27,12 +27,12 @@ public class Image implements Serializable, IdHolder {
     }
 
     @Override
-    public String getId() {
+    public Long getId() {
         return hash;
     }
 
     @Override
-    public void setId(String id) {
+    public void setId(Long id) {
         hash = id;
     }
 }

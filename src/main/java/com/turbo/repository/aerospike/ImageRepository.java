@@ -12,16 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ImageRepository extends AbstractAerospikeRepo<Image>  {
 
-    private final AerospikeClient client;
-    private final String namespace;
-
     @Autowired
     public ImageRepository(
             AerospikeClient client,
             @Value("${aerospike.image.namespace}") String namespace
     ) {
         super(client, namespace);
-        this.client = client;
-        this.namespace = namespace;
     }
 }

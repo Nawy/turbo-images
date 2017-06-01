@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public class UserSearchEntity implements SearchConverter<User> {
 
-    private String id;
+    private Long id;
     private String name;
     private String avatarPath;
     private String email;
@@ -21,7 +21,7 @@ public class UserSearchEntity implements SearchConverter<User> {
     private LocalDateTime createDate;
 
     public UserSearchEntity(
-            @JsonProperty("id") String id,
+            @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
             @JsonProperty(value = "email", required = true) String email,
@@ -46,7 +46,7 @@ public class UserSearchEntity implements SearchConverter<User> {
     }
 
     @JsonProperty(value = "id")
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

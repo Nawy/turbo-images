@@ -81,7 +81,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
 
     public Paginator<User> findUserByName(
             final String name,
-            final Page page,
+            final int page,
             @Nullable final UserField userField,
             @Nullable final SearchOrder searchOrder
     ) {

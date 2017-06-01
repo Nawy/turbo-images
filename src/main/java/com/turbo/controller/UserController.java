@@ -1,9 +1,11 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
+import com.turbo.model.SearchSort;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.page.Page;
+import com.turbo.model.page.Paginator;
 import com.turbo.model.user.User;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
@@ -39,15 +41,12 @@ public class UserController {
 
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/posts")
-    public List<Post> getUserPosts(
+    public Paginator<Post> getUserPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort sort
     ) {
-        if (size <= 0 || page < 0) throw new BadRequestHttpException("page and size can't be negative");
         User user = authorizationService.getCurrentUser();
-        //fixme
-        postService.getUserPosts(new Page(page, size), user.getId(), null, null);
-        return null;
+        return postService.getUserPosts(page, user.getId(), sort);
     }
 
     @Secured(SecurityRole.USER)
