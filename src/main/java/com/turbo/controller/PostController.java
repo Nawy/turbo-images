@@ -3,6 +3,7 @@ package com.turbo.controller;
 import com.turbo.model.Post;
 import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.page.Page;
+import com.turbo.model.page.Paginator;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,12 @@ public class PostController {
     }
 
     @GetMapping("/get/post")
-    public List<Post> getLastPost(
+    public Paginator<Post> getLastPost(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (size <= 0 || page < 0) throw new BadRequestHttpException("page and size can't be negative");
-        return postService.getLastPosts(new Page(page, size));
+        return postService.getLastPosts(new Page(page, size),3);
     }
 
     @GetMapping("/get/post/{id}")

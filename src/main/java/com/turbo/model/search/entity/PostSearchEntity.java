@@ -128,7 +128,8 @@ public class PostSearchEntity implements SearchConverter<Post> {
                 deviceType,
                 tags,
                 null,
-                createDate
+                createDate,
+                true
         );
     }
 }
