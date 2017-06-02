@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -21,43 +22,78 @@ import java.util.Objects;
 @Service
 public class PostService {
 
-    private final PostSearchRepository postSearchRepository;
+    private final PostSearchService postSearchService;
     private final PostRepository postRepository;
 
+    private final Function<Post, PostSearchEntity> mapPostToSearch;
+    private final Function<PostSearchEntity, Post> mapSearchToPost;
+
     @Autowired
-    public PostService(PostSearchRepository postSearchRepository, PostRepository postRepository) {
-        this.postSearchRepository = postSearchRepository;
+    public PostService(PostSearchService postSearchService, PostRepository postRepository) {
+        this.postSearchService = postSearchService;
         this.postRepository = postRepository;
+
+        this.mapPostToSearch = p -> new PostSearchEntity(
+                p.getId(),
+                p.getName(),
+                p.getDescription(),
+                p.getUps(),
+                p.getDowns(),
+                p.getViewCount(),
+                p.getPreviewPath(),
+                p.getDeviceType(),
+                p.getTags(),
+                p.getAuthorId(),
+                p.getCreateDate(),
+                p.isVisible()
+        );
+
+        this.mapSearchToPost = p -> new Post(
+                p.getId(),
+                p.getName(),
+                p.getDescription(),
+                p.getUps(),
+                p.getDowns(),
+                p.getViewCount(),
+                p.getPreviewPath(),
+                null,
+                p.getDeviceType(),
+                p.getTags(),
+                p.getAuthorId(),
+                p.getCreateDate(),
+                p.isVisible()
+        );
     }
 
     public Post addPost(final Post post) {
         final Post postWithId = postRepository.save(post);
-        postSearchRepository.addPost(postWithId);
+        postSearchService.addPost(postWithId, mapPostToSearch);
         return postWithId;
     }
 
     public Post getPostById(final long id) {
-        Post post = postSearchRepository.getPostById(id);
+        Post post = postSearchService.getPostById(id, mapSearchToPost);
 
         if (Objects.isNull(post)) {
             post = postRepository.get(id);
-            postSearchRepository.addPost(post); //overhead
+            postSearchService.addPost(post, mapPostToSearch); //overhead
         }
-        return postSearchRepository.getPostById(id);
+        return postSearchService.getPostById(id, mapSearchToPost);
     }
 
-    public Paginator<PostSearchEntity> getMostViral(int page, SearchSort sort) {
+    public Paginator<Post> getMostViral(int page, SearchSort sort) {
         //fixme
-        return postSearchRepository.getPostsByDate(
+        return postSearchService.getPostsByDate(
                 LocalDate.now(),
                 page,
                 PostField.RAITING,
-                SearchOrder.DESC
+                SearchOrder.DESC,
+                mapSearchToPost
         );
     }
 
     public Post update(Post post) {
-        postSearchRepository.updatePost(post);
+        postSearchService.updatePost(post, mapPostToSearch);
         return postRepository.save(post);
     }
 

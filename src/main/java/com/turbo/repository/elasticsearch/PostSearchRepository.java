@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -86,7 +87,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         );
     }
 
-    public Paginator<PostSearchEntity> getPostByAuthor(
+    public List<PostSearchEntity> getPostByAuthor(
             final String authorId,
             final int page,
             @Nullable final PostField postField,
@@ -102,10 +103,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return new Paginator<>(
-                page,
-                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
-        );
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -117,7 +115,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public Paginator<PostSearchEntity> findPostByName(
+    public List<PostSearchEntity> findPostByName(
             final String name,
             final int page,
             @Nullable final PostField postField,
@@ -133,10 +131,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return new Paginator<>(
-                page,
-                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
-        );
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
     /**
@@ -148,7 +143,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public Paginator<PostSearchEntity> findPostByDescription(
+    public List<PostSearchEntity> findPostByDescription(
             final String description,
             final int page,
             @Nullable final PostField postField,
@@ -164,13 +159,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return new Paginator<>(
-                page,
-                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
-        );
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 
-    public Paginator<PostSearchEntity> getPostsByDate(
+    public List<PostSearchEntity> getPostsByDate(
             final LocalDate postDate,
             final int page,
             @Nullable final PostField postField,
@@ -186,9 +178,6 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return new Paginator<>(
-                page,
-                ElasticUtils.parseSearchResponse(response, PostSearchEntity.class)
-        );
+        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
     }
 }

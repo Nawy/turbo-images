@@ -25,7 +25,9 @@ public class PostSearchEntity {
     private String previewPath;
     private DeviceType deviceType;
     private List<String> tags;
+    private String authorId;
     private LocalDateTime createDate;
+    private boolean visible;
 
     public PostSearchEntity(
             @JsonProperty(value = "id") Long id,
@@ -37,7 +39,9 @@ public class PostSearchEntity {
             @JsonProperty(value = "preview_path", required = true) String previewPath,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
+            @JsonProperty(value = "author_id", required = true) String authorId,
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
+            @JsonProperty(value = "visible") boolean visible
     ) {
         this.id = id;
         this.name = name;
@@ -48,20 +52,9 @@ public class PostSearchEntity {
         this.previewPath = previewPath;
         this.deviceType = deviceType;
         this.tags = tags;
+        this.authorId = authorId;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
-    }
-
-    public PostSearchEntity(final Post post) {
-        this.id = post.getId();
-        this.name = post.getName();
-        this.description = post.getDescription();
-        this.ups = post.getUps();
-        this.downs = post.getDowns();
-        this.viewCount = post.getViewCount();
-        this.previewPath = post.getPreviewPath();
-        this.deviceType = post.getDeviceType();
-        this.tags = post.getTags();
-        this.createDate = firstNonNull(createDate, LocalDateTime.now());
+        this.visible = visible;
     }
 
     @JsonProperty("id")
@@ -107,6 +100,16 @@ public class PostSearchEntity {
     @JsonProperty("tags")
     public List<String> getTags() {
         return tags;
+    }
+
+    @JsonProperty("author_id")
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    @JsonProperty("visible")
+    public boolean isVisible() {
+        return visible;
     }
 
     @JsonProperty("create_date")
