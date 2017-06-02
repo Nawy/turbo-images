@@ -1,6 +1,7 @@
 package com.turbo.config;
 
 import com.turbo.model.exception.HttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,17 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalDefaultExceptionHandler {
     private Logger LOG = LoggerFactory.getLogger(GlobalDefaultExceptionHandler.class);
 
-    @ExceptionHandler(HttpException.class)
-    public ResponseEntity<Void> handleHttpException(HttpServletRequest request, HttpException e) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleHttpException(HttpServletRequest request, Exception exception) {
+
+        if (!(exception instanceof HttpException)) {
+            LOG.error("Unpredicted exception was thrown", exception);
+        }
+
+        HttpException e = exception instanceof HttpException ?
+                (HttpException) exception :
+                new InternalServerErrorHttpException("Unknown error");
+
         LOG.error(
                 "Exception occurred with HTTP ERROR:{} and request info: {}",
                 e.getHttpStatus().toString(),
@@ -26,5 +36,6 @@ public class GlobalDefaultExceptionHandler {
         );
         return ResponseEntity.status(e.getHttpStatus()).build();
     }
+
 
 }

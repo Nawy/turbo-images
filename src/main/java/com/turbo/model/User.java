@@ -1,13 +1,9 @@
 package com.turbo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.Session;
-import com.turbo.model.IdHolder;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -16,13 +12,12 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * This data for every foreign user
  */
-public class User implements IdHolder{
+public class User implements IdHolder {
 
-    private String searchId;
     private Long id;
     private String name;
     private String avatarPath;
-    private Map<String, Session> sessions; // last ip from what was came in
+    private String ip; // last ip from what was came in
     private String email;
     private String password;
     private LocalDateTime createDate;
@@ -31,29 +26,31 @@ public class User implements IdHolder{
     }
 
     public User(
-            @JsonProperty("search_id") String searchId,
             @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "password", required = true) String password,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
-            Map<String, Session> sessions
-
+            @JsonProperty(value = "ip", required = true) String ip
     ) {
-        this.searchId = searchId;
         this.id = id;
         this.name = name;
         this.avatarPath = avatarPath;
-        this.sessions = sessions;
         this.email = email;
         this.password = password;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
+        this.ip = ip;
     }
 
     @JsonProperty(value = "id")
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @JsonProperty(value = "name")
@@ -82,16 +79,7 @@ public class User implements IdHolder{
         return createDate;
     }
 
-    //don't return this to front-end
-    @JsonIgnore
-    public Map<String, Session> getSessions() {
-        return sessions;
-    }
-
-    // setters
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
+    public String getIp() {
+        return ip;
     }
 }
