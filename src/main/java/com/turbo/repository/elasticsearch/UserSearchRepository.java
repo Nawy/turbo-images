@@ -3,21 +3,16 @@ package com.turbo.repository.elasticsearch;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.entity.UserSearchEntity;
+import com.turbo.model.search.UserSearchEntity;
 import com.turbo.model.user.User;
-import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.field.UserField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
 import java.util.Objects;
 
 /**

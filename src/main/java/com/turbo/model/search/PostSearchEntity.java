@@ -1,10 +1,8 @@
-package com.turbo.model.search.entity;
+package com.turbo.model.search;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
-import com.turbo.model.Post;
-import com.turbo.model.search.SearchConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;

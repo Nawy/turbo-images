@@ -11,6 +11,10 @@ import com.turbo.repository.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by rakhmetov on 21.05.17.
@@ -56,6 +60,16 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         );
 
         return entity;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<T> bulkGet(long[] ids) {
+        Key[] keys = (Key[]) Arrays.stream(ids).mapToObj(this::generateKey).toArray();
+        Record[] records = client.get(null, keys);
+        return Arrays.stream(records)
+                .filter(Objects::nonNull)
+                .map(record -> (T) record.getValue(defaultBinName))
+                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

@@ -2,9 +2,7 @@ package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.Post;
-import com.turbo.model.page.Paginator;
-import com.turbo.model.search.entity.PostSearchEntity;
+import com.turbo.model.search.PostSearchEntity;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;

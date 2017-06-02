@@ -4,7 +4,7 @@ import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.entity.PostSearchEntity;
+import com.turbo.model.search.PostSearchEntity;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;

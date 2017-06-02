@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Session;
-import com.turbo.model.search.SearchIdentifier;
 import com.turbo.model.IdHolder;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * This data for every foreign user
  */
-public class User implements IdHolder, SearchIdentifier {
+public class User implements IdHolder{
 
     private String searchId;
     private Long id;
@@ -50,14 +49,6 @@ public class User implements IdHolder, SearchIdentifier {
         this.email = email;
         this.password = password;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
-    }
-
-    // getters
-
-    @Override
-    @JsonProperty(value = "search_id")
-    public String getSearchId() {
-        return searchId;
     }
 
     @JsonProperty(value = "id")
@@ -102,10 +93,5 @@ public class User implements IdHolder, SearchIdentifier {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public void setSearchId(String searchId) {
-        this.searchId = searchId;
     }
 }

@@ -2,7 +2,7 @@ package com.turbo.service;
 
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.entity.PostSearchEntity;
+import com.turbo.model.search.PostSearchEntity;
 import com.turbo.repository.elasticsearch.PostSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;

@@ -2,15 +2,10 @@ package com.turbo.repository.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.exception.data.NotFoundException;
-import com.turbo.model.search.SearchConverter;
-import com.turbo.model.search.SearchIdentifier;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
