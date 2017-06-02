@@ -15,7 +15,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
  * Created by ermolaev on 5/27/17.
  * Needs for send enough data in search engine
  */
-public class PostSearchEntity implements SearchConverter<Post> {
+public class PostSearchEntity {
     private Long id;
     private String name;
     private String description;
@@ -114,22 +114,4 @@ public class PostSearchEntity implements SearchConverter<Post> {
         return createDate;
     }
 
-    public Post getEntity() {
-        return new Post(
-                id,
-                null,
-                name,
-                description,
-                ups,
-                downs,
-                viewCount,
-                previewPath,
-                null,
-                deviceType,
-                tags,
-                null,
-                createDate,
-                true
-        );
-    }
 }

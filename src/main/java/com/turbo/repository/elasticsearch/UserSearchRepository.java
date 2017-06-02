@@ -2,10 +2,10 @@ package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.entity.UserSearchEntity;
 import com.turbo.model.user.User;
+import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.field.UserField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
@@ -37,49 +37,80 @@ public class UserSearchRepository extends AbstractSearchRepository {
         elasticClient
                 .prepareIndex(
                         config.getUserIndexName(),
-                        ElasticUtils.getElasticTypeWithCurrentDate(config.getUserTypeName())
+                        config.getUserTypeName()
                 )
                 .setSource(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
                 .get();
     }
 
-    public void updateUser(final User user) {
-        Objects.requireNonNull(user.getSearchId(), "for update user you need have search id");
-        final UserSearchEntity entity = new UserSearchEntity(user);
+    public void updateUser(final UserSearchEntity user) {
+        Objects.requireNonNull(user.getId(), "for update user you need have id");
 
-        elasticClient
-                .prepareUpdate(
+        final String elasticId = getUserElasticId(user.getId());
+        elasticClient.prepareUpdate(
+                config.getUserIndexName(),
+                config.getUserTypeName(),
+                elasticId
+        ).setDoc(
+                ElasticUtils.writeAsJsonBytes(user),
+                XContentType.JSON
+        ).setRetryOnConflict(5).get();
+    }
+
+    public String getUserElasticId(final Long id) {
+        return ElasticUtils.parseElasticIdSearchResponse(
+                searchUniqueByField(
                         config.getUserIndexName(),
-                        ElasticUtils.getElasticTypeWithDate(config.getUserTypeName(), user.getCreateDate().toLocalDate()),
-                        user.getSearchId()
+                        config.getUserTypeName(),
+                        UserField.ID.getFieldName(),
+                        id
                 )
-                .setDoc(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
-                .get();
+        );
     }
 
-    public User getUserByElasticId(final String searchId) {
-        GetResponse response = elasticClient
-                .prepareGet(
+    public UserSearchEntity getUserById(final String id) {
+        return ElasticUtils.parseUniqueSearchResponse(
+                searchUniqueByField(
                         config.getUserIndexName(),
-                        ElasticUtils.getElasticTypeWithoutDate(config.getUserTypeName()),
-                        searchId
-                ).get();
-
-        return ElasticUtils.parseGetResponse(response, UserSearchEntity.class);
+                        config.getUserTypeName(),
+                        UserField.ID.getFieldName(),
+                        id
+                ),
+                UserSearchEntity.class
+        );
     }
 
-    public User getUserById(final String id) {
-        SearchResponse response = elasticClient
-                .prepareSearch(config.getUserIndexName())
-                .setTypes(ElasticUtils.getElasticTypeWithoutDate(config.getUserTypeName()))
-                .setQuery(QueryBuilders.termQuery(UserField.ID.getFieldName(), id))
-                .get();
-
-        List<User> results = ElasticUtils.parseSearchResponse(response, UserSearchEntity.class);
-        return CollectionUtils.isEmpty(results) ? null : results.get(0);
+    public UserSearchEntity getUserByName(
+            final String name
+    ) {
+        SearchResponse response = getByField(
+                config.getUserIndexName(),
+                config.getUserTypeName(),
+                UserField.NAME.getFieldName(),
+                name,
+                1,
+                null,
+                null
+        );
+        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class);
     }
 
-    public Paginator<User> findUserByName(
+    public UserSearchEntity getUserByEmail(
+            final String email
+    ) {
+        SearchResponse response = getByField(
+                config.getUserIndexName(),
+                config.getUserTypeName(),
+                UserField.EMAIL.getFieldName(),
+                email,
+                1,
+                null,
+                null
+        );
+        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class);
+    }
+
+    public Paginator<UserSearchEntity> findUserByName(
             final String name,
             final int page,
             @Nullable final UserField userField,
@@ -87,7 +118,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
     ) {
         SearchResponse response = searchByField(
                 config.getUserIndexName(),
-                ElasticUtils.getElasticTypeWithoutDate(config.getUserTypeName()),
+                config.getUserTypeName(),
                 UserField.NAME.getFieldName(),
                 name,
                 page,

@@ -17,9 +17,8 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * Just post on site with picture and comments
  */
-public class Post implements Serializable, IdHolder, SearchIdentifier {
+public class Post implements Serializable, IdHolder {
 
-    private String searchId;
     private Long id;
     private String name;
     private String description;
@@ -37,7 +36,6 @@ public class Post implements Serializable, IdHolder, SearchIdentifier {
 
     public Post(
             @JsonProperty(value = "id") Long id,
-            @JsonProperty("search_id") String searchId,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "ups", required = true) long ups,
@@ -52,7 +50,6 @@ public class Post implements Serializable, IdHolder, SearchIdentifier {
             @JsonProperty(value = "visible", defaultValue = "false") boolean visible
     ) {
         this.id = id;
-        this.searchId = searchId;
         this.name = name;
         this.description = description;
         this.ups = ups;
@@ -125,17 +122,6 @@ public class Post implements Serializable, IdHolder, SearchIdentifier {
     @JsonProperty("author_id")
     public String getAuthorId() {
         return authorId;
-    }
-
-    @Override
-    @JsonProperty("search_id")
-    public String getSearchId() {
-        return this.searchId;
-    }
-
-    @Override
-    public void setSearchId(String searchId) {
-        this.searchId = searchId;
     }
 
     @JsonProperty("create_date")

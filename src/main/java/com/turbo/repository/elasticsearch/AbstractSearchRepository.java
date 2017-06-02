@@ -13,6 +13,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -27,9 +29,30 @@ public abstract class AbstractSearchRepository {
         this.config = config;
     }
 
-    protected SearchResponse searchByDate(
+    protected SearchResponse searchUniqueByField(
             final String indexName,
             final String typeName,
+            final String fieldName,
+            final Object fieldValue
+    ) {
+        SearchResponse response = elasticClient
+                .prepareSearch(indexName)
+                .setTypes(typeName)
+                .setQuery(
+                        QueryBuilders.matchQuery(fieldName, fieldValue)
+                )
+                .setFrom(0)
+                .setSize(1)
+                .get();
+
+        return response;
+    }
+
+    protected SearchResponse searchByField(
+            final String indexName,
+            final String typeName,
+            final String fieldName,
+            final String fieldValue,
             final int page,
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
@@ -42,7 +65,7 @@ public abstract class AbstractSearchRepository {
                 .prepareSearch(indexName)
                 .setTypes(typeName)
                 .setQuery(
-                        QueryBuilders.matchAllQuery()
+                        QueryBuilders.matchQuery(fieldName, fieldValue)
                 )
                 .setFrom(pageObject.getOffset())
                 .setSize(pageObject.getSize());
@@ -62,7 +85,7 @@ public abstract class AbstractSearchRepository {
         return request.get();
     }
 
-    protected SearchResponse searchByField(
+    protected SearchResponse getByField(
             final String indexName,
             final String typeName,
             final String fieldName,
@@ -77,9 +100,9 @@ public abstract class AbstractSearchRepository {
         }
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(indexName)
-                .setTypes(ElasticUtils.getElasticTypeWithoutDate(typeName))
+                .setTypes(typeName)
                 .setQuery(
-                        QueryBuilders.matchQuery(fieldName, fieldValue)
+                        QueryBuilders.termQuery(fieldName, fieldValue)
                 )
                 .setFrom(pageObject.getOffset())
                 .setSize(pageObject.getSize());

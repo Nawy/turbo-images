@@ -4,6 +4,7 @@ import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.page.Page;
 import com.turbo.model.page.Paginator;
+import com.turbo.model.search.entity.PostSearchEntity;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.PostSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
@@ -11,6 +12,7 @@ import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -44,9 +46,14 @@ public class PostService {
         return postSearchRepository.getPostById(id);
     }
 
-    public Paginator<Post> getMostViral(int page, SearchSort sort) {
+    public Paginator<PostSearchEntity> getMostViral(int page, SearchSort sort) {
         //fixme
-        return postSearchRepository.getLastPosts(page, 0, PostField.RAITING, SearchOrder.DESC);
+        return postSearchRepository.getPostsByDate(
+                LocalDate.now(),
+                page,
+                PostField.RAITING,
+                SearchOrder.DESC
+        );
     }
 
     public Post update(Post post) {

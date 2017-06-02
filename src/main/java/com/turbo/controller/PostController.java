@@ -4,6 +4,7 @@ import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.exception.http.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
+import com.turbo.model.search.entity.PostSearchEntity;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PostController {
     }
 
     @GetMapping("/get/viral/post")
-    public Paginator<Post> getMostViral(
+    public Paginator<PostSearchEntity> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort
     ) {

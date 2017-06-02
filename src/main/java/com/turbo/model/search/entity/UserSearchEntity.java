@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * Created by ermolaev on 5/27/17.
  * Needs for send enough data in search engine
  */
-public class UserSearchEntity implements SearchConverter<User> {
+public class UserSearchEntity {
 
     private Long id;
     private String name;
@@ -76,17 +76,4 @@ public class UserSearchEntity implements SearchConverter<User> {
         return createDate;
     }
 
-    @Override
-    public User getEntity() {
-        return new User(
-                null,
-                id,
-                name,
-                avatarPath,
-                email,
-                password,
-                createDate,
-                null
-        );
-    }
 }
