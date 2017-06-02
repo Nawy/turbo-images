@@ -2,7 +2,7 @@ package com.turbo.model.search;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.user.User;
+import com.turbo.model.User;
 
 import java.time.LocalDateTime;
 

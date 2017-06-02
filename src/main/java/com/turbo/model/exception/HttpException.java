@@ -1,4 +1,4 @@
-package com.turbo.model.exception.http;
+package com.turbo.model.exception;
 
 import org.springframework.http.HttpStatus;
 

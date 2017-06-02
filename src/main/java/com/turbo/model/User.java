@@ -1,4 +1,4 @@
-package com.turbo.model.user;
+package com.turbo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

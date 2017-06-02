@@ -2,7 +2,7 @@ package com.turbo.repository.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.turbo.model.exception.http.InternalServerErrorHttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

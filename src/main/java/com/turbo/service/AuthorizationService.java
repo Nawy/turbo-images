@@ -1,11 +1,11 @@
 package com.turbo.service;
 
 import com.turbo.model.Session;
-import com.turbo.model.exception.http.ForbiddenHttpException;
-import com.turbo.model.exception.http.InternalServerErrorHttpException;
-import com.turbo.model.exception.http.NotFoundHttpException;
-import com.turbo.model.exception.http.UnauthorizedHttpException;
-import com.turbo.model.user.User;
+import com.turbo.model.exception.ForbiddenHttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.model.exception.UnauthorizedHttpException;
+import com.turbo.model.User;
 import com.turbo.repository.aerospike.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,10 +2,9 @@ package com.turbo.repository.elasticsearch;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.exception.data.PageSizeLimitException;
+import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.page.Page;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
-import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -13,8 +12,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -58,9 +55,6 @@ public abstract class AbstractSearchRepository {
             @Nullable final SearchOrder searchOrder
     ) {
         Page pageObject = new Page(page);
-        if(pageObject.getSize() >= config.getMaxSizePostsPerPage()) {
-            throw new PageSizeLimitException();
-        }
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(indexName)
                 .setTypes(typeName)
@@ -95,9 +89,6 @@ public abstract class AbstractSearchRepository {
             @Nullable final SearchOrder searchOrder
     ) {
         Page pageObject = new Page(page);
-        if(pageObject.getSize() >= config.getMaxSizePostsPerPage()) {
-            throw new PageSizeLimitException();
-        }
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(indexName)
                 .setTypes(typeName)

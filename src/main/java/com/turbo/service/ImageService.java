@@ -1,7 +1,7 @@
 package com.turbo.service;
 
 import com.turbo.model.Image;
-import com.turbo.model.exception.http.InternalServerErrorHttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.repository.aerospike.ImageRepository;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;

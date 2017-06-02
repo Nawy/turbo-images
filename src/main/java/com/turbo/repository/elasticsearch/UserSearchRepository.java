@@ -4,7 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.UserSearchEntity;
-import com.turbo.model.user.User;
+import com.turbo.model.User;
 import com.turbo.repository.elasticsearch.field.UserField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;

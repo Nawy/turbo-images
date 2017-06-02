@@ -6,7 +6,7 @@ import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.policy.WritePolicy;
 import com.turbo.model.IdHolder;
-import com.turbo.model.exception.http.InternalServerErrorHttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.repository.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 

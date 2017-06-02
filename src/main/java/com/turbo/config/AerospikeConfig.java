@@ -16,7 +16,6 @@ public class AerospikeConfig {
 
     private String host;
     private int port;
-    private boolean enabled;
 
     @Bean
     public AerospikeClient aerospikeClient() throws AerospikeException {
@@ -37,9 +36,5 @@ public class AerospikeConfig {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 }

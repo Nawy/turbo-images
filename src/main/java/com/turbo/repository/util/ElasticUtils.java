@@ -1,7 +1,7 @@
 package com.turbo.repository.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.turbo.model.exception.data.NotFoundException;
+import com.turbo.model.exception.NotFoundHttpException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 
@@ -67,7 +67,7 @@ public abstract class ElasticUtils {
             throw new RuntimeException(e);
         }
 
-        throw new NotFoundException("Cannot find one " + clazz.getName());
+        throw new NotFoundHttpException("Cannot find one " + clazz.getName());
     }
 
     /**
@@ -85,6 +85,6 @@ public abstract class ElasticUtils {
             throw new RuntimeException(e);
         }
 
-        throw new NotFoundException("Cannot find elastic id ");
+        throw new NotFoundHttpException("Cannot find elastic id ");
     }
 }

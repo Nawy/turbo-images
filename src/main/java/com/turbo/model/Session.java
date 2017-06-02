@@ -1,9 +1,6 @@
 package com.turbo.model;
 
-import com.turbo.model.user.User;
-
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Implements serializable for Aerospike serialization

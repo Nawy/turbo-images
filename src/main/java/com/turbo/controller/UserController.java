@@ -3,18 +3,15 @@ package com.turbo.controller;
 import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.SecurityRole;
-import com.turbo.model.exception.http.BadRequestHttpException;
-import com.turbo.model.page.Page;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.user.User;
+import com.turbo.model.User;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by rakhmetov on 24.05.17.
