@@ -113,15 +113,4 @@ public abstract class AbstractSearchRepository {
 
         return request.get();
     }
-
-    protected SearchResponse getByValues(
-            final String indexName,
-            final String typeName,
-            final String fieldName,
-            final List<String> values,
-            @Nullable final String fieldNameSort,
-            @Nullable final SearchOrder searchOrder
-    ) {
-
-    }
 }

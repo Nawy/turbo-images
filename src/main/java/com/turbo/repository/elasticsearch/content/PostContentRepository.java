@@ -3,13 +3,20 @@ package com.turbo.repository.elasticsearch.content;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
+import com.turbo.model.Post;
+import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.model.page.Page;
 import com.turbo.model.search.content.PostContentEntity;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +31,6 @@ import java.util.stream.Collectors;
 @Repository
 public class PostContentRepository extends AbstractSearchRepository {
 
-    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     @Autowired
     public PostContentRepository(ElasticsearchConfig config) {
         super(config.getElasticClient(), config);
@@ -36,17 +41,17 @@ public class PostContentRepository extends AbstractSearchRepository {
      * @param post
      * @return
      */
-    public void addPost(final PostContentEntity post) {
+    public void addPost(final Post post) {
         elasticClient
                 .prepareIndex(
                         config.getPostIndexName(),
                         config.getPostTypeName()
                 )
-                .setSource(ElasticUtils.writeAsJsonBytes(post), XContentType.JSON)
+                .setSource(ElasticUtils.writeAsJsonBytes(new PostContentEntity(post)), XContentType.JSON)
                 .get();
     }
 
-    public void updatePost(final PostContentEntity post) {
+    public void updatePost(final Post post) {
         Objects.requireNonNull(post.getId(), "for update post you need have id for update");
         final String elasticId = getPostElasticId(post.getId());
         elasticClient.prepareUpdate(
@@ -54,20 +59,22 @@ public class PostContentRepository extends AbstractSearchRepository {
                 config.getPostTypeName(),
                 elasticId
         ).setDoc(
-                ElasticUtils.writeAsJsonBytes(post),
+                ElasticUtils.writeAsJsonBytes(new PostContentEntity(post)),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
 
     public String getPostElasticId(final Long id) {
-        return ElasticUtils.parseElasticIdSearchResponse(
-                searchUniqueByField(
-                        config.getPostIndexName(),
-                        config.getPostTypeName(),
-                        PostField.ID.getFieldName(),
-                        id
-                )
+        final SearchResponse response = searchUniqueByField(
+                config.getPostIndexName(),
+                config.getPostTypeName(),
+                PostField.ID.getFieldName(),
+                id
         );
+        if(response.getHits().getTotalHits() <= 0) {
+            throw new InternalServerErrorHttpException("Not found post by id=" + id);
+        }
+        return ElasticUtils.parseElasticIdSearchResponse(response);
     }
 
     /**
@@ -155,10 +162,11 @@ public class PostContentRepository extends AbstractSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
+
         final SearchResponse response = searchByField(
                 config.getPostIndexName(),
                 config.getPostTypeName(),
-                PostField.DESCRIPTION.getFieldName(),
+                PostField.DESCRIPTIONS.getFieldName(),
                 description,
                 page,
                 Objects.isNull(postField) ? null : postField.getFieldName(),
@@ -173,18 +181,36 @@ public class PostContentRepository extends AbstractSearchRepository {
 
     public List<Long> findPostByTags(
             final List<String> tags,
+            final int page,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        final SearchResponse response = searchByField(
-                config.getPostIndexName(),
-                config.getPostTypeName(),
-                PostField.DESCRIPTION.getFieldName(),
-                description,
-                page,
-                Objects.isNull(postField) ? null : postField.getFieldName(),
-                searchOrder
-        );
+        final Page pageObject = new Page(page);
+        final SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getPostIndexName())
+                .setTypes(config.getPostTypeName())
+                .setQuery(
+                        QueryBuilders.termsQuery(
+                                PostField.TAGS.getFieldName(),
+                                tags.toArray()
+                        )
+                )
+                .setFrom(pageObject.getOffset())
+                .setSize(pageObject.getSize());
+
+        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+            request.addSort(
+                    SortBuilders
+                            .fieldSort(postField.getFieldName())
+                            .order(
+                                    searchOrder == SearchOrder.DESC ?
+                                            SortOrder.DESC :
+                                            SortOrder.ASC
+                            )
+            );
+        }
+
+        final SearchResponse response = request.get();
 
         return ElasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()

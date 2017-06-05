@@ -20,12 +20,12 @@ public class Post implements Serializable, IdHolder {
 
     private Long id;
     private String name;
-    private String description;
     private long ups;
     private long downs;
-    private long viewCount;
+    private long rating;
+    private long views;
     private String previewPath;
-    private List<String> picturePath;
+    private List<UserImage> images;
     private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
@@ -36,12 +36,12 @@ public class Post implements Serializable, IdHolder {
     public Post(
             @JsonProperty(value = "id") Long id,
             @JsonProperty(value = "name", required = true) String name,
-            @JsonProperty(value = "description", required = true) String description,
             @JsonProperty(value = "ups", required = true) long ups,
             @JsonProperty(value = "downs", required = true) long downs,
-            @JsonProperty(value = "view_count", required = true) long viewCount,
+            @JsonProperty(value = "rating", required = true) long rating,
+            @JsonProperty(value = "views", required = true) long views,
             @JsonProperty(value = "preview_path", required = true) String previewPath,
-            @JsonProperty(value = "picture_paths", required = true) List<String> picturePaths,
+            @JsonProperty(value = "images", required = true) List<UserImage> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "author_id", required = true) String authorId,
@@ -50,12 +50,12 @@ public class Post implements Serializable, IdHolder {
     ) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.ups = ups;
         this.downs = downs;
-        this.viewCount = viewCount;
+        this.rating = rating;
+        this.views = views;
         this.previewPath = previewPath;
-        this.picturePaths = picturePaths;
+        this.images = images;
         this.deviceType = deviceType;
         this.tags = tags;
         this.authorId = authorId;
@@ -78,11 +78,6 @@ public class Post implements Serializable, IdHolder {
         return name;
     }
 
-    @JsonProperty("description")
-    public String getDescription() {
-        return description;
-    }
-
     @JsonProperty("ups")
     public long getUps() {
         return ups;
@@ -98,14 +93,19 @@ public class Post implements Serializable, IdHolder {
         return previewPath;
     }
 
-    @JsonProperty("view_count")
-    public long getViewCount() {
-        return viewCount;
+    @JsonProperty("rating")
+    public long getRating() {
+        return rating;
     }
 
-    @JsonProperty("picture_paths")
-    public List<String> getPicturePaths() {
-        return picturePaths;
+    @JsonProperty("views")
+    public long getViews() {
+        return views;
+    }
+
+    @JsonProperty("images")
+    public List<UserImage> getImages() {
+        return images;
     }
 
     @JsonProperty("client_type")
@@ -142,10 +142,14 @@ public class Post implements Serializable, IdHolder {
         Post post = (Post) o;
 
         return new EqualsBuilder()
-                .append(authorId, post.authorId)
+                .append(ups, post.ups)
+                .append(downs, post.downs)
+                .append(rating, post.rating)
+                .append(views, post.views)
+                .append(visible, post.visible)
                 .append(id, post.id)
                 .append(name, post.name)
-                .append(tags, post.tags)
+                .append(authorId, post.authorId)
                 .isEquals();
     }
 
@@ -154,7 +158,11 @@ public class Post implements Serializable, IdHolder {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(name)
-                .append(tags)
+                .append(ups)
+                .append(downs)
+                .append(rating)
+                .append(views)
+                .append(visible)
                 .append(authorId)
                 .toHashCode();
     }

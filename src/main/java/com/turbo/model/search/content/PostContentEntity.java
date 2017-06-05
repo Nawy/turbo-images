@@ -3,9 +3,12 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
+import com.turbo.model.Post;
+import com.turbo.model.UserImage;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
@@ -16,8 +19,8 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 public class PostContentEntity {
     private Long id;
     private String name;
-    private String description;
     private DeviceType deviceType;
+    private List<String> descriptions;
     private List<String> tags;
     private String authorId;
     private Long ups;
@@ -29,7 +32,7 @@ public class PostContentEntity {
     public PostContentEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
-            @JsonProperty("description") String description,
+            @JsonProperty("descriptions") List<String> descriptions,
             @JsonProperty("device_type") DeviceType deviceType,
             @JsonProperty("tags") List<String> tags,
             @JsonProperty("author_id") String authorId,
@@ -37,11 +40,11 @@ public class PostContentEntity {
             @JsonProperty("downs") Long downs,
             @JsonProperty("rating") Long rating,
             @JsonProperty("views") Long views,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm") LocalDateTime createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.descriptions = descriptions;
         this.deviceType = deviceType;
         this.tags = tags;
         this.authorId = authorId;
@@ -50,6 +53,23 @@ public class PostContentEntity {
         this.rating = rating;
         this.views = views;
         this.createDate = createDate;
+    }
+
+    public PostContentEntity(final Post post) {
+        this.id = post.getId();
+        this.name = post.getName();
+        this.descriptions = post.getImages()
+                .stream()
+                .map(UserImage::getDescription)
+                .collect(Collectors.toList());
+        this.deviceType = post.getDeviceType();
+        this.tags = post.getTags();
+        this.authorId = post.getAuthorId();
+        this.ups = post.getUps();
+        this.downs = post.getDowns();
+        this.rating = post.getRating();
+        this.views = post.getViews();
+        this.createDate = post.getCreateDate();
     }
 
     @JsonProperty("id")
@@ -62,9 +82,9 @@ public class PostContentEntity {
         return name;
     }
 
-    @JsonProperty("description")
-    public String getDescription() {
-        return description;
+    @JsonProperty("descriptions")
+    public List<String> getDescriptions() {
+        return descriptions;
     }
 
     @JsonProperty("device_type")

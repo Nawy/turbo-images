@@ -7,10 +7,14 @@ public enum PostField {
 
     ID("id"),
     NAME("name"),
-    RAITING("rating"), //FIXME such field don't exists anymore???
-    AUTHOR("author_id"), //FIXME NEED SEARCH BY POST authorId!!!! JUst created enum and don't know will it work?
-    CREATION_DATE("create_date"),
-    DESCRIPTION("description");
+    DESCRIPTIONS("descriptions"),
+    RAITING("rating"),
+    VIEWS("views"),
+    UPS("ups"),
+    DOWNS("downs"),
+    AUTHOR("author_id"),
+    TAGS("tags"),
+    CREATION_DATE("create_date");
 
     private String fieldName;
 
