@@ -1,8 +1,10 @@
-package com.turbo.repository.elasticsearch;
+package com.turbo.repository.elasticsearch.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.search.PostSearchEntity;
+import com.turbo.model.search.content.PostContentEntity;
+import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
@@ -11,21 +13,21 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by ermolaev on 5/15/17.
  */
 @Repository
-public class PostSearchRepository extends AbstractSearchRepository {
+public class PostContentRepository extends AbstractSearchRepository {
 
     private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
-    public PostSearchRepository(ElasticsearchConfig config) {
+    public PostContentRepository(ElasticsearchConfig config) {
         super(config.getElasticClient(), config);
     }
 
@@ -34,7 +36,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param post
      * @return
      */
-    public void addPost(final PostSearchEntity post) {
+    public void addPost(final PostContentEntity post) {
         elasticClient
                 .prepareIndex(
                         config.getPostIndexName(),
@@ -44,7 +46,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .get();
     }
 
-    public void updatePost(final PostSearchEntity post) {
+    public void updatePost(final PostContentEntity post) {
         Objects.requireNonNull(post.getId(), "for update post you need have id for update");
         final String elasticId = getPostElasticId(post.getId());
         elasticClient.prepareUpdate(
@@ -73,7 +75,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param id
      * @return
      */
-    public PostSearchEntity getPostById(final Long id) {
+    public PostContentEntity getPostById(final Long id) {
         return ElasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getPostIndexName(),
@@ -81,11 +83,11 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         PostField.ID.getFieldName(),
                         id
                 ),
-                PostSearchEntity.class
+                PostContentEntity.class
         );
     }
 
-    public List<PostSearchEntity> getPostByAuthor(
+    public List<Long> getPostByAuthor(
             final String authorId,
             final int page,
             @Nullable final PostField postField,
@@ -101,7 +103,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -113,7 +118,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<PostSearchEntity> findPostByName(
+    public List<Long> findPostByName(
             final String name,
             final int page,
             @Nullable final PostField postField,
@@ -129,7 +134,10 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -141,7 +149,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param searchOrder
      * @return list of post
      */
-    public List<PostSearchEntity> findPostByDescription(
+    public List<Long> findPostByDescription(
             final String description,
             final int page,
             @Nullable final PostField postField,
@@ -157,25 +165,45 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
     }
 
-    public List<PostSearchEntity> getPostsByDate(
-            final LocalDate postDate,
-            final int page,
+    public List<Long> findPostByTags(
+            final List<String> tags,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
         final SearchResponse response = searchByField(
                 config.getPostIndexName(),
                 config.getPostTypeName(),
-                PostField.CREATION_DATE.getFieldName(),
-                dateFormatter.format(postDate),
+                PostField.DESCRIPTION.getFieldName(),
+                description,
                 page,
                 Objects.isNull(postField) ? null : postField.getFieldName(),
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, PostSearchEntity.class);
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
+    // static classes
+
+    private static class ElasticId {
+        private Long id;
+
+        public ElasticId(@JsonProperty("id") Long id) {
+            this.id = id;
+        }
+
+        @JsonProperty("id")
+        public Long getId() {
+            return id;
+        }
     }
 }

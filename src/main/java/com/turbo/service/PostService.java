@@ -3,7 +3,7 @@ package com.turbo.service;
 import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.PostSearchEntity;
+import com.turbo.model.search.content.PostContentEntity;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
@@ -23,15 +23,15 @@ public class PostService {
     private final PostSearchService postSearchService;
     private final PostRepository postRepository;
 
-    private final Function<Post, PostSearchEntity> mapPostToSearch;
-    private final Function<PostSearchEntity, Post> mapSearchToPost;
+    private final Function<Post, PostContentEntity> mapPostToSearch;
+    private final Function<PostContentEntity, Post> mapSearchToPost;
 
     @Autowired
     public PostService(PostSearchService postSearchService, PostRepository postRepository) {
         this.postSearchService = postSearchService;
         this.postRepository = postRepository;
 
-        this.mapPostToSearch = p -> new PostSearchEntity(
+        this.mapPostToSearch = p -> new PostContentEntity(
                 p.getId(),
                 p.getName(),
                 p.getDescription(),

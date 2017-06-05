@@ -25,7 +25,7 @@ public class Post implements Serializable, IdHolder {
     private long downs;
     private long viewCount;
     private String previewPath;
-    private List<String> picturePaths;
+    private List<String> picturePath;
     private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
@@ -145,7 +145,6 @@ public class Post implements Serializable, IdHolder {
                 .append(authorId, post.authorId)
                 .append(id, post.id)
                 .append(name, post.name)
-                .append(picturePaths, post.picturePaths)
                 .append(tags, post.tags)
                 .isEquals();
     }
@@ -155,7 +154,6 @@ public class Post implements Serializable, IdHolder {
         return new HashCodeBuilder(17, 37)
                 .append(id)
                 .append(name)
-                .append(picturePaths)
                 .append(tags)
                 .append(authorId)
                 .toHashCode();

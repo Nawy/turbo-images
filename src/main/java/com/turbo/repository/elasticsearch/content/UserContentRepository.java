@@ -1,10 +1,11 @@
-package com.turbo.repository.elasticsearch;
+package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.UserSearchEntity;
+import com.turbo.model.search.content.UserContentEntity;
 import com.turbo.model.User;
+import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.field.UserField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
@@ -19,15 +20,15 @@ import java.util.Objects;
  * Created by ermolaev on 5/25/17.
  */
 @Repository
-public class UserSearchRepository extends AbstractSearchRepository {
+public class UserContentRepository extends AbstractSearchRepository {
 
     @Autowired
-    public UserSearchRepository(ElasticsearchConfig config) {
+    public UserContentRepository(ElasticsearchConfig config) {
         super(config.getElasticClient(), config);
     }
 
     public void addUser(final User user) {
-        final UserSearchEntity entity = new UserSearchEntity(user);
+        final UserContentEntity entity = new UserContentEntity(user);
 
         elasticClient
                 .prepareIndex(
@@ -38,7 +39,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 .get();
     }
 
-    public void updateUser(final UserSearchEntity user) {
+    public void updateUser(final UserContentEntity user) {
         Objects.requireNonNull(user.getId(), "for update user you need have id");
 
         final String elasticId = getUserElasticId(user.getId());
@@ -63,7 +64,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         );
     }
 
-    public UserSearchEntity getUserById(final String id) {
+    public UserContentEntity getUserById(final String id) {
         return ElasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getUserIndexName(),
@@ -71,11 +72,11 @@ public class UserSearchRepository extends AbstractSearchRepository {
                         UserField.ID.getFieldName(),
                         id
                 ),
-                UserSearchEntity.class
+                UserContentEntity.class
         );
     }
 
-    public UserSearchEntity getUserByName(
+    public UserContentEntity getUserByName(
             final String name
     ) {
         SearchResponse response = getByField(
@@ -87,10 +88,10 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 null,
                 null
         );
-        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class);
+        return ElasticUtils.parseUniqueSearchResponse(response, UserContentEntity.class);
     }
 
-    public UserSearchEntity getUserByEmail(
+    public UserContentEntity getUserByEmail(
             final String email
     ) {
         SearchResponse response = getByField(
@@ -102,10 +103,10 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 null,
                 null
         );
-        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class);
+        return ElasticUtils.parseUniqueSearchResponse(response, UserContentEntity.class);
     }
 
-    public Paginator<UserSearchEntity> findUserByName(
+    public Paginator<UserContentEntity> findUserByName(
             final String name,
             final int page,
             @Nullable final UserField userField,
@@ -122,7 +123,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         );
         return new Paginator<>(
                 page,
-                ElasticUtils.parseSearchResponse(response, UserSearchEntity.class)
+                ElasticUtils.parseSearchResponse(response, UserContentEntity.class)
         );
     }
 }

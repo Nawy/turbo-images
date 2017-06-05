@@ -12,6 +12,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -111,5 +112,16 @@ public abstract class AbstractSearchRepository {
         }
 
         return request.get();
+    }
+
+    protected SearchResponse getByValues(
+            final String indexName,
+            final String typeName,
+            final String fieldName,
+            final List<String> values,
+            @Nullable final String fieldNameSort,
+            @Nullable final SearchOrder searchOrder
+    ) {
+
     }
 }
