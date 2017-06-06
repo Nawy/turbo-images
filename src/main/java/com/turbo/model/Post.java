@@ -24,7 +24,6 @@ public class Post implements Serializable, IdHolder {
     private long downs;
     private long rating;
     private long views;
-    private String previewPath;
     private List<UserImage> images;
     private DeviceType deviceType;
     private List<String> tags;
@@ -40,7 +39,6 @@ public class Post implements Serializable, IdHolder {
             @JsonProperty(value = "downs", required = true) long downs,
             @JsonProperty(value = "rating", required = true) long rating,
             @JsonProperty(value = "views", required = true) long views,
-            @JsonProperty(value = "preview_path", required = true) String previewPath,
             @JsonProperty(value = "images", required = true) List<UserImage> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
@@ -54,7 +52,6 @@ public class Post implements Serializable, IdHolder {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.previewPath = previewPath;
         this.images = images;
         this.deviceType = deviceType;
         this.tags = tags;
@@ -86,11 +83,6 @@ public class Post implements Serializable, IdHolder {
     @JsonProperty("downs")
     public long getDowns() {
         return downs;
-    }
-
-    @JsonProperty("preview_path")
-    public String getPreviewPath() {
-        return previewPath;
     }
 
     @JsonProperty("rating")

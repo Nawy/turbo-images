@@ -8,21 +8,17 @@ import org.springframework.stereotype.Component;
 /**
  * Created by rakhmetov on 01.06.17.
  */
-@Component
 public class HashIdService {
 
-    private final Hashids hashids;
+    //make immutable from properties becose if someone change sault everything will goes to hell :D
+    private static final Hashids hashids = new Hashids("Kibana_ZAuruzsxca_12437r!#^");
 
-    @Autowired
-    public HashIdService(@Value("${hash.id-salt}") String salt) {
-        hashids = new Hashids(salt);
-    }
-
-    public String encodeHashId(long id) {
+    public static String encodeHashId(Long id) {
+        if (id == null) return null;
         return hashids.encode(id);
     }
 
-    public long decodeHashId(String id) {
+    public static long decodeHashId(String id) {
         return hashids.decode(id)[0];
     }
 }

@@ -63,10 +63,21 @@ public class PostService {
         );
     }
 
-    public Post addPost(final Post post) {
-        final Post postWithId = postRepository.save(post);
+    public Post save(Post post) {
+        return post.getId() == null ?
+                update(post) :
+                addPost(post);
+    }
+
+    private Post addPost(Post post) {
+        Post postWithId = postRepository.save(post);
         postSearchService.addPost(postWithId, mapPostToSearch);
         return postWithId;
+    }
+
+    private Post update(Post post) {
+        postSearchService.updatePost(post, mapPostToSearch);
+        return postRepository.save(post);
     }
 
     public Post getPostById(final long id) {
@@ -88,11 +99,6 @@ public class PostService {
                 SearchOrder.DESC,
                 mapSearchToPost
         );
-    }
-
-    public Post update(Post post) {
-        postSearchService.updatePost(post, mapPostToSearch);
-        return postRepository.save(post);
     }
 
     public Paginator<Post> getUserPosts(int page, long userId, SearchSort sort) {

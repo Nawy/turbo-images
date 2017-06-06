@@ -2,7 +2,7 @@ package com.turbo.controller;
 
 import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
-import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.model.dto.PostDto;
 import com.turbo.model.page.Paginator;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
-    private final HashIdService hashIdService;
 
     @Autowired
-    public PostController(PostService postService, HashIdService hashIdService) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.hashIdService = hashIdService;
     }
 
     @GetMapping("/get/viral/post")
@@ -33,28 +31,23 @@ public class PostController {
     }
 
     @GetMapping("/get/post/{id}")
-    public Post get(@PathVariable("id") String id) {
-        return postService.getPostById(
-                hashIdService.decodeHashId(id)
+    public PostDto get(@PathVariable("id") String id) {
+        return PostDto.from(
+                postService.getPostById(HashIdService.decodeHashId(id))
         );
     }
 
-    @PostMapping("/add/post")
-    public Post add(@RequestBody Post post) {
-        return postService.addPost(post);
-    }
-
-    @PostMapping("/update/post")
-    public Post update(@RequestBody Post post) {
-        if (post.getId() == null) throw new BadRequestHttpException("id can't be null");
-        return postService.update(post);
+    @PostMapping("/save/post")
+    public PostDto save(@RequestBody Post post) {
+        return PostDto.from(
+                postService.save(post)
+        );
     }
 
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") String id) {
         postService.delete(
-                hashIdService.decodeHashId(id)
+                HashIdService.decodeHashId(id)
         );
     }
-
 }

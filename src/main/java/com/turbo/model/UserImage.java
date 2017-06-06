@@ -2,33 +2,48 @@ package com.turbo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * Created by ermolaev on 6/5/17.
  */
-public class UserImage {
+public class UserImage implements Serializable, IdHolder {
 
-    private long id;
-    private Image image;
+    private Long id;
+    private String image; // image url/hash?
+    private String smallImage; // small preview image url/hash?
     private String description;
-    private String userId;
+    private long userId;
 
     public UserImage(
-            @JsonProperty("id") long id,
-            @JsonProperty("image") Image image,
+            @JsonProperty("id") Long id,
+            @JsonProperty(value = "image",required = true) String image,
             @JsonProperty("description") String description,
-            @JsonProperty("user_id") String userId
+            @JsonProperty(value = "small_image",required = true) String smallImage,
+            @JsonProperty(value = "user_id",required = true) long userId
     ) {
         this.id = id;
         this.image = image;
+        this.smallImage = smallImage;
         this.description = description;
         this.userId = userId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public Image getImage() {
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @JsonProperty("small_image")
+    public String getSmallImage() {
+        return smallImage;
+    }
+
+    public String getImage() {
         return image;
     }
 
@@ -36,7 +51,8 @@ public class UserImage {
         return description;
     }
 
-    public String getUserId() {
+    @JsonProperty("user_id")
+    public long getUserId() {
         return userId;
     }
 }
