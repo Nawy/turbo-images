@@ -23,44 +23,10 @@ public class PostService {
     private final PostSearchService postSearchService;
     private final PostRepository postRepository;
 
-    private final Function<Post, PostContentEntity> mapPostToSearch;
-    private final Function<PostContentEntity, Post> mapSearchToPost;
-
     @Autowired
     public PostService(PostSearchService postSearchService, PostRepository postRepository) {
         this.postSearchService = postSearchService;
         this.postRepository = postRepository;
-
-        this.mapPostToSearch = p -> new PostContentEntity(
-                p.getId(),
-                p.getName(),
-                p.getDescription(),
-                p.getUps(),
-                p.getDowns(),
-                p.getViewCount(),
-                p.getPreviewPath(),
-                p.getDeviceType(),
-                p.getTags(),
-                p.getAuthorId(),
-                p.getCreateDate(),
-                p.isVisible()
-        );
-
-        this.mapSearchToPost = p -> new Post(
-                p.getId(),
-                p.getName(),
-                p.getDescription(),
-                p.getUps(),
-                p.getDowns(),
-                p.getViewCount(),
-                p.getPreviewPath(),
-                null,
-                p.getDeviceType(),
-                p.getTags(),
-                p.getAuthorId(),
-                p.getCreateDate(),
-                p.isVisible()
-        );
     }
 
     public Post save(Post post) {

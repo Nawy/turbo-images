@@ -1,5 +1,7 @@
 package com.turbo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -8,22 +10,30 @@ import java.io.Serializable;
 public class Image implements Serializable, IdHolder {
 
     private Long hash;
-    private String path;
+    private String fullImagePath;
+    private String smallImagePath;
 
     public Image() {
     }
 
-    public Image(Long hash, String path) {
+    public Image(Long hash, String fullImagePath, String smallImagePath) {
         this.hash = hash;
-        this.path = path;
+        this.fullImagePath = fullImagePath;
+        this.smallImagePath = smallImagePath;
     }
 
     public Long getHash() {
         return hash;
     }
 
-    public String getPath() {
-        return path;
+    @JsonProperty("full_image_path")
+    public String getFullImagePath() {
+        return fullImagePath;
+    }
+
+    @JsonProperty("small_image_path")
+    public String getSmallImagePath() {
+        return smallImagePath;
     }
 
     @Override

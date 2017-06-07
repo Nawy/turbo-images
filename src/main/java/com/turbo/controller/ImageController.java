@@ -47,11 +47,13 @@ public class ImageController {
     @Secured(SecurityRole.USER)
     @PostMapping("/save/image")
     public UserImageDto saveImage(
+            @RequestParam long hash,
             @RequestBody byte[] source
     ) {
         User user = authorizationService.getCurrentUser();
         UserImage userImage = imageService.addImage(
                 user.getId(),
+                hash,
                 source
         );
         return UserImageDto.from(userImage);

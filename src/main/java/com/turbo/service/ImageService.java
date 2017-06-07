@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -45,26 +46,27 @@ public class ImageService {
         return imageRepository.exists(hash);
     }
 
-    public UserImage addImage(long userId, byte[] picture) {
-        Image image;
-        Image smallImage;
-
-        if (imageExists(hash)) {
-
-        }
-
+    public UserImage addImage(long userId, long hash, byte[] picture) {
         Image image = imageExists(hash) ?
                 imageRepository.get(hash) :
                 saveImage(hash, picture);
 
         return userImageRepository.save(
-                new UserImage(null, image.getPath(), null, userId)
+                new UserImage(null, image, null, userId)
         );
     }
 
 
-
     private Image saveImage(long hash, byte[] picture) {
+        File fullSizeImageFile = saveImageFile(hash, picture);
+        File smallImageFile = makeSmallImage(picture);
+
+        return imageRepository.save(
+                new Image(hash, fullSizeImageFile.getAbsolutePath(), smallImageFile.getAbsolutePath())
+        );
+    }
+
+    private File saveImageFile(long hash, byte[] picture) {
         int tries = 0;
         File file;
         do {
@@ -80,21 +82,13 @@ public class ImageService {
         } catch (IOException e) {
             throw new InternalServerErrorHttpException("Can't to new  write file");
         }
-        return imageRepository.save(
-                new Image(hash, file.getAbsolutePath())
-        );
+        return file;
     }
 
-    private Image getOrMakeImage(){
-
-    }
-
-    private Image getOrMakeSmallImage(long hash, byte[] picture) {
-        //TODO
-    }
-
-    private String makeHash(byte[] picture){
-        //TODO
+    public File makeSmallImage(byte[] picture) {
+        long hash = Arrays.hashCode(picture);
+        byte[] smallPicture = null;  //TODO MAKE SMALL SIZE PICTURE TOO
+        return saveImageFile(hash, smallPicture);
     }
 
     private String generateRandomName() {
