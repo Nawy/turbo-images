@@ -1,6 +1,7 @@
 package com.turbo.model.search.content;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
@@ -17,17 +18,18 @@ import static com.google.common.base.MoreObjects.firstNonNull;
  * Needs for send enough data in search engine
  */
 public class PostSearchEntity {
+
     private Long id;
     private String name;
-    private DeviceType deviceType;
-    private List<String> descriptions;
-    private List<String> tags;
-    private String authorId;
     private Long ups;
     private Long downs;
     private Long rating;
     private Long views;
+    private DeviceType deviceType;
+    private List<String> descriptions;
+    private List<String> tags;
     private LocalDateTime createDate;
+    private String authorId;
 
     public PostSearchEntity(
             @JsonProperty("id") Long id,
@@ -127,4 +129,9 @@ public class PostSearchEntity {
     public LocalDateTime getCreateDate() {
         return createDate;
     }
+
+    /*@JsonIgnore
+    public Post toPost(){
+
+    }*/
 }

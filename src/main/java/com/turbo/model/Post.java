@@ -29,8 +29,8 @@ public class Post implements Serializable, IdHolder {
     private List<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
-
     private String authorId;
+    private String description;
 
     public Post(
             @JsonProperty(value = "id") Long id,
@@ -44,7 +44,8 @@ public class Post implements Serializable, IdHolder {
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "author_id", required = true) String authorId,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
-            @JsonProperty(value = "visible", defaultValue = "false") boolean visible
+            @JsonProperty(value = "visible", defaultValue = "false") boolean visible,
+            @JsonProperty("description") String description
     ) {
         this.id = id;
         this.name = name;
@@ -57,6 +58,7 @@ public class Post implements Serializable, IdHolder {
         this.tags = tags;
         this.authorId = authorId;
         this.visible = visible;
+        this.description = description;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
 
@@ -123,6 +125,11 @@ public class Post implements Serializable, IdHolder {
     @JsonProperty("visible")
     public boolean isVisible() {
         return visible;
+    }
+
+    @JsonProperty("description")
+    public String getDescription() {
+        return description;
     }
 
     @Override
