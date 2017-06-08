@@ -10,21 +10,18 @@ import java.io.Serializable;
 public class UserImage implements Serializable, IdHolder {
 
     private Long id;
-    private String image; // image url/hash?
-    private String smallImage; // small preview image url/hash?
+    private Image image;
     private String description;
     private long userId;
 
     public UserImage(
             @JsonProperty("id") Long id,
-            @JsonProperty(value = "image",required = true) String image,
+            @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
-            @JsonProperty(value = "small_image",required = true) String smallImage,
-            @JsonProperty(value = "user_id",required = true) long userId
+            @JsonProperty(value = "user_id", required = true) long userId
     ) {
         this.id = id;
         this.image = image;
-        this.smallImage = smallImage;
         this.description = description;
         this.userId = userId;
     }
@@ -38,12 +35,7 @@ public class UserImage implements Serializable, IdHolder {
         this.id = id;
     }
 
-    @JsonProperty("small_image")
-    public String getSmallImage() {
-        return smallImage;
-    }
-
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 

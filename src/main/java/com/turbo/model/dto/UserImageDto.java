@@ -2,6 +2,7 @@ package com.turbo.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.Image;
 import com.turbo.model.UserImage;
 import com.turbo.service.HashIdService;
 
@@ -11,21 +12,18 @@ import com.turbo.service.HashIdService;
 public class UserImageDto {
 
     private String id;
-    private String image;
-    private String smallImage;
+    private Image image;
     private String description;
     private String userId;
 
     public UserImageDto(
             @JsonProperty("id") String id,
-            @JsonProperty(value = "image", required = true) String image,
-            @JsonProperty(value = "small_image", required = true) String smallImage,
+            @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
             @JsonProperty(value = "user_id", required = true) String userId
     ) {
         this.id = id;
         this.image = image;
-        this.smallImage = smallImage;
         this.description = description;
         this.userId = userId;
     }
@@ -35,7 +33,6 @@ public class UserImageDto {
         return new UserImageDto(
                 HashIdService.encodeHashId(userImage.getId()),
                 userImage.getImage(),
-                userImage.getSmallImage(),
                 userImage.getDescription(),
                 HashIdService.encodeHashId(userImage.getUserId())
         );
@@ -45,13 +42,8 @@ public class UserImageDto {
         return id;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
-    }
-
-    @JsonProperty("small_image")
-    public String getSmallImage() {
-        return smallImage;
     }
 
     public String getDescription() {
