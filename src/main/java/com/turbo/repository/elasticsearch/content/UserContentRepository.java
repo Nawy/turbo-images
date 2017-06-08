@@ -4,7 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.content.UserContentEntity;
+import com.turbo.model.search.content.UserSearchEntity;
 import com.turbo.model.User;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.field.UserField;
@@ -29,7 +29,7 @@ public class UserContentRepository extends AbstractSearchRepository {
     }
 
     public void addUser(final User user) {
-        final UserContentEntity entity = new UserContentEntity(user);
+        final UserSearchEntity entity = new UserSearchEntity(user);
 
         elasticClient
                 .prepareIndex(
@@ -49,7 +49,7 @@ public class UserContentRepository extends AbstractSearchRepository {
                 config.getUserTypeName(),
                 elasticId
         ).setDoc(
-                ElasticUtils.writeAsJsonBytes(new UserContentEntity(user)),
+                ElasticUtils.writeAsJsonBytes(new UserSearchEntity(user)),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
@@ -67,7 +67,7 @@ public class UserContentRepository extends AbstractSearchRepository {
         return ElasticUtils.parseElasticIdSearchResponse(response);
     }
 
-    public UserContentEntity getUserById(final String id) {
+    public UserSearchEntity getUserById(final String id) {
         return ElasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getUserIndexName(),
@@ -75,7 +75,7 @@ public class UserContentRepository extends AbstractSearchRepository {
                         UserField.ID.getFieldName(),
                         id
                 ),
-                UserContentEntity.class
+                UserSearchEntity.class
         );
     }
 
@@ -91,10 +91,10 @@ public class UserContentRepository extends AbstractSearchRepository {
                 null,
                 null
         );
-        return ElasticUtils.parseUniqueSearchResponse(response, UserContentEntity.class).getId();
+        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class).getId();
     }
 
-    public UserContentEntity getUserByEmail(
+    public UserSearchEntity getUserByEmail(
             final String email
     ) {
         SearchResponse response = getByField(
@@ -106,10 +106,10 @@ public class UserContentRepository extends AbstractSearchRepository {
                 null,
                 null
         );
-        return ElasticUtils.parseUniqueSearchResponse(response, UserContentEntity.class);
+        return ElasticUtils.parseUniqueSearchResponse(response, UserSearchEntity.class);
     }
 
-    public Paginator<UserContentEntity> findUserByName(
+    public Paginator<UserSearchEntity> findUserByName(
             final String name,
             final int page,
             @Nullable final UserField userField,
@@ -126,7 +126,7 @@ public class UserContentRepository extends AbstractSearchRepository {
         );
         return new Paginator<>(
                 page,
-                ElasticUtils.parseSearchResponse(response, UserContentEntity.class)
+                ElasticUtils.parseSearchResponse(response, UserSearchEntity.class)
         );
     }
 }

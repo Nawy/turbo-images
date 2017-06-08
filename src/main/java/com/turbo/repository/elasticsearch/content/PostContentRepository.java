@@ -6,7 +6,7 @@ import com.turbo.model.Nullable;
 import com.turbo.model.Post;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Page;
-import com.turbo.model.search.content.PostContentEntity;
+import com.turbo.model.search.content.PostSearchEntity;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
@@ -20,7 +20,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class PostContentRepository extends AbstractSearchRepository {
                         config.getPostIndexName(),
                         config.getPostTypeName()
                 )
-                .setSource(ElasticUtils.writeAsJsonBytes(new PostContentEntity(post)), XContentType.JSON)
+                .setSource(ElasticUtils.writeAsJsonBytes(new PostSearchEntity(post)), XContentType.JSON)
                 .get();
     }
 
@@ -59,7 +58,7 @@ public class PostContentRepository extends AbstractSearchRepository {
                 config.getPostTypeName(),
                 elasticId
         ).setDoc(
-                ElasticUtils.writeAsJsonBytes(new PostContentEntity(post)),
+                ElasticUtils.writeAsJsonBytes(new PostSearchEntity(post)),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
@@ -82,7 +81,7 @@ public class PostContentRepository extends AbstractSearchRepository {
      * @param id
      * @return
      */
-    public PostContentEntity getPostById(final Long id) {
+    public PostSearchEntity getPostById(final Long id) {
         return ElasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getPostIndexName(),
@@ -90,7 +89,7 @@ public class PostContentRepository extends AbstractSearchRepository {
                         PostField.ID.getFieldName(),
                         id
                 ),
-                PostContentEntity.class
+                PostSearchEntity.class
         );
     }
 

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostSearchService {
 
-    private final PostContentRepository postContentRepository;
+//    private final PostContentRepository postContentRepository;
 
 }

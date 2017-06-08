@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * Created by ermolaev on 5/27/17.
  * Needs for send enough data in search engine
  */
-public class UserContentEntity {
+public class UserSearchEntity {
 
     private Long id;
     private String name;
@@ -19,7 +19,7 @@ public class UserContentEntity {
     private long rating;
     private LocalDateTime createDate;
 
-    public UserContentEntity(
+    public UserSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "email", required = true) String email,
@@ -33,7 +33,7 @@ public class UserContentEntity {
         this.createDate = createDate;
     }
 
-    public UserContentEntity(final User user) {
+    public UserSearchEntity(final User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.avatarPath = user.getAvatarPath();

@@ -15,4 +15,6 @@ public class PostStatRepository extends AbstractSearchRepository {
     public PostStatRepository(ElasticsearchConfig config) {
         super(config.getElasticClient(), config);
     }
+
+
 }

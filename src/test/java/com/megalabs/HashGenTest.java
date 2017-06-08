@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class HashGenTest {
 
-    private HashIdService hashIdService = new HashIdService("Test salt");
+    private HashIdService hashIdService = new HashIdService();
 
     @Test
     public void hashIdWork() {

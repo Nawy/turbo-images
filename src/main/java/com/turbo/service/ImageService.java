@@ -46,20 +46,21 @@ public class ImageService {
     }
 
     public UserImage addImage(long userId, byte[] picture) {
-        Image image;
-        Image smallImage;
-
-        if (imageExists(hash)) {
-
-        }
-
-        Image image = imageExists(hash) ?
-                imageRepository.get(hash) :
-                saveImage(hash, picture);
-
-        return userImageRepository.save(
-                new UserImage(null, image.getPath(), null, userId)
-        );
+//        Image image;
+//        Image smallImage;
+//
+//        if (imageExists(hash)) {
+//
+//        }
+//
+//        Image image = imageExists(hash) ?
+//                imageRepository.get(hash) :
+//                saveImage(hash, picture);
+//
+//        return userImageRepository.save(
+//                new UserImage(null, image.getPath(), null, userId)
+//        );
+        return null;
     }
 
 
@@ -86,15 +87,17 @@ public class ImageService {
     }
 
     private Image getOrMakeImage(){
-
+        return null;
     }
 
     private Image getOrMakeSmallImage(long hash, byte[] picture) {
         //TODO
+        return null;
     }
 
     private String makeHash(byte[] picture){
         //TODO
+        return null;
     }
 
     private String generateRandomName() {

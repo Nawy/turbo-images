@@ -16,7 +16,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
  * Created by ermolaev on 5/27/17.
  * Needs for send enough data in search engine
  */
-public class PostContentEntity {
+public class PostSearchEntity {
     private Long id;
     private String name;
     private DeviceType deviceType;
@@ -29,7 +29,7 @@ public class PostContentEntity {
     private Long views;
     private LocalDateTime createDate;
 
-    public PostContentEntity(
+    public PostSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
             @JsonProperty("descriptions") List<String> descriptions,
@@ -55,7 +55,7 @@ public class PostContentEntity {
         this.createDate = createDate;
     }
 
-    public PostContentEntity(final Post post) {
+    public PostSearchEntity(final Post post) {
         this.id = post.getId();
         this.name = post.getName();
         this.descriptions = post.getImages()
