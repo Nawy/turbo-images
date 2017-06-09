@@ -1,10 +1,12 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
-import com.turbo.model.search.content.PostContentEntity;
-import com.turbo.model.search.content.PostSearchEntity;
+import com.turbo.model.SearchSort;
+import com.turbo.model.search.field.PostField;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by ermolaev on 6/2/17.
@@ -23,12 +25,11 @@ public class PostSearchService {
     }
 
     public void updatePost(final Post post) {
-       postSearchRepository.updatePost(post);
+        postSearchRepository.updatePost(post);
     }
 
-    public Post getPostById(final Long id) {
-        PostSearchEntity post = postSearchRepository.getPostById(id);
-
+    public List<Long> getPostsByUser(long userId, int page, SearchSort searchSort) {
+        postSearchRepository.getPostByAuthor(userId,page, PostField.AUTHOR)
     }
 
 }

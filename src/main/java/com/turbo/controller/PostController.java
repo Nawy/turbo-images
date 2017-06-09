@@ -4,6 +4,7 @@ import com.turbo.model.Post;
 import com.turbo.model.SearchSort;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.page.Paginator;
+import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,10 @@ public class PostController {
     @GetMapping("/get/viral/post")
     public Paginator<Post> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort
+            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort,
+            @RequestParam(value = "sort_order", defaultValue = "DESC") SearchOrder searchOrder
     ) {
-        return postService.getMostViral(page, searchSort);
+        return postService.getMostViral(page, searchSort, searchOrder);
     }
 
     @GetMapping("/get/post/{id}")

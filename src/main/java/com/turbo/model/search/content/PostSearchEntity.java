@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-
 /**
  * Created by ermolaev on 5/27/17.
  * Needs for send enough data in search engine
@@ -130,8 +128,4 @@ public class PostSearchEntity {
         return createDate;
     }
 
-    /*@JsonIgnore
-    public Post toPost(){
-
-    }*/
 }
