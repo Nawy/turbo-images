@@ -6,6 +6,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,5 +87,9 @@ public abstract class ElasticUtils {
         }
 
         throw new NotFoundHttpException("Cannot find elastic id ");
+    }
+
+    public static String getTypePerYear(final String typeName, final LocalDate currentDate) {
+        return String.format("%s%d", typeName,currentDate.getYear());
     }
 }

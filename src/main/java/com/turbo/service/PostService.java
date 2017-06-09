@@ -5,14 +5,13 @@ import com.turbo.model.SearchSort;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.content.PostContentEntity;
 import com.turbo.repository.aerospike.PostRepository;
-import com.turbo.repository.elasticsearch.field.PostField;
+import com.turbo.model.search.field.PostField;
 import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * Created by rakhmetov on 09.05.17.

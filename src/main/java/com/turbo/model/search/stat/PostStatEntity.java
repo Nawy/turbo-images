@@ -7,10 +7,11 @@ import java.util.List;
 /**
  * Created by ermolaev on 6/4/17.
  */
-public class PostRatingEntity {
+public class PostStatEntity {
 
     private long id;
     private String name;
+    private String authorId;
     private List<String> descriptions;
     private List<String> tags;
     private List<DiffEntity> days;
@@ -18,9 +19,10 @@ public class PostRatingEntity {
     private List<DiffEntity> months;
     private DiffEntity year;
 
-    public PostRatingEntity(
+    public PostStatEntity(
             @JsonProperty(value = "id", required = true) long id,
             @JsonProperty(value = "name", required = true) String name,
+            @JsonProperty(value = "author_id", required = true) String authorId,
             @JsonProperty(value = "descriptions", required = true) List<String> descriptions,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "days", required = true) List<DiffEntity> days,
@@ -30,6 +32,7 @@ public class PostRatingEntity {
     ) {
         this.id = id;
         this.name = name;
+        this.authorId = authorId;
         this.descriptions = descriptions;
         this.tags = tags;
         this.days = days;
@@ -44,6 +47,10 @@ public class PostRatingEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getAuthorId() {
+        return authorId;
     }
 
     public List<String> getDescriptions() {

@@ -24,11 +24,14 @@ public class ElasticsearchConfig {
     private String[] hosts;
     private String clusterName;
 
-    private String postIndexName;
-    private String postTypeName;
+    private String searchPostIndexName;
+    private String searchPostTypeName;
 
-    private String userIndexName;
-    private String userTypeName;
+    private String searchUserIndexName;
+    private String searchUserTypeName;
+
+    private String statPostsIndexName;
+    private String statPostsTypeName;
 
     private int maxSizePostsPerPage;
     private int maxSizeUsersPerPage;
@@ -88,36 +91,36 @@ public class ElasticsearchConfig {
         this.clusterName = clusterName;
     }
 
-    public String getPostIndexName() {
-        return postIndexName;
+    public String getSearchPostIndexName() {
+        return searchPostIndexName;
     }
 
-    public void setPostIndexName(String postIndexName) {
-        this.postIndexName = postIndexName;
+    public void setSearchPostIndexName(String searchPostIndexName) {
+        this.searchPostIndexName = searchPostIndexName;
     }
 
-    public String getPostTypeName() {
-        return postTypeName;
+    public String getSearchPostTypeName() {
+        return searchPostTypeName;
     }
 
-    public void setPostTypeName(String postTypeName) {
-        this.postTypeName = postTypeName;
+    public void setSearchPostTypeName(String searchPostTypeName) {
+        this.searchPostTypeName = searchPostTypeName;
     }
 
-    public String getUserIndexName() {
-        return userIndexName;
+    public String getSearchUserIndexName() {
+        return searchUserIndexName;
     }
 
-    public void setUserIndexName(String userIndexName) {
-        this.userIndexName = userIndexName;
+    public void setSearchUserIndexName(String searchUserIndexName) {
+        this.searchUserIndexName = searchUserIndexName;
     }
 
-    public String getUserTypeName() {
-        return userTypeName;
+    public String getSearchUserTypeName() {
+        return searchUserTypeName;
     }
 
-    public void setUserTypeName(String userTypeName) {
-        this.userTypeName = userTypeName;
+    public void setSearchUserTypeName(String searchUserTypeName) {
+        this.searchUserTypeName = searchUserTypeName;
     }
 
     public int getMaxSizePostsPerPage() {
@@ -138,5 +141,21 @@ public class ElasticsearchConfig {
 
     public void setElasticClient(TransportClient elasticClient) {
         this.elasticClient = elasticClient;
+    }
+
+    public String getStatPostsIndexName() {
+        return statPostsIndexName;
+    }
+
+    public void setStatPostsIndexName(String statPostsIndexName) {
+        this.statPostsIndexName = statPostsIndexName;
+    }
+
+    public String getStatPostsTypeName() {
+        return statPostsTypeName;
+    }
+
+    public void setStatPostsTypeName(String statPostsTypeName) {
+        this.statPostsTypeName = statPostsTypeName;
     }
 }
