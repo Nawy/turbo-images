@@ -118,7 +118,7 @@ public class PostStatRepository extends AbstractSearchRepository {
     }
 
     /**
-     * Get post per specific month, sorted by @orderField in @searchOrder and
+     * Get post per specific year, sorted by @orderField in @searchOrder and
      * filter by field @field with value @value
      * @param field
      * @param date
