@@ -1,6 +1,7 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
+import com.turbo.model.SearchPeriod;
 import com.turbo.model.SearchSort;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.field.PostField;
@@ -55,7 +56,15 @@ public class PostService {
         return postRepository.get(id);
     }
 
-    public Paginator<Post> getMostViral(int page, SearchSort sort) {
+    public Paginator<Post> getMostViral(int page, SearchPeriod period, SearchSort sort) {
+        switch (period) {
+            case DAY: break;
+            case WEEK: break;
+            case MONTH: break;
+            case YEAR: break;
+        }
+        LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1);
+
     }
 
     public Paginator<Post> getUserPosts(int page, long userId, SearchSort sort) {

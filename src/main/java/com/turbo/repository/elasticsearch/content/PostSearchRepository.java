@@ -81,7 +81,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param id
      * @return
      */
-    public Post getPostById(final Long id) {
+    public PostSearchEntity getPostById(final Long id) {
         return ElasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getSearchPostIndexName(),
@@ -90,7 +90,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         id
                 ),
                 PostSearchEntity.class
-        ).toPost();
+        );
     }
 
     public List<Long> getPostByAuthor(

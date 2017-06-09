@@ -21,7 +21,6 @@ public class PostSearchEntity {
 
     private Long id;
     private String name;
-    private String postDescription;
     private Long ups;
     private Long downs;
     private Long rating;
@@ -35,7 +34,6 @@ public class PostSearchEntity {
     public PostSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
-            @JsonProperty("post_description") String postDescription,
             @JsonProperty("descriptions") List<String> descriptions,
             @JsonProperty("device_type") DeviceType deviceType,
             @JsonProperty("tags") List<String> tags,
@@ -48,7 +46,6 @@ public class PostSearchEntity {
     ) {
         this.id = id;
         this.name = name;
-        this.postDescription = postDescription;
         this.descriptions = descriptions;
         this.deviceType = deviceType;
         this.tags = tags;
@@ -63,11 +60,12 @@ public class PostSearchEntity {
     public PostSearchEntity(final Post post) {
         this.id = post.getId();
         this.name = post.getName();
-        this.postDescription = post.getDescription();
         this.descriptions = post.getImages()
                 .stream()
                 .map(UserImage::getDescription)
                 .collect(Collectors.toList());
+        this.descriptions.add(post.getDescription());
+
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
         this.authorId = post.getAuthorId();
@@ -138,28 +136,5 @@ public class PostSearchEntity {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     public LocalDateTime getCreateDate() {
         return createDate;
-    }
-
-    /**
-     * BE CAREFUL! Return visible false, images = null
-     * @return
-     */
-    @JsonIgnore
-    public Post toPost(){
-        return new Post(
-                this.id,
-                this.name,
-                this.ups,
-                this.downs,
-                this.rating,
-                this.views,
-                null,
-                this.deviceType,
-                this.tags,
-                this.authorId,
-                this.createDate,
-                false,
-                this.postDescription
-        );
     }
 }
