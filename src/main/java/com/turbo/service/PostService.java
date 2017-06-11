@@ -1,13 +1,11 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
-import com.turbo.model.SearchPeriod;
-import com.turbo.model.SearchSort;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.field.PostField;
+import com.turbo.model.search.SearchPattern;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
-import com.turbo.repository.elasticsearch.helper.SearchOrder;
 import com.turbo.repository.elasticsearch.stat.PostStatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,18 +54,26 @@ public class PostService {
         return postRepository.get(id);
     }
 
-    public Paginator<Post> getMostViral(int page, SearchPeriod period, SearchSort sort) {
-        switch (period) {
-            case DAY: break;
-            case WEEK: break;
-            case MONTH: break;
-            case YEAR: break;
+    public Paginator<Post> getMostViral(int page, SearchPattern searchPattern) {
+        switch (searchPattern.getPeriod()) {
+            case DAY:
+                break;
+            case WEEK:
+                break;
+            case MONTH:
+                break;
+            case YEAR:
+                break;
+            case ALL_TIME:
+                break;
+            default:
+                throw new InternalServerErrorHttpException(" unknown search period");
         }
         LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1);
 
     }
 
-    public Paginator<Post> getUserPosts(int page, long userId, SearchSort sort) {
+    public Paginator<Post> getUserPosts(int page, long userId, SearchPattern searchPattern) {
 
     }
 

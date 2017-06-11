@@ -2,17 +2,15 @@ package com.turbo.repository.elasticsearch.stat;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.search.field.UserField;
 import com.turbo.model.search.field.stat.*;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
-import com.turbo.repository.elasticsearch.helper.SearchOrder;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

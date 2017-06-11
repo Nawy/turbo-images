@@ -5,6 +5,7 @@ import com.aerospike.client.Bin;
 import com.aerospike.client.Key;
 import com.aerospike.client.Record;
 import com.aerospike.client.policy.WritePolicy;
+import com.turbo.config.AerospikeConfig;
 import com.turbo.model.IdHolder;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.repository.util.IdGenerator;
@@ -25,16 +26,18 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
     private final String defaultBinName;
     private final AerospikeClient client;
-    private final String namespace;
+    private final String databaseName;
+    private final String tableName;
 
     @Autowired
     public AbstractAerospikeRepo(
-            AerospikeClient client,
-            String namespace
+            AerospikeConfig config,
+            String tableName
     ) {
-        this.client = client;
-        this.namespace = namespace;
-        this.defaultBinName = namespace + "_binName";
+        this.client = config.aerospikeClient();
+        this.databaseName = config.getDatabaseName();
+        this.tableName = tableName;
+        this.defaultBinName = tableName + "_binName";
     }
 
     public T save(T entity) {
@@ -89,7 +92,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     protected Key generateKey(long id) {
-        return new Key(namespace, null, id);
+        return new Key(databaseName, tableName, id);
     }
 
     protected Bin generateBin(T entity) {

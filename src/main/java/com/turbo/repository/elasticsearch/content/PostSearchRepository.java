@@ -9,7 +9,7 @@ import com.turbo.model.search.content.PostSearchEntity;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.model.search.field.PostField;
 import com.turbo.repository.elasticsearch.ElasticId;
-import com.turbo.repository.elasticsearch.helper.SearchOrder;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;

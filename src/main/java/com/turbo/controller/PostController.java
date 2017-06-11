@@ -1,10 +1,10 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
-import com.turbo.model.SearchSort;
+import com.turbo.model.search.SearchSort;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.page.Paginator;
-import com.turbo.repository.elasticsearch.helper.SearchOrder;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;

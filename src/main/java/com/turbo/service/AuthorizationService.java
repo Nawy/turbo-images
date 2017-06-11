@@ -13,6 +13,9 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Service
 public class AuthorizationService {
@@ -44,6 +47,7 @@ public class AuthorizationService {
     }
 
     private Session login(User user) {
+        LocalDate.now().getDayOfWeek().getValue()
         Assert.notNull(user, "user can't be null");
         Session session = new Session(user);
         try {

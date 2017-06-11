@@ -8,7 +8,7 @@ import com.turbo.model.search.content.UserSearchEntity;
 import com.turbo.model.search.field.UserField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
-import com.turbo.repository.elasticsearch.helper.SearchOrder;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;

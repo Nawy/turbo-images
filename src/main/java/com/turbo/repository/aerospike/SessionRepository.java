@@ -1,6 +1,6 @@
 package com.turbo.repository.aerospike;
 
-import com.aerospike.client.AerospikeClient;
+import com.turbo.config.AerospikeConfig;
 import com.turbo.model.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,19 +12,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SessionRepository extends AbstractAerospikeRepo<Session> {
 
-    private final AerospikeClient client;
-    private final String namespace;
     private final int sessionTtl;
 
     @Autowired
     public SessionRepository(
-            AerospikeClient client,
+            AerospikeConfig config,
             @Value("${aerospike.session.minutes.ttl}") int sessionTtl,
-            @Value("${aerospike.session.namespace}") String namespace
+            @Value("${aerospike.session.table.name}") String tableName
     ) {
-        super(client, namespace);
-        this.client = client;
-        this.namespace = namespace;
+        super(config, tableName);
         this.sessionTtl = sessionTtl;
     }
 

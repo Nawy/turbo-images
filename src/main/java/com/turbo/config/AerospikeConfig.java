@@ -16,8 +16,8 @@ public class AerospikeConfig {
 
     private String host;
     private int port;
+    private String databaseName;
 
-    @Bean
     public AerospikeClient aerospikeClient() throws AerospikeException {
         return new AerospikeClient(host, port);
     }
@@ -36,5 +36,13 @@ public class AerospikeConfig {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 }

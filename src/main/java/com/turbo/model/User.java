@@ -3,6 +3,7 @@ package com.turbo.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
@@ -12,9 +13,8 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * This data for every foreign user
  */
-public class User implements IdHolder {
+public class User implements Serializable {
 
-    private Long id;
     private String name;
     private String avatarPath;
     private String ip; // last ip from what was came in
@@ -26,7 +26,6 @@ public class User implements IdHolder {
     }
 
     public User(
-            @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
             @JsonProperty(value = "email", required = true) String email,
@@ -34,7 +33,6 @@ public class User implements IdHolder {
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
             @JsonProperty(value = "ip", required = true) String ip
     ) {
-        this.id = id;
         this.name = name;
         this.avatarPath = avatarPath;
         this.email = email;
@@ -43,16 +41,7 @@ public class User implements IdHolder {
         this.ip = ip;
     }
 
-    @JsonProperty(value = "id")
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    //will be id
     @JsonProperty(value = "name")
     public String getName() {
         return name;

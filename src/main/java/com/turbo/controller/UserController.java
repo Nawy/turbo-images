@@ -1,7 +1,7 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
-import com.turbo.model.SearchSort;
+import com.turbo.model.search.SearchSort;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Paginator;

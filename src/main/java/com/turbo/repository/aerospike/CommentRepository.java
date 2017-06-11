@@ -1,6 +1,6 @@
 package com.turbo.repository.aerospike;
 
-import com.aerospike.client.AerospikeClient;
+import com.turbo.config.AerospikeConfig;
 import com.turbo.model.comment.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +14,9 @@ public class CommentRepository extends AbstractAerospikeRepo<Comment> {
 
     @Autowired
     public CommentRepository(
-            AerospikeClient client,
-            @Value("${aerospike.comment.namespace}") String namespace
+            AerospikeConfig config,
+            @Value("${aerospike.comment.table.name}") String tableName
     ) {
-        super(client, namespace);
+        super(config, tableName);
     }
 }
