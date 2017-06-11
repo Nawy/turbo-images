@@ -12,8 +12,8 @@ public class SearchPattern {
     private final SearchSort sort;
     private final SearchOrder order;
 
-    public SearchPattern(SearchPeriod period, @Nullable SearchSort sort, @Nullable SearchOrder order) {
-        this.period = period;
+    public SearchPattern(@Nullable SearchPeriod period, @Nullable SearchSort sort, @Nullable SearchOrder order) {
+        this.period = firstNonNull(period, SearchPeriod.ALL_TIME);
         this.sort = firstNonNull(sort, SearchSort.RATING);
         this.order = firstNonNull(order, SearchOrder.DESC);
     }

@@ -66,8 +66,8 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> bulkGet(long[] ids) {
-        Key[] keys = (Key[]) Arrays.stream(ids).mapToObj(this::generateKey).toArray();
+    public List<T> bulkGet(List<Long> ids) {
+        Key[] keys = (Key[]) ids.stream().map(this::generateKey).toArray();
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)
                 .filter(Objects::nonNull)

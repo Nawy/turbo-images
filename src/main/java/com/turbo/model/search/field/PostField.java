@@ -8,6 +8,8 @@ public enum PostField {
     ID("id"),
     NAME("name"),
     DESCRIPTIONS("descriptions"),
+    RATING("rating"),
+    VIEWS("views"),
     AUTHOR("author_id"),
     TAGS("tags"),
     CREATION_DATE("create_date");
