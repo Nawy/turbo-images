@@ -20,7 +20,7 @@ public class UserImageDto {
             @JsonProperty("id") String id,
             @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
-            @JsonProperty(value = "user_name", required = true) String username
+            @JsonProperty(value = "username", required = true) String username
     ) {
         this.id = id;
         this.image = image;
@@ -50,7 +50,7 @@ public class UserImageDto {
         return description;
     }
 
-    @JsonProperty("user_name")
+    @JsonProperty("username")
     public String getUsername() {
         return username;
     }

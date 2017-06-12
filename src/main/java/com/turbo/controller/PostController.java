@@ -33,7 +33,7 @@ public class PostController {
             @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort,
             @RequestParam(value = "period", defaultValue = "DAY") SearchPeriod searchPeriod
     ) {
-        return new Paginator<PostSearchDto>(
+        return new Paginator<>(
                 page,
                 postService.getMostViral(page, searchPeriod, searchSort)
                         .stream()

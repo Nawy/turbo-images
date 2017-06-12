@@ -11,7 +11,7 @@ public class PostStatEntity {
 
     private long id;
     private String name;
-    private String authorId;
+    private String username;
     private List<String> descriptions;
     private List<String> tags;
     private List<DiffEntity> days;
@@ -22,7 +22,7 @@ public class PostStatEntity {
     public PostStatEntity(
             @JsonProperty(value = "id", required = true) long id,
             @JsonProperty(value = "name", required = true) String name,
-            @JsonProperty(value = "author_id", required = true) String authorId,
+            @JsonProperty(value = "username", required = true) String username,
             @JsonProperty(value = "descriptions", required = true) List<String> descriptions,
             @JsonProperty(value = "tags", required = true) List<String> tags,
             @JsonProperty(value = "days", required = true) List<DiffEntity> days,
@@ -32,7 +32,7 @@ public class PostStatEntity {
     ) {
         this.id = id;
         this.name = name;
-        this.authorId = authorId;
+        this.username = username;
         this.descriptions = descriptions;
         this.tags = tags;
         this.days = days;
@@ -49,8 +49,8 @@ public class PostStatEntity {
         return name;
     }
 
-    public String getAuthorId() {
-        return authorId;
+    public String getUsername() {
+        return username;
     }
 
     public List<String> getDescriptions() {

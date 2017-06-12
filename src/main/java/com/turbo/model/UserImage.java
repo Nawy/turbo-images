@@ -18,7 +18,7 @@ public class UserImage implements Serializable, IdHolder {
             @JsonProperty("id") Long id,
             @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
-            @JsonProperty(value = "user_name", required = true) String username
+            @JsonProperty(value = "username", required = true) String username
     ) {
         this.id = id;
         this.image = image;
@@ -43,7 +43,7 @@ public class UserImage implements Serializable, IdHolder {
         return description;
     }
 
-    @JsonProperty("user_name")
+    @JsonProperty("username")
     public String getUsername() {
         return username;
     }

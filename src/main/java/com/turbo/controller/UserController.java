@@ -1,11 +1,14 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
-import com.turbo.model.search.SearchSort;
 import com.turbo.model.SecurityRole;
+import com.turbo.model.User;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.User;
+import com.turbo.model.search.SearchOrder;
+import com.turbo.model.search.SearchPattern;
+import com.turbo.model.search.SearchPeriod;
+import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
@@ -40,16 +43,21 @@ public class UserController {
     @GetMapping("/get/user/posts")
     public Paginator<Post> getUserPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort sort
+            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort sort,
+            @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
+            @RequestParam(value = "order", defaultValue = "DESC") SearchOrder order
     ) {
         User user = authorizationService.getCurrentUser();
-        return postService.getUserPosts(page, user.getName(), sort);
+        return new Paginator<>(
+                page,
+                postService.getUserPosts(page, user.getName(), new SearchPattern(period, sort, order))
+        );
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/update/user/info")
     public User updateUserInfo(@RequestBody User user) {
-        if (user.getId() == null) throw new BadRequestHttpException("No id was found!");
+        if (user.getName() == null) throw new BadRequestHttpException("No id was found!");
         return userService.update(user);
     }
 }

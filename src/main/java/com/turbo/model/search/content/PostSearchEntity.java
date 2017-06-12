@@ -1,7 +1,6 @@
 package com.turbo.model.search.content;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
@@ -10,8 +9,6 @@ import com.turbo.model.UserImage;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.MoreObjects.firstNonNull;
 
 /**
  * Created by ermolaev on 5/27/17.
@@ -29,7 +26,7 @@ public class PostSearchEntity {
     private List<String> descriptions;
     private List<String> tags;
     private LocalDateTime createDate;
-    private String authorId;
+    private String username;
 
     public PostSearchEntity(
             @JsonProperty("id") Long id,
@@ -37,7 +34,7 @@ public class PostSearchEntity {
             @JsonProperty("descriptions") List<String> descriptions,
             @JsonProperty("device_type") DeviceType deviceType,
             @JsonProperty("tags") List<String> tags,
-            @JsonProperty("author_id") String authorId,
+            @JsonProperty("username") String username,
             @JsonProperty("ups") Long ups,
             @JsonProperty("downs") Long downs,
             @JsonProperty("rating") Long rating,
@@ -49,7 +46,7 @@ public class PostSearchEntity {
         this.descriptions = descriptions;
         this.deviceType = deviceType;
         this.tags = tags;
-        this.authorId = authorId;
+        this.username = username;
         this.ups = ups;
         this.downs = downs;
         this.rating = rating;
@@ -68,7 +65,7 @@ public class PostSearchEntity {
 
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
-        this.authorId = post.getAuthorId();
+        this.username = post.getUsername();
         this.ups = post.getUps();
         this.downs = post.getDowns();
         this.rating = post.getRating();
@@ -101,9 +98,9 @@ public class PostSearchEntity {
         return tags;
     }
 
-    @JsonProperty("author_id")
-    public String getAuthorId() {
-        return authorId;
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
     @JsonProperty("ups")

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Comment implements Serializable,IdHolder {
 
     private Long id;
-    private String authorId;
+    private String authorName;
     private String replyId;
     private CommentReplyType replyType;
     private DeviceType authorDevice; // from what was posted
@@ -22,7 +22,7 @@ public class Comment implements Serializable,IdHolder {
 
     public Comment(
             Long id,
-            String authorId,
+            String authorName,
             String replyId,
             CommentReplyType replyType,
             DeviceType authorDevice,
@@ -31,7 +31,7 @@ public class Comment implements Serializable,IdHolder {
             int rating
     ) {
         this.id = id;
-        this.authorId = authorId;
+        this.authorName = authorName;
         this.replyId = replyId;
         this.replyType = replyType;
         this.authorDevice = authorDevice;
@@ -49,8 +49,8 @@ public class Comment implements Serializable,IdHolder {
         this.id = id;
     }
 
-    public String getAuthorId() {
-        return authorId;
+    public String getAuthorName() {
+        return authorName;
     }
 
     public String getReplyId() {

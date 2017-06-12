@@ -10,7 +10,7 @@ public enum PostField {
     DESCRIPTIONS("descriptions"),
     RATING("rating"),
     VIEWS("views"),
-    AUTHOR("author_id"),
+    AUTHOR("username"),
     TAGS("tags"),
     CREATION_DATE("create_date");
 

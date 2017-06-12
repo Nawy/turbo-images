@@ -29,7 +29,7 @@ public class Post implements Serializable, IdHolder {
     private List<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
-    private String authorId;
+    private String username;
     private String description;
 
     public Post(
@@ -42,7 +42,7 @@ public class Post implements Serializable, IdHolder {
             @JsonProperty(value = "images", required = true) List<UserImage> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "author_id", required = true) String authorId,
+            @JsonProperty(value = "username", required = true) String username,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
             @JsonProperty(value = "visible", defaultValue = "false") boolean visible,
             @JsonProperty("description") String description
@@ -56,7 +56,7 @@ public class Post implements Serializable, IdHolder {
         this.images = images;
         this.deviceType = deviceType;
         this.tags = tags;
-        this.authorId = authorId;
+        this.username = username;
         this.visible = visible;
         this.description = description;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
@@ -112,9 +112,9 @@ public class Post implements Serializable, IdHolder {
         return tags;
     }
 
-    @JsonProperty("author_id")
-    public String getAuthorId() {
-        return authorId;
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
     @JsonProperty("create_date")
@@ -149,7 +149,7 @@ public class Post implements Serializable, IdHolder {
                 .append(visible, post.visible)
                 .append(id, post.id)
                 .append(name, post.name)
-                .append(authorId, post.authorId)
+                .append(username, post.username)
                 .isEquals();
     }
 
@@ -163,7 +163,7 @@ public class Post implements Serializable, IdHolder {
                 .append(rating)
                 .append(views)
                 .append(visible)
-                .append(authorId)
+                .append(username)
                 .toHashCode();
     }
 }
