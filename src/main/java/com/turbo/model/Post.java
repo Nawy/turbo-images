@@ -118,6 +118,7 @@ public class Post implements Serializable, IdHolder {
     }
 
     @JsonProperty("create_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public LocalDateTime getCreateDate() {
         return createDate;
     }

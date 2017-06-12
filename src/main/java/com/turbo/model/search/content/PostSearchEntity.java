@@ -86,12 +86,6 @@ public class PostSearchEntity {
         return name;
     }
 
-
-    @JsonProperty("post_description")
-    public String getPostDescription() {
-        return postDescription;
-    }
-
     @JsonProperty("descriptions")
     public List<String> getDescriptions() {
         return descriptions;

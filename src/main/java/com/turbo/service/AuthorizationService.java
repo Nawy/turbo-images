@@ -47,7 +47,6 @@ public class AuthorizationService {
     }
 
     private Session login(User user) {
-        LocalDate.now().getDayOfWeek().getValue()
         Assert.notNull(user, "user can't be null");
         Session session = new Session(user);
         try {

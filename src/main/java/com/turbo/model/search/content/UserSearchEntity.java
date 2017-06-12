@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
  */
 public class UserSearchEntity {
 
-    private Long id;
     private String name;
     private String avatarPath;
     private String email;
@@ -20,13 +19,11 @@ public class UserSearchEntity {
     private LocalDateTime createDate;
 
     public UserSearchEntity(
-            @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "rating", required = true) long rating,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
-        this.id = id;
         this.name = name;
         this.email = email;
         this.rating = rating;
@@ -34,16 +31,10 @@ public class UserSearchEntity {
     }
 
     public UserSearchEntity(final User user) {
-        this.id = user.getId();
         this.name = user.getName();
         this.avatarPath = user.getAvatarPath();
         this.email = user.getEmail();
         this.createDate = user.getCreateDate();
-    }
-
-    @JsonProperty(value = "id")
-    public Long getId() {
-        return id;
     }
 
     @JsonProperty(value = "name")

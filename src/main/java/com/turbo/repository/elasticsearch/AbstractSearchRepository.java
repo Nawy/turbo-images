@@ -53,15 +53,15 @@ public abstract class AbstractSearchRepository {
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder
     ) {
-        Page pageObject = new Page(page);
+        Page queryPage = new Page(page);
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(indexName)
                 .setTypes(typeName)
                 .setQuery(
                         QueryBuilders.matchQuery(fieldName, fieldValue)
                 )
-                .setFrom(pageObject.getOffset())
-                .setSize(pageObject.getSize());
+                .setFrom(queryPage.getOffset())
+                .setSize(queryPage.getSize());
 
         if(Objects.nonNull(fieldNameSort) && Objects.nonNull(searchOrder)) {
             request.addSort(

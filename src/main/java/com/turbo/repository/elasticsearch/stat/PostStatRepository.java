@@ -2,10 +2,11 @@ package com.turbo.repository.elasticsearch.stat;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
+import com.turbo.model.page.Page;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.field.stat.*;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
-import com.turbo.model.search.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -37,117 +38,24 @@ public class PostStatRepository extends AbstractSearchRepository {
     }
 
     /**
-     * Get post per specific day, sorted by @orderField in @searchOrder and
-     * filter by field @field with value @value
+     * Get post in specific period(date -> periodField), sorted by sortingField in searchOrder
+     * with search query by field with value
      * @param field
+     * @param value
+     * @param page
      * @param date
-     * @param orderField
+     * @param periodField
+     * @param sortingField
      * @param searchOrder
-     * @return list of posts' id
+     * @return
      */
-    public List<Long> getPostPerDayByOrder(
+    public List<Long> getPostStat(
             @Nullable final PostStatField field,
             @Nullable final String value,
+            final Page page,
             final LocalDate date,
-            final PostDayStatField orderField,
-            final SearchOrder searchOrder
-    ) {
-        return getPostPerRangeByOrder(
-                Objects.nonNull(field) ? field.getFieldName() : null,
-                value,
-                PostStatField.DAYS_DATE.getFieldName(),
-                date,
-                orderField.getFieldName(),
-                searchOrder
-        );
-    }
-
-    /**
-     * Get post per specific week, sorted by @orderField in @searchOrder and
-     * filter by field @field with value @value
-     * @param field
-     * @param date
-     * @param orderField
-     * @param searchOrder
-     * @return list of posts' id
-     */
-    public List<Long> getPostPerWeekByOrder(
-            @Nullable final PostStatField field,
-            @Nullable final String value,
-            final LocalDate date,
-            final PostWeeksStatField orderField,
-            final SearchOrder searchOrder
-    ) {
-        return getPostPerRangeByOrder(
-                Objects.nonNull(field) ? field.getFieldName() : null,
-                value,
-                PostStatField.WEEKS_DATE.getFieldName(),
-                date,
-                orderField.getFieldName(),
-                searchOrder
-        );
-    }
-
-    /**
-     * Get post per specific month, sorted by @orderField in @searchOrder and
-     * filter by field @field with value @value
-     * @param field
-     * @param date
-     * @param orderField
-     * @param searchOrder
-     * @return list of posts' id
-     */
-    public List<Long> getPostPerMonthByOrder(
-            @Nullable final PostStatField field,
-            @Nullable final String value,
-            final LocalDate date,
-            final PostMonthStatField orderField,
-            final SearchOrder searchOrder
-    ) {
-        return getPostPerRangeByOrder(
-                Objects.nonNull(field) ? field.getFieldName() : null,
-                value,
-                PostStatField.MONTHS_DATE.getFieldName(),
-                date,
-                orderField.getFieldName(),
-                searchOrder
-        );
-    }
-
-    /**
-     * Get post per specific year, sorted by @orderField in @searchOrder and
-     * filter by field @field with value @value
-     * @param field
-     * @param date
-     * @param orderField
-     * @param searchOrder
-     * @return list of posts' id
-     */
-    public List<Long> getPostPerYearByOrder(
-            @Nullable final PostStatField field,
-            @Nullable final String value,
-            final LocalDate date,
-            final PostYearStatField orderField,
-            final SearchOrder searchOrder
-    ) {
-        return getPostPerRangeByOrder(
-                Objects.nonNull(field) ? field.getFieldName() : null,
-                value,
-                PostStatField.YEAR_DATE.getFieldName(),
-                date,
-                orderField.getFieldName(),
-                searchOrder
-        );
-    }
-
-    // inner methods
-
-    private List<Long> getPostPerRangeByOrder(
-            @Nullable final String field,
-            @Nullable final String value,
-            final String rangeDateField, // days, weeks, months, year
-            final LocalDate date,
-            final String orderField,
+            final PostStatPeriod periodField,
+            final PostDiffStatField sortingField,
             final SearchOrder searchOrder
     ) {
         SearchRequestBuilder builder = elasticClient
@@ -156,24 +64,29 @@ public class PostStatRepository extends AbstractSearchRepository {
 
         // create query builder
         BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
+
+        //set specific date period
         boolBuilder.must(
                 QueryBuilders.termQuery(
-                        rangeDateField,
+                        periodField.getFieldName(PostDiffStatField.DATE),
                         dateFormatter.format(date)
                 )
         );
+
+        //set filter
         if(Objects.nonNull(field) && StringUtils.isNotBlank(value)) {
             boolBuilder.must(
                     QueryBuilders.matchQuery(
-                            field,
+                            field.getFieldName(),
                             value
                     )
             );
         }
 
+        // set sorting
         builder.setQuery(boolBuilder).addSort(
                 SortBuilders
-                        .fieldSort(orderField)
+                        .fieldSort(periodField.getFieldName(sortingField))
                         .order(
                                 searchOrder == SearchOrder.DESC ?
                                         SortOrder.DESC :
@@ -181,7 +94,10 @@ public class PostStatRepository extends AbstractSearchRepository {
                         )
         );
 
-        SearchResponse response = builder.get();
+        SearchResponse response = builder
+                .setFrom(page.getOffset())
+                .setSize(page.getSize())
+                .get();
 
         return ElasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()

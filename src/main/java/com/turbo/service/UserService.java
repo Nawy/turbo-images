@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User update(User user) {
-        if (user.getId() == null) throw new ForbiddenHttpException("Can't update entity without id");
+        if (user.getName() == null) throw new ForbiddenHttpException("Can't update entity without name");
         //FIXME
         User dbUser = null;//userRepository.save(user);
         userSearchRepository.updateUser(dbUser);

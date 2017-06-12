@@ -43,7 +43,7 @@ public class UserController {
             @RequestParam(value = "sort", defaultValue = "RATING") SearchSort sort
     ) {
         User user = authorizationService.getCurrentUser();
-        return postService.getUserPosts(page, user.getId(), sort);
+        return postService.getUserPosts(page, user.getName(), sort);
     }
 
     @Secured(SecurityRole.USER)

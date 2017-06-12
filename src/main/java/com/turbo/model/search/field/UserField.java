@@ -5,7 +5,6 @@ package com.turbo.model.search.field;
  */
 public enum UserField {
 
-    ID("id"),
     NAME("name"),
     EMAIL("email"),
     RATING("rating"),

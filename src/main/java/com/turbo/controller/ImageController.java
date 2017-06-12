@@ -52,7 +52,7 @@ public class ImageController {
     ) {
         User user = authorizationService.getCurrentUser();
         UserImage userImage = imageService.addImage(
-                user.getId(),
+                user.getName(),
                 hash,
                 source
         );

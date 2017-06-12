@@ -5,21 +5,24 @@ import com.turbo.model.Nullable;
 import com.turbo.model.Post;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Page;
-import com.turbo.model.search.content.PostSearchEntity;
-import com.turbo.repository.elasticsearch.AbstractSearchRepository;
-import com.turbo.model.search.field.PostField;
-import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.model.search.SearchOrder;
+import com.turbo.model.search.SearchPeriod;
+import com.turbo.model.search.content.PostSearchEntity;
+import com.turbo.model.search.field.PostField;
+import com.turbo.repository.elasticsearch.AbstractSearchRepository;
+import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -96,20 +99,69 @@ public class PostSearchRepository extends AbstractSearchRepository {
     public List<Long> getPostByAuthor(
             final String authorId,
             final int page,
+            final SearchPeriod period,
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        SearchResponse response = getByField(
-                config.getSearchPostIndexName(),
-                config.getSearchPostTypeName(),
-                PostField.AUTHOR.getFieldName(),
-                authorId,
-                page,
-                Objects.isNull(postField) ? null : postField.getFieldName(),
-                searchOrder
-        );
+        final Page queryPage = new Page(page);
+        LocalDate lowestDate = null;
+        if(period != SearchPeriod.ALL_TIME) {
+            switch (period) {
+                case DAY:{
+                    lowestDate = LocalDate.now().minusDays(1);
+                    break;
+                }
+                case WEEK:{
+                    lowestDate = LocalDate.now().minusWeeks(1);
+                    break;
+                }
+                case MONTH:{
+                    lowestDate = LocalDate.now().minusMonths(1);
+                    break;
+                }
+                case YEAR:{
+                    lowestDate = LocalDate.now().minusYears(1);
+                    break;
+                }
+            }
+        }
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .must(
+                        QueryBuilders.termQuery(
+                                PostField.AUTHOR.getFieldName(),
+                                authorId
+                        )
+                );
+
+        if(Objects.nonNull(lowestDate)) {
+            boolQueryBuilder.must(
+                    QueryBuilders.rangeQuery(
+                            PostField.CREATION_DATE.getFieldName()
+                    ).gte(lowestDate)
+            );
+        }
+
+        SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .setQuery(boolQueryBuilder)
+                .setFrom(queryPage.getOffset())
+                .setSize(queryPage.getSize());
+
+        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+            request.addSort(
+                    SortBuilders
+                            .fieldSort(postField.getFieldName())
+                            .order(
+                                    searchOrder == SearchOrder.DESC ?
+                                            SortOrder.DESC :
+                                            SortOrder.ASC
+                            )
+            );
+        }
+
+        return ElasticUtils.parseSearchResponse(request.get(), ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -184,7 +236,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
             @Nullable final PostField postField,
             @Nullable final SearchOrder searchOrder
     ) {
-        final Page pageObject = new Page(page);
+        final Page queryPage = new Page(page);
         final SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getSearchPostIndexName())
                 .setTypes(config.getSearchPostTypeName())
@@ -194,8 +246,8 @@ public class PostSearchRepository extends AbstractSearchRepository {
                                 tags.toArray()
                         )
                 )
-                .setFrom(pageObject.getOffset())
-                .setSize(pageObject.getSize());
+                .setFrom(queryPage.getOffset())
+                .setSize(queryPage.getSize());
 
         if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
             request.addSort(
@@ -208,6 +260,65 @@ public class PostSearchRepository extends AbstractSearchRepository {
                             )
             );
         }
+
+        final SearchResponse response = request.get();
+
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
+    // TODO made until date
+    public List<Long> getNewestPost(
+            final int page
+    ) {
+        final Page queryPage = new Page(page);
+
+        final SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .setQuery(
+                        QueryBuilders.matchAllQuery()
+                )
+                .addSort(
+                        PostField.CREATION_DATE.getFieldName(), SortOrder.DESC
+                )
+                .setFrom(queryPage.getOffset())
+                .setSize(queryPage.getSize());
+
+        final SearchResponse response = request.get();
+
+        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getSortedPost(
+            final int page,
+            final PostField postField,
+            final SearchOrder searchOrder
+    ) {
+        final Page queryPage = new Page(page);
+
+        final SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .setQuery(
+                        QueryBuilders.matchAllQuery()
+                )
+                .addSort(
+                SortBuilders
+                        .fieldSort(postField.getFieldName())
+                        .order(
+                                searchOrder == SearchOrder.DESC ?
+                                        SortOrder.DESC :
+                                        SortOrder.ASC
+                        )
+                )
+                .setFrom(queryPage.getOffset())
+                .setSize(queryPage.getSize());
 
         final SearchResponse response = request.get();
 
