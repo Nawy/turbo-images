@@ -1,14 +1,13 @@
 package com.turbo.repository.elasticsearch.content;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.User;
 import com.turbo.model.exception.InternalServerErrorHttpException;
-import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.search.content.UserSearchEntity;
 import com.turbo.model.search.field.UserField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
-import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -73,30 +72,6 @@ public class UserSearchRepository extends AbstractSearchRepository {
     /**
      * Find to elasticsearch by terms
      */
-    //FIXME I DON'T NEED AEROSPIKE RESOLVE THIS!!!
-    public Long getUserByName(
-            final String name
-    ) {
-        SearchResponse response = getByField(
-                config.getSearchUserIndexName(),
-                config.getSearchUserTypeName(),
-                UserField.NAME.getFieldName(),
-                name,
-                1,
-                null,
-                null
-        );
-        if(response.getHits().getTotalHits() > 0) {
-            return ElasticUtils.parseUniqueSearchResponse(response, ElasticId.class).getId();
-        }
-        else {
-            throw new NotFoundHttpException("Not fount user with name " + name);
-        }
-    }
-
-    /**
-     * Find to elasticsearch by terms
-     */
     public String getUserByEmail(
             final String email
     ) {
@@ -111,8 +86,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         );
 
         if(response.getHits().getTotalHits() > 0) {
-            //FIXME!!! RETURN USER NAME PLS!!!
-            return ElasticUtils.parseUniqueSearchResponse(response, ElasticId.class).getId();
+            return ElasticUtils.parseUniqueSearchResponse(response, UserNameDto.class).getName();
         }
         else {
             return null;
@@ -120,10 +94,9 @@ public class UserSearchRepository extends AbstractSearchRepository {
     }
 
     /**
-     * Find to elasticsearch with variants
+     * Find to user by username with variants
      */
-    //FIXME I DON'T NEED AEROSPIKE RESOLVE THIS!!!
-    public String findUserByName(
+    public List<String> findUserByName(
             final String name,
             final int page,
             @Nullable final UserField userField,
@@ -139,9 +112,21 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return ElasticUtils.parseSearchResponse(response, UserNameDto.class)
                 .stream()
-                .map(ElasticId::getId)
+                .map(UserNameDto::getName)
                 .collect(Collectors.toList());
+    }
+
+    private static class UserNameDto {
+
+        private String name;
+        public UserNameDto(@JsonProperty(value = "name", required = true) String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

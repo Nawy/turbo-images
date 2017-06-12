@@ -1,6 +1,9 @@
 package com.turbo.config;
 
 import org.apache.http.util.Asserts;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -43,6 +46,11 @@ public class ElasticsearchConfig {
 
     @PostConstruct
     public void init() {
+        Asserts.check(maxSizePostsPerPage != 0, "Max size post per page cannot be 0");
+        Asserts.check(maxSizeUsersPerPage != 0, "Max size users per page cannot be 0");
+        Asserts.check(maxSizePostsPerPage < MAX_SIZE_OF_SELECT_LIST, "Max size posts per page cannot be more than " + MAX_SIZE_OF_SELECT_LIST);
+        Asserts.check(maxSizeUsersPerPage < MAX_SIZE_OF_SELECT_LIST, "Max size users per page cannot be more than " + MAX_SIZE_OF_SELECT_LIST);
+
         Settings settings = Settings.builder().put("cluster.name", clusterName).build();
         try {
             InetSocketTransportAddress[] addresses = getAddresses();
@@ -51,10 +59,7 @@ public class ElasticsearchConfig {
             throw new RuntimeException("Can't create elastic transport client!", e);
         }
 
-        Asserts.check(maxSizePostsPerPage == 0, "Max size post per page cannot be 0");
-        Asserts.check(maxSizeUsersPerPage == 0, "Max size users per page cannot be 0");
-        Asserts.check(maxSizePostsPerPage >= MAX_SIZE_OF_SELECT_LIST, "Max size posts per page cannot be more than " + MAX_SIZE_OF_SELECT_LIST);
-        Asserts.check(maxSizeUsersPerPage >= MAX_SIZE_OF_SELECT_LIST, "Max size users per page cannot be more than " + MAX_SIZE_OF_SELECT_LIST);
+        createContentIndicesIfNonExist();
     }
 
     public TransportClient getElasticClient() {
@@ -74,6 +79,22 @@ public class ElasticsearchConfig {
 
         return addresses;
     }
+
+    private void createContentIndicesIfNonExist() {
+        Objects.requireNonNull(elasticClient);
+
+        IndicesAdminClient indices = elasticClient.admin().indices();
+        final boolean isPostExists = indices.exists(new IndicesExistsRequest(searchPostIndexName)).actionGet().isExists();
+        final boolean isUserExists = indices.exists(new IndicesExistsRequest(searchUserIndexName)).actionGet().isExists();
+
+        if(!isPostExists) {
+            indices.create(new CreateIndexRequest(searchPostIndexName)).actionGet();
+        }
+        if(!isUserExists) {
+            indices.create(new CreateIndexRequest(searchUserIndexName)).actionGet();
+        }
+    }
+
 
     public String[] getHosts() {
         return hosts;
