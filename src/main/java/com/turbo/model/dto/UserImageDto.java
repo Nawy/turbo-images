@@ -14,18 +14,18 @@ public class UserImageDto {
     private String id;
     private Image image;
     private String description;
-    private String userId;
+    private String username;
 
     public UserImageDto(
             @JsonProperty("id") String id,
             @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
-            @JsonProperty(value = "user_id", required = true) String userId
+            @JsonProperty(value = "user_name", required = true) String username
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
-        this.userId = userId;
+        this.username = username;
     }
 
     @JsonIgnore
@@ -34,7 +34,7 @@ public class UserImageDto {
                 HashIdService.encodeHashId(userImage.getId()),
                 userImage.getImage(),
                 userImage.getDescription(),
-                HashIdService.encodeHashId(userImage.getUserId())
+                userImage.getUsername()
         );
     }
 
@@ -50,8 +50,8 @@ public class UserImageDto {
         return description;
     }
 
-    @JsonProperty("user_id")
-    public String getUserId() {
-        return userId;
+    @JsonProperty("user_name")
+    public String getUsername() {
+        return username;
     }
 }

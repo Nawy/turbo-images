@@ -46,13 +46,13 @@ public class ImageService {
         return imageRepository.exists(hash);
     }
 
-    public UserImage addImage(long userId, long hash, byte[] picture) {
+    public UserImage addImage(String username, long hash, byte[] picture) {
         Image image = imageExists(hash) ?
                 imageRepository.get(hash) :
                 saveImage(hash, picture);
 
         return userImageRepository.save(
-                new UserImage(null, image, null, userId)
+                new UserImage(null, image, null, username)
         );
     }
 

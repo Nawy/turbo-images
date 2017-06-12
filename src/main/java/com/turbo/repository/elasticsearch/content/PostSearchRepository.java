@@ -97,7 +97,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
     }
 
     public List<Long> getPostByAuthor(
-            final String authorId,
+            final String username,
             final int page,
             final SearchPeriod period,
             @Nullable final PostField postField,
@@ -130,7 +130,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .must(
                         QueryBuilders.termQuery(
                                 PostField.AUTHOR.getFieldName(),
-                                authorId
+                                username
                         )
                 );
 

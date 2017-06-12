@@ -12,18 +12,18 @@ public class UserImage implements Serializable, IdHolder {
     private Long id;
     private Image image;
     private String description;
-    private long userId;
+    private String username;
 
     public UserImage(
             @JsonProperty("id") Long id,
             @JsonProperty(value = "image", required = true) Image image,
             @JsonProperty("description") String description,
-            @JsonProperty(value = "user_id", required = true) long userId
+            @JsonProperty(value = "user_name", required = true) String username
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
-        this.userId = userId;
+        this.username = username;
     }
 
     public Long getId() {
@@ -43,8 +43,8 @@ public class UserImage implements Serializable, IdHolder {
         return description;
     }
 
-    @JsonProperty("user_id")
-    public long getUserId() {
-        return userId;
+    @JsonProperty("user_name")
+    public String getUsername() {
+        return username;
     }
 }

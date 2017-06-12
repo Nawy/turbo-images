@@ -84,8 +84,8 @@ public class PostService {
         if(searchSort != SearchSort.NEWEST && searchPeriod != SearchPeriod.ALL_TIME) {
             final PostDiffStatField sortingField = getStatPostField(searchSort);
 
-            PostStatPeriod period = null;
-            LocalDate specificDate = null;
+            PostStatPeriod period;
+            LocalDate specificDate;
             switch (searchPeriod) {
                 case DAY:
                     specificDate = LocalDate.now();
@@ -133,14 +133,14 @@ public class PostService {
         return postRepository.bulkGet(resultIds);
     }
 
-    public List<Post> getUserPosts(int page, String userId, SearchPattern searchPattern) {
+    public List<Post> getUserPosts(int page, String username, SearchPattern searchPattern) {
 
-        List<Long> resultIds = null;
+        List<Long> resultIds;
 
         if(searchPattern.getSort() == SearchSort.NEWEST) {
             // ONLY NEWEST
             resultIds = postSearchRepository.getPostByAuthor(
-                    userId,
+                    username,
                     page,
                     searchPattern.getPeriod(),
                     PostField.CREATION_DATE,
@@ -151,7 +151,7 @@ public class PostService {
             final PostField sortingField = getContentPostField(searchPattern.getSort());
 
             resultIds = postSearchRepository.getPostByAuthor(
-                    userId,
+                    username,
                     page,
                     searchPattern.getPeriod(),
                     sortingField,
