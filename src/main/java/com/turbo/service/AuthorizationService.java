@@ -1,20 +1,17 @@
 package com.turbo.service;
 
 import com.turbo.model.Session;
+import com.turbo.model.User;
 import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
-import com.turbo.model.User;
 import com.turbo.repository.aerospike.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 @Service
@@ -57,6 +54,12 @@ public class AuthorizationService {
     }
 
     public Session signup(User user) {
+        if (userService.isEmailExists(user.getEmail())) {
+            throw new ForbiddenHttpException("Can't signup, email already exists:" + user.getEmail());
+        }
+        if (userService.isUsernameExists(user.getName())) {
+            throw new ForbiddenHttpException("Can't signup, username already exists:" + user.getName());
+        }
         User dbUser = userService.add(user);
         return login(dbUser);
     }

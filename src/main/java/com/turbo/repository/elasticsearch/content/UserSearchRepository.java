@@ -73,6 +73,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
     /**
      * Find to elasticsearch by terms
      */
+    //FIXME I DON'T NEED AEROSPIKE RESOLVE THIS!!!
     public Long getUserByName(
             final String name
     ) {
@@ -96,7 +97,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
     /**
      * Find to elasticsearch by terms
      */
-    public Long getUserByEmail(
+    public String getUserByEmail(
             final String email
     ) {
         SearchResponse response = getByField(
@@ -110,6 +111,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         );
 
         if(response.getHits().getTotalHits() > 0) {
+            //FIXME!!! RETURN USER NAME PLS!!!
             return ElasticUtils.parseUniqueSearchResponse(response, ElasticId.class).getId();
         }
         else {
@@ -120,7 +122,8 @@ public class UserSearchRepository extends AbstractSearchRepository {
     /**
      * Find to elasticsearch with variants
      */
-    public List<Long> findUserByName(
+    //FIXME I DON'T NEED AEROSPIKE RESOLVE THIS!!!
+    public String findUserByName(
             final String name,
             final int page,
             @Nullable final UserField userField,

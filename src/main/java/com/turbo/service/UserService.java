@@ -1,9 +1,10 @@
 package com.turbo.service;
 
-import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.User;
+import com.turbo.model.exception.ForbiddenHttpException;
+import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.repository.aerospike.UserRepository;
 import com.turbo.repository.elasticsearch.content.UserSearchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,29 +14,45 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserSearchRepository userSearchRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserSearchRepository userSearchRepository) {
+    public UserService(UserSearchRepository userSearchRepository, UserRepository userRepository) {
         this.userSearchRepository = userSearchRepository;
+        this.userRepository = userRepository;
     }
 
     public User update(User user) {
         if (user.getName() == null) throw new ForbiddenHttpException("Can't update entity without name");
-        //FIXME
-        User dbUser = null;//userRepository.save(user);
+        User dbUser = userRepository.save(user);
         userSearchRepository.updateUser(dbUser);
         return dbUser;
     }
 
     public User add(User user) {
-        //FIXME
-        User dbUser = null;//userRepository.save(user);
+        User dbUser = userRepository.save(user);
         userSearchRepository.addUser(dbUser);
         return dbUser;
     }
 
     public User findByEmail(String email) {
-        //FIXME HERE SHOULD BE ELASTIC!!!
-        return null;
+        User user = findByEmailInternal(email);
+        if (user == null) throw new NotFoundHttpException("No user found for email:" + email);
+        return user;
+    }
+
+    private User findByEmailInternal(String email) {
+        String username = userSearchRepository.getUserByEmail(email);
+        return username != null ?
+                userRepository.get(username) :
+                userRepository.getByEmail(email);
+    }
+
+    public boolean isEmailExists(String email) {
+        User user = findByEmailInternal(email);
+        return user != null;
+    }
+
+    public boolean isUsernameExists(String username) {
+        return userRepository.exists(username);
     }
 }
