@@ -1,4 +1,5 @@
-FROM frolvlad/alpine-oraclejdk8:slim
-VOLUME /data
-RUN sh -c 'touch /app.jar'
-ENTRYPOINT [ "sh", "-c", "$(tr '\n' ' ' < /data/app.config)" ]
+FROM openjdk:8u131-jre-alpine
+CMD ["mkdir", "-p", "/etc/javapp"]
+CMD ["mkdir", "-p", "/usr/share/javapp/bin"]
+CMD ["mkdir", "-p", "/var/log/javapp"]
+ENTRYPOINT ["sh", "-c", "$(tr '\n' ' ' < /etc/javapp/app.config)"]
