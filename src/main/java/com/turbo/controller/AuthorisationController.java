@@ -38,8 +38,8 @@ public class AuthorisationController {
         );
     }
 
-    @PostMapping("/logout")
     @Secured(SecurityRole.USER)
+    @PostMapping("/logout")
     public void logout() {
         authorizationService.logout();
     }

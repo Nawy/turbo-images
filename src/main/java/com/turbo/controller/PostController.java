@@ -1,6 +1,7 @@
 package com.turbo.controller;
 
 import com.turbo.model.Post;
+import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.PostSearchDto;
 import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.SearchSort;
@@ -10,6 +11,7 @@ import com.turbo.model.search.SearchOrder;
 import com.turbo.service.HashIdService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -49,6 +51,7 @@ public class PostController {
         );
     }
 
+    @Secured(SecurityRole.USER)
     @PostMapping("/save/post")
     public PostDto save(@RequestBody Post post) {
         return PostDto.from(
@@ -56,6 +59,7 @@ public class PostController {
         );
     }
 
+    @Secured(SecurityRole.USER)
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") String id) {
         postService.delete(
