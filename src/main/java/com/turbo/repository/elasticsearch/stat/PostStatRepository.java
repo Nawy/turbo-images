@@ -58,6 +58,7 @@ public class PostStatRepository extends AbstractSearchRepository {
             final PostDiffStatField sortingField,
             final SearchOrder searchOrder
     ) {
+        final String filteredDate = dateFormatter.format(date);
         SearchRequestBuilder builder = elasticClient
                 .prepareSearch(config.getStatPostsIndexName())
                 .setTypes(ElasticUtils.getTypePerYear(config.getStatPostsTypeName(), date));
@@ -69,7 +70,7 @@ public class PostStatRepository extends AbstractSearchRepository {
         boolBuilder.must(
                 QueryBuilders.termQuery(
                         periodField.getFieldName(PostDiffStatField.DATE),
-                        dateFormatter.format(date)
+                        filteredDate
                 )
         );
 
@@ -87,6 +88,13 @@ public class PostStatRepository extends AbstractSearchRepository {
         builder.setQuery(boolBuilder).addSort(
                 SortBuilders
                         .fieldSort(periodField.getFieldName(sortingField))
+                        .setNestedPath(periodField.getFieldName())
+                        .setNestedFilter(
+                                QueryBuilders.termQuery(
+                                        periodField.getFieldName(sortingField),
+                                        filteredDate
+                                )
+                        )
                         .order(
                                 searchOrder == SearchOrder.DESC ?
                                         SortOrder.DESC :

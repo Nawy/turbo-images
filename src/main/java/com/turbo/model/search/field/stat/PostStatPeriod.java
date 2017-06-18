@@ -21,4 +21,8 @@ public enum PostStatPeriod {
         return fieldName + diffStatField.getFieldName();
     }
 
+    public String getFieldName() {
+        return fieldName;
+    }
+
 }
