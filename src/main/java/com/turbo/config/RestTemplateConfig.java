@@ -26,10 +26,7 @@ public class RestTemplateConfig {
     private int connectionTimeOut;
 
     @Bean
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    public RestTemplate restTemplate(
-            @Qualifier("wrapperRestTemplateInterceptor") ClientHttpRequestInterceptor clientHttpRequestInterceptor
-    ) {
+    public RestTemplate restTemplate() {
         RequestConfig requestConfig = RequestConfig.custom()
                 .setSocketTimeout(connectionTimeOut * MILLISECONDS_PER_SECOND)
                 .build();
@@ -38,9 +35,7 @@ public class RestTemplateConfig {
                 .setDefaultRequestConfig(requestConfig)
                 .useSystemProperties()
                 .build();
-        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
-        restTemplate.setInterceptors(Collections.singletonList(clientHttpRequestInterceptor));
-        return restTemplate;
+        return new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
     }
 
 }
