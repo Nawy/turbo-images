@@ -1,20 +1,22 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.User;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.service.AuthorizationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
 /**
@@ -31,25 +33,42 @@ public class AuthorisationController {
     }
 
     @PostMapping("/signin")
-    public void signin(@RequestBody UserCredentialsDto userCredentialsDto) {
+    public void signin(@RequestBody UserCredentialsDto userCredentialsDto, HttpServletResponse response) {
         if (StringUtils.isBlank(userCredentialsDto.getEmail())
                 || StringUtils.isBlank(userCredentialsDto.getPassword())) {
             throw new BadRequestHttpException("Bad credentials");
         }
-        authorizationService.login(
+        Session session = authorizationService.login(
                 userCredentialsDto.getEmail(),
                 userCredentialsDto.getPassword()
         );
+        addSessionCookieToResponse(response,session.getId());
+    }
+
+    private void addSessionCookieToResponse(HttpServletResponse response, long sessionId) {
+        Cookie cookie = createCookie(sessionId);
+        response.addCookie(cookie);
+    }
+
+    private Cookie createCookie(long sessionId) {
+        Cookie cookie = new Cookie(SecurityHeader.SESSION_COOKIE_NAME, Long.toString(sessionId));
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        return cookie;
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/logout")
-    public void logout() {
+    public void logout(HttpServletResponse response) {
         authorizationService.logout();
+        Cookie cookie = createCookie(0);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     @PostMapping("/signup")
-    public Session signup(@RequestBody UserSignupDto userDto, HttpServletRequest request) {
+    public Session signup(@RequestBody UserSignupDto userDto, HttpServletRequest request, HttpServletResponse response) {
         User user = new User(
                 userDto.getName(),
                 null,
@@ -58,7 +77,9 @@ public class AuthorisationController {
                 LocalDateTime.now(),
                 request.getRemoteAddr()
         );
-        return authorizationService.signup(user);
+        Session session = authorizationService.signup(user);
+        addSessionCookieToResponse(response,session.getId());
+        return session;
     }
 
     private static class UserCredentialsDto {

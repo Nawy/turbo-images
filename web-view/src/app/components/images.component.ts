@@ -1,9 +1,8 @@
 /**
  * Created by ermolaev on 5/9/17.
  */
-
-import {Component} from '@angular/core';
-import {PostPreview} from '../models/postpreview.model';
+import {Component} from "@angular/core";
+import {PostPreview} from "../models/postpreview.model";
 
 @Component({
   selector: "s-images",
@@ -14,43 +13,57 @@ export class ImagesComponent {
 
   postPreviews: PostPreview[];
 
-  isStateTop: boolean;
+  searchSort: SearchSort;
 
   constructor() {
-    this.isStateTop = true;
+    this.searchSort = SearchSort.RATING;
 
     const count: number = 100;
     this.postPreviews = new Array<PostPreview>(count);
     var pathes: string[] = ["https://i.imgur.com/uuh9RZ9b.jpg", "https://i.imgur.com/djKgENAb.jpg"];
 
-    for(var i = 0; i < count;) {
-      var path:string;
-      for(path in pathes) {
-        this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random()*100));
+    for (var i = 0; i < count;) {
+      var path: string;
+      for (path in pathes) {
+        this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random() * 100));
         i++;
-        if(i >= count) break;
+        if (i >= count) break;
       }
     }
   }
 
-  getClassState(name: string) : string {
-    if(name.match("TOP") && this.isStateTop) {
+  getClassState(name: string): string {
+    if (name.match("RATING") && this.searchSort === SearchSort.RATING) {
       return "active";
     }
 
-    if(name.match("NEW") && !this.isStateTop) {
+    if (name.match("VIEW") && this.searchSort === SearchSort.VIEW) {
+      return "active";
+    }
+
+    if (name.match("NEW") && this.searchSort === SearchSort.NEW) {
       return "active";
     }
 
     return "";
   }
 
-  chooseTopState() : void {
-    this.isStateTop = true;
+  chooseTopRatingState(): void {
+    this.searchSort = SearchSort.RATING;
   }
 
-  chooseNewState() : void {
-    this.isStateTop = false;
+  chooseTopViewState(): void {
+    this.searchSort = SearchSort.VIEW;
   }
+
+  chooseNewState(): void {
+    this.searchSort = SearchSort.NEW;
+  }
+}
+
+enum SearchSort {
+  RATING,
+  VIEW,
+  NEW
 }
 

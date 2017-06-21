@@ -1,5 +1,6 @@
 package com.turbo.repository;
 
+import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
 import com.turbo.service.AuthorizationService;
@@ -20,8 +21,6 @@ import java.util.Collections;
 
 @Component
 public class SecurityContextRepositoryImpl implements SecurityContextRepository {
-
-    private static final String SESSION_COOKIE_NAME = "x-session-id";
 
     private final AuthorizationService authorizationService;
 
@@ -65,7 +64,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
     private Long getSessionIdFromRequest(HttpServletRequest req) {
         if (req.getCookies() == null) return null;
         Cookie cookie = Arrays.stream(req.getCookies())
-                .filter((c) -> SESSION_COOKIE_NAME.equals(c.getName()))
+                .filter((c) -> SecurityHeader.SESSION_COOKIE_NAME.equals(c.getName()))
                 .findFirst().orElse(null);
         return cookie == null ? null : Long.valueOf(cookie.getValue());
     }

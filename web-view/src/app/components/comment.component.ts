@@ -5,7 +5,7 @@
 import {Component} from '@angular/core'
 
 @Component({
-  selector: "s-images",
+  selector: "comment",
   templateUrl: './../templates/comment.template.html',
   styleUrls: ['./../css/comment.style.css']
 })
