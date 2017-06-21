@@ -4,6 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
+import com.turbo.repository.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -17,12 +18,15 @@ import java.util.Objects;
  * Created by ermolaev on 5/28/17.
  */
 public abstract class AbstractSearchRepository {
+
     protected final TransportClient elasticClient;
     protected final ElasticsearchConfig config;
+    protected final ElasticUtils elasticUtils;
 
-    public AbstractSearchRepository(TransportClient elasticClient, ElasticsearchConfig config) {
+    public AbstractSearchRepository(TransportClient elasticClient, ElasticsearchConfig config, ElasticUtils elasticUtils) {
         this.elasticClient = elasticClient;
         this.config = config;
+        this.elasticUtils = elasticUtils;
     }
 
     protected SearchResponse searchUniqueByField(

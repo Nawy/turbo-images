@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.exception.NotFoundHttpException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -14,13 +17,18 @@ import java.util.List;
 /**
  * Created by ermolaev on 5/18/17.
  */
-public abstract class ElasticUtils {
+@Repository
+public class ElasticUtils {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final ObjectMapper jsonMapper;
 
-    public static ObjectMapper jsonMapper;
+    @Autowired
+    public ElasticUtils(ObjectMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
 
-    public static byte[] writeAsJsonBytes(final Object value) {
+    public byte[] writeAsJsonBytes(final Object value) {
         try {
             return jsonMapper.writeValueAsBytes(value);
         } catch (IOException e) {
@@ -35,7 +43,7 @@ public abstract class ElasticUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> parseSearchResponse(SearchResponse response, Class<T> clazz) {
+    public <T> List<T> parseSearchResponse(SearchResponse response, Class<T> clazz) {
         try {
             List<T> resultList = new ArrayList<>();
             SearchHit[] hints = response.getHits().getHits();
@@ -58,7 +66,7 @@ public abstract class ElasticUtils {
      * @param <T>
      * @return
      */
-    public static <T> T parseUniqueSearchResponse(SearchResponse response, Class<T> clazz) {
+    public <T> T parseUniqueSearchResponse(SearchResponse response, Class<T> clazz) {
         try {
             SearchHit[] hints = response.getHits().getHits();
             for(SearchHit hit : hints) {
@@ -68,7 +76,7 @@ public abstract class ElasticUtils {
             throw new RuntimeException(e);
         }
 
-        throw new NotFoundHttpException("Cannot find one " + clazz.getName());
+        return null;
     }
 
     /**
@@ -76,7 +84,7 @@ public abstract class ElasticUtils {
      * @param response
      * @return
      */
-    public static String parseElasticIdSearchResponse(SearchResponse response) {
+    public String parseElasticIdSearchResponse(SearchResponse response) {
         try {
             SearchHit[] hints = response.getHits().getHits();
             for(SearchHit hit : hints) {
@@ -86,7 +94,7 @@ public abstract class ElasticUtils {
             throw new RuntimeException(e);
         }
 
-        throw new NotFoundHttpException("Cannot find elastic id ");
+        return null;
     }
 
     public static String getTypePerYear(final String typeName, final LocalDate currentDate) {

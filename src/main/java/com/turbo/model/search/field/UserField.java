@@ -19,4 +19,8 @@ public enum UserField {
     public String getFieldName() {
         return fieldName;
     }
+
+    public String getFieldKeyword() {
+        return fieldName + ".keyword";
+    }
 }

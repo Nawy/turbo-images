@@ -2,6 +2,7 @@ package com.turbo.repository.elasticsearch.stat;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
+import com.turbo.repository.util.ElasticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public class UserStatRepository extends AbstractSearchRepository {
 
     @Autowired
-    public UserStatRepository(ElasticsearchConfig config) {
-        super(config.getElasticClient(), config);
+    public UserStatRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+        super(config.getElasticClient(), config, elasticUtils);
     }
 }

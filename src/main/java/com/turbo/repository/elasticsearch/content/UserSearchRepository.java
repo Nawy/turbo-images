@@ -1,5 +1,6 @@
 package com.turbo.repository.elasticsearch.content;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
@@ -26,8 +27,8 @@ import java.util.stream.Collectors;
 public class UserSearchRepository extends AbstractSearchRepository {
 
     @Autowired
-    public UserSearchRepository(ElasticsearchConfig config) {
-        super(config.getElasticClient(), config);
+    public UserSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+        super(config.getElasticClient(), config, elasticUtils);
     }
 
     public void addUser(final User user) {
@@ -38,7 +39,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
                         config.getSearchUserIndexName(),
                         config.getSearchUserTypeName()
                 )
-                .setSource(ElasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
+                .setSource(elasticUtils.writeAsJsonBytes(entity), XContentType.JSON)
                 .get();
     }
 
@@ -51,7 +52,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 config.getSearchUserTypeName(),
                 elasticId
         ).setDoc(
-                ElasticUtils.writeAsJsonBytes(new UserSearchEntity(user)),
+                elasticUtils.writeAsJsonBytes(new UserSearchEntity(user)),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
@@ -66,7 +67,7 @@ public class UserSearchRepository extends AbstractSearchRepository {
         if(response.getHits().getTotalHits() <= 0) {
             throw new InternalServerErrorHttpException("Not found user by name=" + name);
         }
-        return ElasticUtils.parseElasticIdSearchResponse(response);
+        return elasticUtils.parseElasticIdSearchResponse(response);
     }
 
     /**
@@ -78,15 +79,15 @@ public class UserSearchRepository extends AbstractSearchRepository {
         SearchResponse response = getByField(
                 config.getSearchUserIndexName(),
                 config.getSearchUserTypeName(),
-                UserField.EMAIL.getFieldName(),
+                UserField.EMAIL.getFieldKeyword(),
                 email,
-                1,
+                0,
                 null,
                 null
         );
 
         if(response.getHits().getTotalHits() > 0) {
-            return ElasticUtils.parseUniqueSearchResponse(response, UserNameDto.class).getName();
+            return elasticUtils.parseUniqueSearchResponse(response, UserNameDto.class).getName();
         }
         else {
             return null;
@@ -112,12 +113,13 @@ public class UserSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, UserNameDto.class)
+        return elasticUtils.parseSearchResponse(response, UserNameDto.class)
                 .stream()
                 .map(UserNameDto::getName)
                 .collect(Collectors.toList());
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private static class UserNameDto {
 
         private String name;

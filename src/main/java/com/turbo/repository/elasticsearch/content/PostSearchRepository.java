@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 public class PostSearchRepository extends AbstractSearchRepository {
 
     @Autowired
-    public PostSearchRepository(ElasticsearchConfig config) {
-        super(config.getElasticClient(), config);
+    public PostSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+        super(config.getElasticClient(), config, elasticUtils);
     }
 
     /**
@@ -49,7 +49,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         config.getSearchPostIndexName(),
                         config.getSearchPostTypeName()
                 )
-                .setSource(ElasticUtils.writeAsJsonBytes(new PostSearchEntity(post)), XContentType.JSON)
+                .setSource(elasticUtils.writeAsJsonBytes(new PostSearchEntity(post)), XContentType.JSON)
                 .get();
     }
 
@@ -61,7 +61,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 config.getSearchPostTypeName(),
                 elasticId
         ).setDoc(
-                ElasticUtils.writeAsJsonBytes(new PostSearchEntity(post)),
+                elasticUtils.writeAsJsonBytes(new PostSearchEntity(post)),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
@@ -76,7 +76,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         if(response.getHits().getTotalHits() <= 0) {
             throw new InternalServerErrorHttpException("Not found post by id=" + id);
         }
-        return ElasticUtils.parseElasticIdSearchResponse(response);
+        return elasticUtils.parseElasticIdSearchResponse(response);
     }
 
     /**
@@ -85,7 +85,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @return
      */
     public PostSearchEntity getPostById(final Long id) {
-        return ElasticUtils.parseUniqueSearchResponse(
+        return elasticUtils.parseUniqueSearchResponse(
                 searchUniqueByField(
                         config.getSearchPostIndexName(),
                         config.getSearchPostTypeName(),
@@ -161,7 +161,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
             );
         }
 
-        return ElasticUtils.parseSearchResponse(request.get(), ElasticId.class)
+        return elasticUtils.parseSearchResponse(request.get(), ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -192,7 +192,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -224,7 +224,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 searchOrder
         );
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -263,7 +263,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
         final SearchResponse response = request.get();
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -289,7 +289,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
         final SearchResponse response = request.get();
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
@@ -322,7 +322,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
         final SearchResponse response = request.get();
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());

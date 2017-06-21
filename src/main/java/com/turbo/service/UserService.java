@@ -44,6 +44,7 @@ public class UserService {
         String username = userSearchRepository.getUserByEmail(email);
         return username != null ?
                 userRepository.get(username) :
+                // TODO not working!
                 userRepository.getByEmail(email);
     }
 

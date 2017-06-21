@@ -37,7 +37,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         this.client = config.aerospikeClient();
         this.databaseName = config.getDatabaseName();
         this.tableName = tableName;
-        this.defaultBinName = tableName + "_binName";
+        this.defaultBinName = tableName + "_bin";
     }
 
     public T save(T entity) {

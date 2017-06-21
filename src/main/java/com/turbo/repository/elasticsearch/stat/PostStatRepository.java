@@ -33,8 +33,8 @@ public class PostStatRepository extends AbstractSearchRepository {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
-    public PostStatRepository(ElasticsearchConfig config) {
-        super(config.getElasticClient(), config);
+    public PostStatRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+        super(config.getElasticClient(), config, elasticUtils);
     }
 
     /**
@@ -61,7 +61,7 @@ public class PostStatRepository extends AbstractSearchRepository {
         final String filteredDate = dateFormatter.format(date);
         SearchRequestBuilder builder = elasticClient
                 .prepareSearch(config.getStatPostsIndexName())
-                .setTypes(ElasticUtils.getTypePerYear(config.getStatPostsTypeName(), date));
+                .setTypes(elasticUtils.getTypePerYear(config.getStatPostsTypeName(), date));
 
         // create query builder
         BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery();
@@ -107,7 +107,7 @@ public class PostStatRepository extends AbstractSearchRepository {
                 .setSize(page.getSize())
                 .get();
 
-        return ElasticUtils.parseSearchResponse(response, ElasticId.class)
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
                 .stream()
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());

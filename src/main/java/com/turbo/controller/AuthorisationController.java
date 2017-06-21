@@ -9,9 +9,13 @@ import com.turbo.service.AuthorizationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 /**
  * Created by ermolaev on 5/7/17.
@@ -45,7 +49,15 @@ public class AuthorisationController {
     }
 
     @PostMapping("/signup")
-    public Session signup(@RequestBody User user) {
+    public Session signup(@RequestBody UserSignupDto userDto, HttpServletRequest request) {
+        User user = new User(
+                userDto.getName(),
+                null,
+                userDto.getEmail(),
+                userDto.getPassword(),
+                LocalDateTime.now(),
+                request.getRemoteAddr()
+        );
         return authorizationService.signup(user);
     }
 
@@ -59,6 +71,34 @@ public class AuthorisationController {
         ) {
             this.email = email;
             this.password = password;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+    }
+
+
+    private static class UserSignupDto {
+        private String name;
+        private String email;
+        private String password;
+
+        public UserSignupDto(
+                @JsonProperty(value = "name", required = true) String name,
+                @JsonProperty(value = "email", required = true) String email,
+                @JsonProperty(value = "password", required = true) String password) {
+            this.name = name;
+            this.email = email;
+            this.password = password;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public String getEmail() {

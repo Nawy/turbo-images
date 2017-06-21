@@ -42,7 +42,7 @@ public class UserRepository {
         this.databaseName = config.getDatabaseName();
         this.tableName = tableName;
         this.userNamespace = tableName + "_binName";
-        this.userEmailNamespace = "email_" + userNamespace;
+        this.userEmailNamespace = "email_" + tableName;
     }
 
     public User save(User user) {
@@ -83,7 +83,7 @@ public class UserRepository {
             if (rs.next()) {
                 return (User) rs.getRecord().getValue(userNamespace);
             } else {
-                throw new NotFoundHttpException("No user was found!");
+                return null;
             }
         }
     }
