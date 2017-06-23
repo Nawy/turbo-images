@@ -11,11 +11,11 @@ import com.aerospike.client.query.Statement;
 import com.aerospike.client.task.IndexTask;
 import com.turbo.config.AerospikeConfig;
 import com.turbo.model.User;
-import com.turbo.model.exception.NotFoundHttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +45,21 @@ public class UserRepository {
         this.userEmailNamespace = "email_" + tableName;
     }
 
+    @PostConstruct
+    private void init() {
+        // create index for search by email queries
+        IndexTask task = client.createIndex(
+                null,
+                databaseName,
+                tableName,
+                userEmailNamespace + "_index",
+                userEmailNamespace,
+                IndexType.STRING
+        );
+
+        task.waitTillComplete(100);
+    }
+
     public User save(User user) {
         String entityID = user.getName();
 
@@ -59,19 +74,6 @@ public class UserRepository {
     }
 
     public User getByEmail(String email) {
-
-        //TODO INDEX SHOULD BE CREATED ONE TIME???
-        IndexTask task = client.createIndex(
-                null,
-                databaseName,
-                tableName,
-                userEmailNamespace + "_index",
-                userEmailNamespace,
-                IndexType.STRING
-        );
-
-        task.waitTillComplete(100);
-
         Statement stmt = new Statement();
         stmt.setNamespace(databaseName);
         stmt.setSetName(tableName);

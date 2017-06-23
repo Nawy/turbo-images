@@ -9,21 +9,22 @@ import java.io.Serializable;
  */
 public class Image implements Serializable, IdHolder {
 
-    private Long hash;
+    private Long id;
     private String fullImagePath;
     private String smallImagePath;
 
     public Image() {
     }
 
-    public Image(Long hash, String fullImagePath, String smallImagePath) {
-        this.hash = hash;
+    public Image(Long id, String fullImagePath, String smallImagePath) {
+        this.id = id;
         this.fullImagePath = fullImagePath;
         this.smallImagePath = smallImagePath;
     }
 
-    public Long getHash() {
-        return hash;
+    @Override
+    public Long getId() {
+        return id;
     }
 
     @JsonProperty("full_image_path")
@@ -37,12 +38,7 @@ public class Image implements Serializable, IdHolder {
     }
 
     @Override
-    public Long getId() {
-        return hash;
-    }
-
-    @Override
     public void setId(Long id) {
-        hash = id;
+        this.id = id;
     }
 }

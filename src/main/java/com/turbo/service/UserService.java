@@ -41,10 +41,9 @@ public class UserService {
     }
 
     private User findByEmailInternal(String email) {
-        String username = userSearchRepository.getUserByEmail(email);
+        String username = null;//userSearchRepository.getUserByEmail(email);
         return username != null ?
                 userRepository.get(username) :
-                // TODO not working!
                 userRepository.getByEmail(email);
     }
 

@@ -38,20 +38,17 @@ public class ImageService {
         return imageRepository.exists(hash);
     }
 
-    public UserImage addImage(String username, long hash, byte[] picture) {
-        Image image = imageExists(hash) ?
-                imageRepository.get(hash) :
-                saveImage(hash, picture);
-
+    public UserImage addImage(String username, byte[] picture) {
+        Image image = saveImage(picture);
         return userImageRepository.save(
                 new UserImage(null, image, null, username)
         );
     }
 
-    private Image saveImage(long hash, byte[] picture) {
+    private Image saveImage( byte[] picture) {
         ImagePath imagePath = imageConverterRepository.uploadImages(picture);
         return imageRepository.save(
-                new Image(hash, imagePath.getImage(), imagePath.getThumbnail())
+                new Image(null, imagePath.getImage(), imagePath.getThumbnail())
         );
     }
 }
