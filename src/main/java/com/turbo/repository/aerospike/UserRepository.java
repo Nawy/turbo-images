@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 @Repository
 public class UserRepository {
 
-    private final String userNamespace;
-    private final String userEmailNamespace;
+    private final String userBinName;
+    private final String userEmailBinName;
     private final AerospikeClient client;
     private final String databaseName;
     private final String tableName;
@@ -41,8 +41,8 @@ public class UserRepository {
         this.client = config.aerospikeClient();
         this.databaseName = config.getDatabaseName();
         this.tableName = tableName;
-        this.userNamespace = tableName + "_binName";
-        this.userEmailNamespace = "email_" + tableName;
+        this.userBinName = tableName + "_binName";
+        this.userEmailBinName = "email_" + tableName;
     }
 
     @PostConstruct
@@ -52,8 +52,8 @@ public class UserRepository {
                 null,
                 databaseName,
                 tableName,
-                userEmailNamespace + "_index",
-                userEmailNamespace,
+                userEmailBinName + "_index",
+                userEmailBinName,
                 IndexType.STRING
         );
 
@@ -77,13 +77,12 @@ public class UserRepository {
         Statement stmt = new Statement();
         stmt.setNamespace(databaseName);
         stmt.setSetName(tableName);
-        stmt.setBinNames(userEmailNamespace);
-        stmt.setFilter(Filter.equal(userEmailNamespace, email));
+        stmt.setFilter(Filter.equal(userEmailBinName, email));
 
         try (RecordSet rs = client.query(null, stmt)) {
 
             if (rs.next()) {
-                return (User) rs.getRecord().getValue(userNamespace);
+                return (User) rs.getRecord().getValue(userBinName);
             } else {
                 return null;
             }
@@ -96,7 +95,7 @@ public class UserRepository {
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)
                 .filter(Objects::nonNull)
-                .map(record -> (User) record.getValue(userNamespace))
+                .map(record -> (User) record.getValue(userBinName))
                 .collect(Collectors.toList());
     }
 
@@ -104,7 +103,7 @@ public class UserRepository {
     public User get(String name) {
         Record record = client.get(null, generateKey(name));
         return record != null ?
-                (User) record.getValue(userNamespace) :
+                (User) record.getValue(userBinName) :
                 null;
     }
 
@@ -121,11 +120,11 @@ public class UserRepository {
     }
 
     protected Bin generateEntityBin(User entity) {
-        return new Bin(userNamespace, entity);
+        return new Bin(userBinName, entity);
     }
 
     protected Bin generateEmailBin(User entity) {
-        return new Bin(userEmailNamespace, entity.getEmail());
+        return new Bin(userEmailBinName, entity.getEmail());
     }
 
 }
