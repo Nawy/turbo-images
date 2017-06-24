@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * Created by ermolaev on 5/9/17.
  */
+//TODO Depricated, already don't needed because we have another
 public class Image implements Serializable, IdHolder {
 
     private Long id;

@@ -45,8 +45,10 @@ public class ImageController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping("/save/image")
-    public UserImageDto saveImage(@RequestBody byte[] source) {
+    @PostMapping("/upload/image")
+    public UserImageDto saveImage(
+            @RequestBody byte[] source
+    ) {
         User user = authorizationService.getCurrentUser();
         UserImage userImage = imageService.addImage(
                 user.getName(),
@@ -54,4 +56,5 @@ public class ImageController {
         );
         return UserImageDto.from(userImage);
     }
+
 }

@@ -30,6 +30,9 @@ public class ElasticsearchConfig {
     private String searchPostIndexName;
     private String searchPostTypeName;
 
+    private String searchImageIndexName;
+    private String searchImageTypeName;
+
     private String searchUserIndexName;
     private String searchUserTypeName;
 
@@ -190,5 +193,21 @@ public class ElasticsearchConfig {
 
     public void setStatPostsTypeName(String statPostsTypeName) {
         this.statPostsTypeName = statPostsTypeName;
+    }
+
+    public String getSearchImageIndexName() {
+        return searchImageIndexName;
+    }
+
+    public void setSearchImageIndexName(String searchImageIndexName) {
+        this.searchImageIndexName = searchImageIndexName;
+    }
+
+    public String getSearchImageTypeName() {
+        return searchImageTypeName;
+    }
+
+    public void setSearchImageTypeName(String searchImageTypeName) {
+        this.searchImageTypeName = searchImageTypeName;
     }
 }
