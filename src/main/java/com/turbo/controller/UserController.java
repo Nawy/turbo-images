@@ -39,6 +39,11 @@ public class UserController {
         return authorizationService.getCurrentUser();
     }
 
+    @GetMapping("/get/user/by_email")
+    public User getUserByEmail(@RequestParam("email") String email) {
+        return userService.findByEmail(email);
+    }
+
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/posts")
     public Paginator<Post> getUserPosts(
