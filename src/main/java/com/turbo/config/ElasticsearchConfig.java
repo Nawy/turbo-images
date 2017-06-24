@@ -60,6 +60,7 @@ public class ElasticsearchConfig {
         }
 
         createContentIndicesIfNonExist();
+        createStatisticIndicesIfNonExist();
     }
 
     public TransportClient getElasticClient() {
@@ -92,6 +93,17 @@ public class ElasticsearchConfig {
         }
         if(!isUserExists) {
             indices.create(new CreateIndexRequest(searchUserIndexName)).actionGet();
+        }
+    }
+
+    private void createStatisticIndicesIfNonExist() {
+        Objects.requireNonNull(elasticClient);
+
+        IndicesAdminClient indices = elasticClient.admin().indices();
+        final boolean isStatPostExists = indices.exists(new IndicesExistsRequest(statPostsIndexName)).actionGet().isExists();
+
+        if(!isStatPostExists) {
+            indices.create(new CreateIndexRequest(statPostsIndexName)).actionGet();
         }
     }
 

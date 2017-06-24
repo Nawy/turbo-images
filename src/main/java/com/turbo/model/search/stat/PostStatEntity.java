@@ -14,10 +14,10 @@ public class PostStatEntity {
     private String username;
     private List<String> descriptions;
     private List<String> tags;
-    private List<DiffEntity> days;
-    private List<DiffEntity> weeks;
-    private List<DiffEntity> months;
-    private DiffEntity year;
+    private List<DiffDay> days;
+    private List<DiffWeek> weeks;
+    private List<DiffMonth> months;
+    private DiffYear year;
 
     public PostStatEntity(
             @JsonProperty(value = "id", required = true) long id,
@@ -25,10 +25,10 @@ public class PostStatEntity {
             @JsonProperty(value = "username", required = true) String username,
             @JsonProperty(value = "descriptions", required = true) List<String> descriptions,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "days", required = true) List<DiffEntity> days,
-            @JsonProperty(value = "weeks", required = true) List<DiffEntity> weeks,
-            @JsonProperty(value = "months", required = true) List<DiffEntity> months,
-            @JsonProperty(value = "year", required = true) DiffEntity year
+            @JsonProperty(value = "days", required = true) List<DiffDay> days,
+            @JsonProperty(value = "weeks", required = true) List<DiffWeek> weeks,
+            @JsonProperty(value = "months", required = true) List<DiffMonth> months,
+            @JsonProperty(value = "year", required = true) DiffYear year
     ) {
         this.id = id;
         this.name = name;
@@ -61,19 +61,19 @@ public class PostStatEntity {
         return tags;
     }
 
-    public List<DiffEntity> getDays() {
+    public List<DiffDay> getDays() {
         return days;
     }
 
-    public List<DiffEntity> getWeeks() {
+    public List<DiffWeek> getWeeks() {
         return weeks;
     }
 
-    public List<DiffEntity> getMonths() {
+    public List<DiffMonth> getMonths() {
         return months;
     }
 
-    public DiffEntity getYear() {
+    public DiffYear getYear() {
         return year;
     }
 }

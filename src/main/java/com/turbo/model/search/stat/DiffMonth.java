@@ -6,28 +6,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 /**
- * Created by ermolaev on 6/7/17.
+ * Created by ermolaev on 6/23/17.
  */
-public class DiffEntity {
-
+public class DiffMonth {
     private LocalDate date;
     private long ups;
     private long downs;
-    private long diff;
+    private long rating;
 
-    public DiffEntity(
-            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    public DiffMonth(
+            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "MM") LocalDate date,
             @JsonProperty(value = "ups", required = true) long ups,
             @JsonProperty(value = "downs", required = true) long downs,
-            @JsonProperty(value = "diff", required = true) long diff
+            @JsonProperty(value = "rating", required = true) long rating
     ) {
+        this.date = date;
         this.ups = ups;
         this.downs = downs;
-        this.diff = diff;
+        this.rating = rating;
     }
 
     @JsonProperty(value = "date", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "MM")
     public LocalDate getDate() {
         return date;
     }
@@ -42,8 +42,8 @@ public class DiffEntity {
         return downs;
     }
 
-    @JsonProperty(value = "diff", required = true)
-    public long getDiff() {
-        return diff;
+    @JsonProperty(value = "rating", required = true)
+    public long getRating() {
+        return rating;
     }
 }

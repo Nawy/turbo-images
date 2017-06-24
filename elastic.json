@@ -1,0 +1,152 @@
+// PUT content_posts/
+{
+  "mappings": {
+    "post": {
+      "properties": {
+        "id": {
+          "type": "long"
+        },
+        "name": {
+          "type": "text"
+        },
+        "descriptions": {
+          "type": "text"
+        },
+        "username": {
+          "type": "keyword",
+          "ignore_above": 256
+        },
+        "tags": {
+          "type": "keyword",
+          "ignore_above": 256
+        },
+        "device_type": {
+          "type": "keyword",
+          "ignore_above": 256
+        },
+        "rating": {
+          "type": "long",
+          "doc_values": true
+        },
+        "ups": {
+          "type": "long",
+          "doc_values": true
+        },
+        "downs": {
+          "type": "long",
+          "doc_values": true
+        }
+      }
+    }
+  }
+}
+
+// PUT stat_posts/
+{
+  "mappings": {
+    "stat_post_2017": {
+      "properties": {
+        "id": {
+          "type": "long"
+        },
+        "name": {
+          "type": "text"
+        },
+        "descriptions": {
+          "type": "text"
+        },
+        "username": {
+          "type": "keyword",
+          "ignore_above": 256
+        },
+        "tags": {
+          "type": "keyword",
+          "ignore_above": 256
+        },
+        "days": {
+          "type": "nested",
+          "properties": {
+            "date": {
+              "type": "date",
+              "format": "MM-dd",
+              "doc_values": false
+            },
+            "ups": {
+              "type": "long",
+              "doc_values": true
+            },
+            "downs": {
+              "type": "long",
+              "doc_values": true
+            },
+            "rating": {
+              "type": "long",
+              "doc_values": true
+            }
+          }
+        },
+        "weeks": {
+          "type": "nested",
+          "properties": {
+            "date": {
+              "type": "date",
+              "format": "ww",
+              "doc_values": false
+            },
+            "ups": {
+              "type": "long",
+              "doc_values": true
+            },
+            "downs": {
+              "type": "long",
+              "doc_values": true
+            },
+            "rating": {
+              "type": "long",
+              "doc_values": true
+            }
+          }
+        },
+        "month": {
+          "type": "nested",
+          "properties": {
+            "date": {
+              "type": "date",
+              "format": "MM",
+              "doc_values": false
+            },
+            "ups": {
+              "type": "long",
+              "doc_values": true
+            },
+            "downs": {
+              "type": "long",
+              "doc_values": true
+            },
+            "rating": {
+              "type": "long",
+              "doc_values": true
+            }
+          }
+        },
+        "year": {
+          "type": "nested",
+          "properties": {
+            "ups": {
+              "type": "long",
+              "doc_values": true
+            },
+            "downs": {
+              "type": "long",
+              "doc_values": true
+            },
+            "rating": {
+              "type": "long",
+              "doc_values": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

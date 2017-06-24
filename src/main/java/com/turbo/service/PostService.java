@@ -112,16 +112,12 @@ public class PostService {
 
             Objects.requireNonNull(specificDate);
             Objects.requireNonNull(period);
-            resultIds = postStatRepository.getPostStat(
-                    null,
-                    null,
-                    new Page(page),
-                    specificDate,
-                    period,
-                    sortingField,
-                    SearchOrder.DESC
-            );
-
+            resultIds = postStatRepository
+                    .getPostStat()
+                    .date(specificDate, period)
+                    .sort(sortingField, SearchOrder.DESC)
+                    .page(page)
+                    .execute();
         }
 
         // PROCESSING ALL OF REQUESTS
