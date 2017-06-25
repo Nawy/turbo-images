@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -36,6 +38,24 @@ public class ImageConverterRepository {
 
         ImagePath imagePath = restTemplate.postForObject(uri, imageSource, ImagePath.class);
         return new Image(imagePath.getImage(), imagePath.getThumbnail());
+    }
+
+    public void deleteImages(
+            final String thumbnail,
+            final String source
+    ) {
+        URI uri = uriBuilder.cloneBuilder()
+                .path("/delete")
+                .build().toUri();
+
+        ImagePath imagePath = new ImagePath(source, thumbnail);
+
+        restTemplate.exchange(
+                uri,
+                HttpMethod.DELETE,
+                new HttpEntity<>(imagePath),
+                Void.class
+        );
     }
 
     private static class ImagePath {
