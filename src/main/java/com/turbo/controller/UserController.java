@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping("/update/user/info")
+    @PostMapping("/edit/user/info")
     public User updateUserInfo(@RequestBody User user) {
         if (user.getName() == null) throw new BadRequestHttpException("No id was found!");
         return userService.update(user);

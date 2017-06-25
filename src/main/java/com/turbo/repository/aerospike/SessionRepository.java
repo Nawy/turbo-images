@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class SessionRepository extends AbstractAerospikeRepo<Session> {
 
     private final int sessionTtl;
+    private static final int SECONDS_IN_MINUTES = 60;
 
     @Autowired
     public SessionRepository(
@@ -26,6 +27,6 @@ public class SessionRepository extends AbstractAerospikeRepo<Session> {
 
     @Override
     public Session save(Session session) {
-        return super.save(session, sessionTtl);
+        return super.save(session, sessionTtl * SECONDS_IN_MINUTES);
     }
 }

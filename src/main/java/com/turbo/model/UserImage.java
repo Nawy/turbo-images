@@ -1,58 +1,50 @@
 package com.turbo.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
  * Created by ermolaev on 6/5/17.
  */
-public class UserImage implements Serializable, IdHolder {
+public class UserImage {
 
     private Long id;
-    private String thumbnail;
-    private String source;
+    private Image image;
     private String description;
     private String username;
-    private String album;
-    private LocalDateTime createDate;
+    private LocalDateTime creationDate;
+
+    protected UserImage() {
+    }
 
     public UserImage(
-            @JsonProperty("id") Long id,
-            @JsonProperty(value = "thumbnail", required = true) String thumbnail,
-            @JsonProperty(value = "source", required = true) String source,
-            @JsonProperty("description") String description,
-            @JsonProperty("album") String album,
-            @JsonProperty(value = "username", required = true) String username,
-            @JsonProperty("create_date") LocalDateTime createDate
+            Long id,
+            Image image,
+            String username,
+            String description,
+            LocalDateTime creationDate
     ) {
         this.id = id;
-        this.thumbnail = thumbnail;
-        this.source = source;
+        this.image = image;
         this.description = description;
         this.username = username;
-        this.createDate = createDate;
-        this.album = album;
+        this.creationDate = creationDate;
+    }
+
+    public UserImage(Image image, String username, String description, LocalDateTime creationDate) {
+        this.image = image;
+        this.description = description;
+        this.username = username;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {
         return id;
     }
 
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public String getSource() {
-        return source;
+    public Image getImage() {
+        return this.image;
     }
 
     public String getDescription() {
@@ -64,13 +56,8 @@ public class UserImage implements Serializable, IdHolder {
         return username;
     }
 
-    @JsonProperty("create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public String getAlbum() {
-        return album;
+    @JsonProperty("creation_date")
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 }

@@ -2,6 +2,7 @@ package com.turbo.repository.aerospike;
 
 import com.turbo.config.AerospikeConfig;
 import com.turbo.model.UserImage;
+import com.turbo.model.aerospike.UserImageContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * Created by rakhmetov on 06.06.17.
  */
 @Repository
-public class UserImageRepository extends AbstractAerospikeRepo<UserImage> {
+public class UserImageRepository extends AbstractAerospikeRepo<UserImageContent> {
 
     @Autowired
     public UserImageRepository(

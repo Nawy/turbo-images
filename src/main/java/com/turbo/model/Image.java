@@ -7,20 +7,24 @@ import java.io.Serializable;
 /**
  * Created by ermolaev on 5/9/17.
  */
-//TODO Depricated, already don't needed because we have another
 public class Image implements Serializable, IdHolder {
 
     private Long id;
-    private String fullImagePath;
-    private String smallImagePath;
+    private String source;
+    private String thumbnail;
 
-    public Image() {
+    protected Image() {
     }
 
-    public Image(Long id, String fullImagePath, String smallImagePath) {
+    public Image(Long id, String source, String thumbnail) {
         this.id = id;
-        this.fullImagePath = fullImagePath;
-        this.smallImagePath = smallImagePath;
+        this.source = source;
+        this.thumbnail = thumbnail;
+    }
+
+    public Image(String source, String thumbnail) {
+        this.source = source;
+        this.thumbnail = thumbnail;
     }
 
     @Override
@@ -28,14 +32,14 @@ public class Image implements Serializable, IdHolder {
         return id;
     }
 
-    @JsonProperty("full_image_path")
-    public String getFullImagePath() {
-        return fullImagePath;
+    @JsonProperty("source")
+    public String getSource() {
+        return source;
     }
 
-    @JsonProperty("small_image_path")
-    public String getSmallImagePath() {
-        return smallImagePath;
+    @JsonProperty("thumbnail")
+    public String getThumbnail() {
+        return thumbnail;
     }
 
     @Override

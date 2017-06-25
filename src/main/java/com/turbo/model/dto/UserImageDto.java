@@ -6,6 +6,8 @@ import com.turbo.model.Image;
 import com.turbo.model.UserImage;
 import com.turbo.service.HashIdService;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by rakhmetov on 06.06.17.
  */
@@ -15,17 +17,20 @@ public class UserImageDto {
     private Image image;
     private String description;
     private String username;
+    private LocalDateTime creationDate;
 
     public UserImageDto(
-            @JsonProperty("id") String id,
-            @JsonProperty(value = "image", required = true) Image image,
-            @JsonProperty("description") String description,
-            @JsonProperty(value = "username", required = true) String username
+            String id,
+            Image image,
+            String username,
+            String description,
+            LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
         this.username = username;
+        this.creationDate = creationDate;
     }
 
     @JsonIgnore
@@ -33,8 +38,9 @@ public class UserImageDto {
         return new UserImageDto(
                 HashIdService.encodeHashId(userImage.getId()),
                 userImage.getImage(),
+                userImage.getUsername(),
                 userImage.getDescription(),
-                userImage.getUsername()
+                userImage.getCreationDate()
         );
     }
 
@@ -53,5 +59,10 @@ public class UserImageDto {
     @JsonProperty("username")
     public String getUsername() {
         return username;
+    }
+
+    @JsonProperty("creation_date")
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 }

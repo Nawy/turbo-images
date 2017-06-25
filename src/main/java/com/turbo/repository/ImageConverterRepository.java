@@ -1,6 +1,7 @@
 package com.turbo.repository;
 
-import com.turbo.model.converter.ImagePath;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -27,12 +28,35 @@ public class ImageConverterRepository {
         this.uriBuilder = UriComponentsBuilder.fromUriString(host);
     }
 
-    public ImagePath uploadImages(byte[] imageSource) {
+    public Image uploadImages(byte[] imageSource) {
 
         URI uri = uriBuilder.cloneBuilder()
                 .path("/upload")
                 .build().toUri();
 
-        return restTemplate.postForObject(uri, imageSource, ImagePath.class);
+        ImagePath imagePath = restTemplate.postForObject(uri, imageSource, ImagePath.class);
+        return new Image(imagePath.getImage(), imagePath.getThumbnail());
+    }
+
+    private static class ImagePath {
+
+        private String image;
+        private String thumbnail;
+
+        public ImagePath(
+                @JsonProperty(value = "image", required = true) String image,
+                @JsonProperty(value = "thumbnail", required = true) String thumbnail
+        ) {
+            this.image = image;
+            this.thumbnail = thumbnail;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public String getThumbnail() {
+            return thumbnail;
+        }
     }
 }

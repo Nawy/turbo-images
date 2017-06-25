@@ -12,18 +12,18 @@ public class Session implements Serializable,IdHolder {
     private Long id;
     private DeviceType deviceType;
     private String lastIp;
-    private User user;
+    private String username;
 
     public Session() {
     }
 
-    public Session(User user) {
-        this.user = user;
+    public Session(String username) {
+        this.username = username;
     }
 
-    public Session(Long id, User user) {
+    public Session(Long id, String username) {
         this.id = id;
-        this.user = user;
+        this.username = username;
     }
 
     public Long getId() {
@@ -35,8 +35,8 @@ public class Session implements Serializable,IdHolder {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
     public DeviceType getDeviceType() {

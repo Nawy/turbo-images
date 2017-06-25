@@ -127,7 +127,7 @@ public class PostSearchDto {
                 post.getDowns(),
                 post.getRating(),
                 post.getViews(),
-                post.getImages().get(0).getImage().getSmallImagePath(),
+                post.getImages().get(0).getImage().getThumbnail(),
                 post.getDeviceType(),
                 post.getTags(),
                 post.getCreateDate()

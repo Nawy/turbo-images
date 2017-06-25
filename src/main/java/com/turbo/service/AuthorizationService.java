@@ -40,12 +40,12 @@ public class AuthorizationService {
         if (!user.getPassword().equals(password)) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
-        return login(user);
+        return login(user.getName());
     }
 
-    private Session login(User user) {
-        Assert.notNull(user, "user can't be null");
-        Session session = new Session(user);
+    private Session login(String username) {
+        Assert.notNull(username, "user can't be null");
+        Session session = new Session(username);
         try {
             return sessionRepository.save(session);
         } catch (InternalServerErrorHttpException e) {
@@ -61,7 +61,7 @@ public class AuthorizationService {
             throw new ForbiddenHttpException("Can't signup, username already exists:" + user.getName());
         }
         User dbUser = userService.add(user);
-        return login(dbUser);
+        return login(dbUser.getName());
     }
 
     public void logout() {
@@ -70,7 +70,9 @@ public class AuthorizationService {
     }
 
     public User getCurrentUser() {
-        return getCurrentSession().getUser();
+        return userService.get(
+                getCurrentSession().getUsername()
+        );
     }
 
     private Session getCurrentSession() {

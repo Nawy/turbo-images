@@ -44,16 +44,16 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         return save(entity, 0);
     }
 
-    public T save(T entity, int expiration) {
+    public T save(T entity, int expirationInSeconds) {
         Long sessionId = entity.getId() != null ?
                 entity.getId() :
                 generateId();
         entity.setId(sessionId);
 
         WritePolicy writePolicy = null;
-        if (expiration > 0) {
+        if (expirationInSeconds > 0) {
             writePolicy = new WritePolicy();
-            writePolicy.expiration = expiration;
+            writePolicy.expiration = expirationInSeconds;
         }
 
         client.put(

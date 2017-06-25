@@ -55,4 +55,8 @@ public class UserService {
     public boolean isUsernameExists(String username) {
         return userRepository.exists(username);
     }
+
+    public User get(String username) {
+        return userRepository.get(username);
+    }
 }
