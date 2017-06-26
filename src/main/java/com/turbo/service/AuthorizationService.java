@@ -6,7 +6,6 @@ import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
-import com.turbo.repository.aerospike.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -17,17 +16,13 @@ import org.springframework.util.Assert;
 @Service
 public class AuthorizationService {
 
-    private final SessionRepository sessionRepository;
+    private final SessionService sessionService;
     private final UserService userService;
 
     @Autowired
-    public AuthorizationService(SessionRepository sessionRepository, UserService userService) {
-        this.sessionRepository = sessionRepository;
+    public AuthorizationService(SessionService sessionService, UserService userService) {
+        this.sessionService = sessionService;
         this.userService = userService;
-    }
-
-    public Session getSession(Long sessionId) {
-        return sessionRepository.get(sessionId);
     }
 
     public Session login(String email, String password) {
@@ -47,7 +42,7 @@ public class AuthorizationService {
         Assert.notNull(username, "user can't be null");
         Session session = new Session(username);
         try {
-            return sessionRepository.save(session);
+            return sessionService.save(session);
         } catch (InternalServerErrorHttpException e) {
             throw new InternalServerErrorHttpException("Failed to login");
         }
@@ -66,7 +61,7 @@ public class AuthorizationService {
 
     public void logout() {
         Session session = getCurrentSession();
-        sessionRepository.delete(session.getId());
+        sessionService.delete(session.getId());
     }
 
     public User getCurrentUser() {

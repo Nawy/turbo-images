@@ -1,5 +1,6 @@
 package com.turbo.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Image;
@@ -62,6 +63,7 @@ public class UserImageDto {
     }
 
     @JsonProperty("creation_date")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     public LocalDateTime getCreationDate() {
         return creationDate;
     }

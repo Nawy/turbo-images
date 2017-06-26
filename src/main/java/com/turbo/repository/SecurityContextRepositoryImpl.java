@@ -4,6 +4,7 @@ import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
 import com.turbo.service.AuthorizationService;
+import com.turbo.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,10 +24,12 @@ import java.util.Collections;
 public class SecurityContextRepositoryImpl implements SecurityContextRepository {
 
     private final AuthorizationService authorizationService;
+    private final SessionService sessionService;
 
     @Autowired
-    public SecurityContextRepositoryImpl(AuthorizationService authorizationService) {
+    public SecurityContextRepositoryImpl(AuthorizationService authorizationService, SessionService sessionService) {
         this.authorizationService = authorizationService;
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
         SecurityContext securityContext = new SecurityContextImpl();
 
         if (sessionId != null) {
-            Session session = authorizationService.getSession(sessionId);
+            Session session = sessionService.get(sessionId);
             if (session != null) {
                 securityContext.setAuthentication(
                         new UsernamePasswordAuthenticationToken(

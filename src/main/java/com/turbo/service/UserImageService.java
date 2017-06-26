@@ -4,7 +4,7 @@ import com.turbo.model.Image;
 import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.UserImageContent;
 import com.turbo.model.exception.NotFoundHttpException;
-import com.turbo.repository.aerospike.UserImageCollectionRepository;
+import com.turbo.repository.aerospike.collection.UserImageCollectionRepository;
 import com.turbo.repository.aerospike.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;

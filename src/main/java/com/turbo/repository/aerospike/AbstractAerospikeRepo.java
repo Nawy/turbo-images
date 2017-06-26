@@ -83,6 +83,19 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
                 null;
     }
 
+
+    /**
+     * reset ttl time
+     */
+    public void touch(long id, int expirationInSeconds) {
+        WritePolicy writePolicy = null;
+        if (expirationInSeconds > 0) {
+            writePolicy = new WritePolicy();
+            writePolicy.expiration = expirationInSeconds;
+        }
+        client.touch(writePolicy, generateKey(id));
+    }
+
     public boolean exists(long id) {
         return client.exists(null, generateKey(id));
     }
