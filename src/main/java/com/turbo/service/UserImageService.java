@@ -4,12 +4,16 @@ import com.turbo.model.Image;
 import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.UserImageContent;
 import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.repository.aerospike.UserImageCollectionRepository;
 import com.turbo.repository.aerospike.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by rakhmetov on 26.06.17.
@@ -20,12 +24,26 @@ public class UserImageService {
     private final UserImageRepository userImageRepository;
     private final UserImageSearchRepository userImageSearchRepository;
     private final ImageService imageService;
+    private final UserImageCollectionRepository userImageCollectionRepository;
 
     @Autowired
-    public UserImageService(UserImageRepository userImageRepository, UserImageSearchRepository userImageSearchRepository, ImageService imageService) {
+    public UserImageService(UserImageRepository userImageRepository, UserImageSearchRepository userImageSearchRepository, ImageService imageService, UserImageCollectionRepository userImageCollectionRepository) {
         this.userImageRepository = userImageRepository;
         this.userImageSearchRepository = userImageSearchRepository;
         this.imageService = imageService;
+        this.userImageCollectionRepository = userImageCollectionRepository;
+    }
+
+    //TODO paged request?
+    public List<UserImage> getUserImages(String username) {
+        List<Long> userImageIds = userImageCollectionRepository.get(username);
+        return getUserImages(userImageIds);
+    }
+
+    public void removeUserImage(String username, long userImageId) {
+        userImageCollectionRepository.remove(username, Collections.singletonList(userImageId));
+        userImageRepository.delete(userImageId);
+        userImageSearchRepository.delete(userImageId);
     }
 
     public UserImage addUserImage(String username, byte[] picture) {
@@ -40,6 +58,8 @@ public class UserImageService {
                         LocalDateTime.now()
                 )
         );
+        //add to UserImageCollection
+        userImageCollectionRepository.add(username, Collections.singletonList(userImage.getId()));
         //add image to elastic search
         userImageSearchRepository.addUserImage(userImage);
         return userImage;
@@ -49,6 +69,11 @@ public class UserImageService {
         return makeUserImage(
                 getUserImageContent(id)
         );
+    }
+
+    public List<UserImage> getUserImages(List<Long> userImageIds) {
+        List<UserImageContent> userImageContents = userImageRepository.bulkGet(userImageIds);
+        return userImageContents.stream().map(this::makeUserImage).collect(Collectors.toList());
     }
 
     private UserImage saveUserImage(UserImage userImage) {
@@ -66,6 +91,10 @@ public class UserImageService {
                         description,
                         userImageContent.getCreateDate()
                 )
+        );
+
+        userImageSearchRepository.editUserImage(
+                makeUserImage(updatedUserImage)
         );
         return makeUserImage(updatedUserImage);
     }

@@ -45,10 +45,10 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     public T save(T entity, int expirationInSeconds) {
-        Long sessionId = entity.getId() != null ?
+        Long id = entity.getId() != null ?
                 entity.getId() :
                 generateId();
-        entity.setId(sessionId);
+        entity.setId(id);
 
         WritePolicy writePolicy = null;
         if (expirationInSeconds > 0) {
@@ -58,7 +58,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
         client.put(
                 writePolicy,
-                generateKey(sessionId),
+                generateKey(id),
                 generateBin(entity)
         );
 
@@ -67,7 +67,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
     @SuppressWarnings("unchecked")
     public List<T> bulkGet(List<Long> ids) {
-        Key[] keys = (Key[]) ids.stream().map(this::generateKey).toArray();
+        Key[] keys = ids.stream().map(this::generateKey).toArray(Key[]::new);
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)
                 .filter(Objects::nonNull)

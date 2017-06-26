@@ -29,4 +29,16 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
                 .setSource(elasticUtils.writeAsJsonBytes(image), XContentType.JSON)
                 .get();
     }
+
+    public void delete(long userImageId){
+        //TODO STUB!
+    }
+
+    public void editUserImage(UserImage userImage){
+        //TODO STUB!
+    }
+
+    public void getUserImages(){
+        //TODO STUB!
+    }
 }

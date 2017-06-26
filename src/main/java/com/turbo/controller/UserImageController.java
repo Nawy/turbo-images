@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by rakhmetov on 01.05.17.
  */
@@ -53,6 +56,39 @@ public class UserImageController {
         );
         return UserImageDto.from(userImage);
     }
+
+    @GetMapping("/get/user/images")
+    public List<UserImageDto> getUserImages(@RequestParam("username") String username) {
+        List<UserImage> userImages = userImageService.getUserImages(username);
+        return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/remove/user/image")
+    public void removeUserImage(@RequestBody UserImageRemoveDto userImageRemoveDto) {
+        userImageService.removeUserImage(userImageRemoveDto.getUsername(), userImageRemoveDto.getUserImageId());
+    }
+
+    private static class UserImageRemoveDto {
+        private String username;
+        private long userImageId;
+
+        public UserImageRemoveDto(
+                @JsonProperty(value = "username", required = true) String username,
+                @JsonProperty(value = "user_image_id", required = true) long userImageId
+        ) {
+            this.username = username;
+            this.userImageId = userImageId;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public long getUserImageId() {
+            return userImageId;
+        }
+    }
+
 
     private static class UserImageDescriptionDto {
         private long userImageId;

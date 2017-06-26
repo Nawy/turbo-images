@@ -91,7 +91,7 @@ public class UserRepository {
 
     @SuppressWarnings("unchecked")
     public List<User> bulkGet(String[] names) {
-        Key[] keys = (Key[]) Arrays.stream(names).map(this::generateKey).toArray();
+        Key[] keys = Arrays.stream(names).map(this::generateKey).toArray(Key[]::new);
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)
                 .filter(Objects::nonNull)
