@@ -2,9 +2,8 @@ package com.turbo.model.search.content;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.UserImage;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Created by ermolaev on 6/24/17.
@@ -15,8 +14,7 @@ public class ImageSearchEntity {
     private String description;
     private String thumbnailPath;
     private String sourcePath;
-    private String album;
-    private LocalDate createDate;
+    private LocalDateTime createDate;
     private String username;
 
     public ImageSearchEntity(
@@ -24,16 +22,14 @@ public class ImageSearchEntity {
             @JsonProperty("description") String description,
             @JsonProperty("thumbnail") String thumbnailPath,
             @JsonProperty("source") String sourcePath,
-            @JsonProperty("album") String album,
             @JsonProperty("username") String username,
-            @JsonProperty("create_date") LocalDate createDate
+            @JsonProperty("create_date") LocalDateTime createDate
     ) {
         this.id = id;
         this.username = username;
         this.description = description;
         this.thumbnailPath = thumbnailPath;
         this.sourcePath = sourcePath;
-        this.album = album;
         this.createDate = createDate;
     }
 
@@ -57,14 +53,9 @@ public class ImageSearchEntity {
         return id;
     }
 
-    @JsonProperty("album")
-    public String getAlbum() {
-        return album;
-    }
-
     @JsonProperty("create_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    public LocalDate getCreateDate() {
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 

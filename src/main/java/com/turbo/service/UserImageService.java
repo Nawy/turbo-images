@@ -6,7 +6,7 @@ import com.turbo.model.aerospike.UserImageContent;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.repository.aerospike.UserImageCollectionRepository;
 import com.turbo.repository.aerospike.UserImageRepository;
-import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
+import com.turbo.repository.elasticsearch.content.ImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +22,19 @@ import java.util.stream.Collectors;
 public class UserImageService {
 
     private final UserImageRepository userImageRepository;
-    private final UserImageSearchRepository userImageSearchRepository;
+    private final ImageSearchRepository imageSearchRepository;
     private final ImageService imageService;
     private final UserImageCollectionRepository userImageCollectionRepository;
 
     @Autowired
-    public UserImageService(UserImageRepository userImageRepository, UserImageSearchRepository userImageSearchRepository, ImageService imageService, UserImageCollectionRepository userImageCollectionRepository) {
+    public UserImageService(
+            UserImageRepository userImageRepository,
+            ImageSearchRepository imageSearchRepository,
+            ImageService imageService,
+            UserImageCollectionRepository userImageCollectionRepository
+    ) {
         this.userImageRepository = userImageRepository;
-        this.userImageSearchRepository = userImageSearchRepository;
+        this.imageSearchRepository = imageSearchRepository;
         this.imageService = imageService;
         this.userImageCollectionRepository = userImageCollectionRepository;
     }
@@ -43,7 +48,7 @@ public class UserImageService {
     public void removeUserImage(String username, long userImageId) {
         userImageCollectionRepository.remove(username, Collections.singletonList(userImageId));
         userImageRepository.delete(userImageId);
-        userImageSearchRepository.delete(userImageId);
+        imageSearchRepository.delete(userImageId);
     }
 
     public UserImage addUserImage(String username, byte[] picture) {
@@ -61,7 +66,7 @@ public class UserImageService {
         //add to UserImageCollection
         userImageCollectionRepository.add(username, Collections.singletonList(userImage.getId()));
         //add image to elastic search
-        userImageSearchRepository.addUserImage(userImage);
+        imageSearchRepository.addUserImage(userImage);
         return userImage;
     }
 
@@ -93,7 +98,7 @@ public class UserImageService {
                 )
         );
 
-        userImageSearchRepository.editUserImage(
+        imageSearchRepository.editUserImage(
                 makeUserImage(updatedUserImage)
         );
         return makeUserImage(updatedUserImage);
