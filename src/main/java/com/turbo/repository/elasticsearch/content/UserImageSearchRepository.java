@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
  * Created by ermolaev on 6/24/17.
  */
 @Repository
-public class ImageSearchRepository extends AbstractSearchRepository {
+public class UserImageSearchRepository extends AbstractSearchRepository {
 
     @Autowired
-    public ImageSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+    public UserImageSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
         super(config.getElasticClient(), config, elasticUtils);
     }
 
