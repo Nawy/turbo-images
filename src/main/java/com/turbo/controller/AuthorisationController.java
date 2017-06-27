@@ -7,6 +7,7 @@ import com.turbo.model.Session;
 import com.turbo.model.User;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.service.AuthorizationService;
+import com.turbo.service.SessionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -28,10 +29,12 @@ import java.time.LocalDateTime;
 public class AuthorisationController {
 
     private final AuthorizationService authorizationService;
+    private final SessionService sessionService;
 
     @Autowired
-    public AuthorisationController(AuthorizationService authorizationService) {
+    public AuthorisationController(AuthorizationService authorizationService, SessionService sessionService) {
         this.authorizationService = authorizationService;
+        this.sessionService = sessionService;
     }
 
     @PostMapping("/signin")
@@ -44,7 +47,7 @@ public class AuthorisationController {
                 userCredentialsDto.getEmail(),
                 userCredentialsDto.getPassword()
         );
-        addSessionCookieToResponse(response,session.getId());
+        addSessionCookieToResponse(response, session.getId());
     }
 
     private void addSessionCookieToResponse(HttpServletResponse response, long sessionId) {
@@ -57,20 +60,22 @@ public class AuthorisationController {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setMaxAge(sessionService.getSessionMaxAge());
         return cookie;
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/logout")
     public void logout(HttpServletResponse response) {
-        authorizationService.logout();
-        Cookie cookie = createCookie(0);
-        cookie.setMaxAge(0);
+        long sessionId = authorizationService.logout();
+        Cookie cookie = createCookie(sessionId);
+        cookie.setMaxAge(0); // age = 0 make cookie self delete
         response.addCookie(cookie);
     }
 
     @PostMapping("/signup")
     public Session signup(@RequestBody UserSignupDto userDto, HttpServletRequest request, HttpServletResponse response) {
+        if (!userDto.isValidCredentials()) throw new BadRequestHttpException("None of fields can be blank");
         User user = new User(
                 userDto.getName(),
                 null,
@@ -80,7 +85,7 @@ public class AuthorisationController {
                 request.getRemoteAddr()
         );
         Session session = authorizationService.signup(user);
-        addSessionCookieToResponse(response,session.getId());
+        addSessionCookieToResponse(response, session.getId());
         return session;
     }
 
@@ -130,6 +135,12 @@ public class AuthorisationController {
 
         public String getPassword() {
             return password;
+        }
+
+        public boolean isValidCredentials(){
+            return StringUtils.isNotBlank(name) &&
+                    StringUtils.isNotBlank(email) &&
+                    StringUtils.isNotBlank(password);
         }
     }
 }

@@ -2,12 +2,10 @@ package com.turbo.service;
 
 import com.turbo.model.Session;
 import com.turbo.repository.aerospike.SessionRepository;
-import com.turbo.repository.aerospike.collection.SessionCollectionRepository;
+import com.turbo.repository.aerospike.counter.SessionCounterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 /**
  * Created by rakhmetov on 26.06.17.
@@ -15,33 +13,52 @@ import java.util.Collections;
 @Service
 public class SessionService {
 
-    private static final int SECONDS_IN_DAYS = 60 * 60 * 24;
+    private static final int SECONDS_IN_MINUTES = 60;
+    private static final int SECONDS_IN_DAYS = SECONDS_IN_MINUTES * 60 * 24;
 
     private final SessionRepository sessionRepository;
-    private final SessionCollectionRepository sessionCollectionRepository;// TODO REMOVE?
-    private final int sessionTtlDays;
+    private final SessionCounterRepository sessionCounterRepository;
+    private final int sessionTtl;
+    private final int sessionCounterMinutesTtl;
+    private final int sessionCounterAttemptsAmount;
 
     @Autowired
     public SessionService(
             SessionRepository sessionRepository,
-            SessionCollectionRepository sessionCollectionRepository,
-            @Value("${session.days.ttl}") int sessionTtlDays
+            SessionCounterRepository sessionCounterRepository,
+            @Value("${session.days.ttl}") int sessionTtl,
+            @Value("${session.creation.attempts.minutes.ttl}") int sessionCounterMinutesTtl,
+            @Value("${session.creation.attempts.amount}") int sessionCounterAttemptsAmount
     ) {
         this.sessionRepository = sessionRepository;
-        this.sessionCollectionRepository = sessionCollectionRepository;
-        this.sessionTtlDays = sessionTtlDays;
+        this.sessionCounterRepository = sessionCounterRepository;
+        this.sessionTtl = sessionTtl * SECONDS_IN_DAYS;
+        this.sessionCounterMinutesTtl = sessionCounterMinutesTtl;
+        this.sessionCounterAttemptsAmount = sessionCounterAttemptsAmount;
     }
 
     public Session save(Session session) {
-        return sessionRepository.save(session, sessionTtlDays * SECONDS_IN_DAYS);
+
+        return sessionRepository.save(session, sessionTtl);
     }
 
     public Session get(long sessionId) {
-        sessionRepository.touch(sessionId, sessionTtlDays * SECONDS_IN_DAYS);
+        sessionRepository.touch(sessionId, sessionTtl);
         return sessionRepository.get(sessionId);
     }
 
-    public void delete(long sessionId){
+    public void delete(long sessionId) {
         sessionRepository.delete(sessionId);
+    }
+
+    /*private void sessionCreationVlidation(Session session){
+        String username = session.getUsername();
+        Integer attemptsAmount = sessionCounterRepository.get(username);
+        if (attemptsAmount != null && attemptsAmount > sessionCounterAttemptsAmount)
+        sessionCounterRepository.incrementAndGet(session.getUsername(), )
+    }*/
+
+    public int getSessionMaxAge(){
+        return sessionTtl;
     }
 }

@@ -6,7 +6,10 @@ import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
+import com.turbo.repository.aerospike.counter.AuthenticationCounterRepository;
+import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
@@ -16,17 +19,33 @@ import org.springframework.util.Assert;
 @Service
 public class AuthorizationService {
 
+    private static final int SECOND_IN_MINUTES = 60;
+
     private final SessionService sessionService;
     private final UserService userService;
+    private final AuthenticationCounterRepository authenticationCounterRepository;
+    private final int authAttemptsMinutesTtl;
+    private final int maxAuthAttemptsAmount;
 
     @Autowired
-    public AuthorizationService(SessionService sessionService, UserService userService) {
+    public AuthorizationService(
+            SessionService sessionService,
+            UserService userService,
+            AuthenticationCounterRepository authenticationCounterRepository,
+            @Value("${auth.attempts.minutes.ttl}") int authAttemptsMinutesTtl,
+            @Value("${auth.attempts.amount}") int maxAuthAttemptsAmount
+    ) {
         this.sessionService = sessionService;
         this.userService = userService;
+        this.authenticationCounterRepository = authenticationCounterRepository;
+        this.authAttemptsMinutesTtl = authAttemptsMinutesTtl * SECOND_IN_MINUTES;
+        this.maxAuthAttemptsAmount = maxAuthAttemptsAmount;
     }
 
     public Session login(String email, String password) {
         User user;
+        isAuthenticationAllowedValidation(email);
+        authenticationCounterRepository.incrementAndGet(email, authAttemptsMinutesTtl);
         try {
             user = userService.findByEmail(email);
         } catch (NotFoundHttpException e) {
@@ -35,7 +54,9 @@ public class AuthorizationService {
         if (!user.getPassword().equals(password)) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
-        return login(user.getName());
+        Session session = login(user.getName());
+        authenticationCounterRepository.delete(email);
+        return session;
     }
 
     private Session login(String username) {
@@ -59,9 +80,13 @@ public class AuthorizationService {
         return login(dbUser.getName());
     }
 
-    public void logout() {
+    /**
+     * @return deleted session id
+     */
+    public long logout() {
         Session session = getCurrentSession();
         sessionService.delete(session.getId());
+        return session.getId();
     }
 
     public User getCurrentUser() {
@@ -71,12 +96,17 @@ public class AuthorizationService {
     }
 
     private Session getCurrentSession() {
-        SecurityContextImpl securityContext =
-                (SecurityContextImpl) SecurityContextHolder.getContext();
+        SecurityContextImpl securityContext = (SecurityContextImpl) SecurityContextHolder.getContext();
         if (securityContext == null || securityContext.getAuthentication() == null) {
             throw new UnauthorizedHttpException("User not authorized");
         }
         return ((Session) securityContext.getAuthentication().getPrincipal());
     }
 
+    private void isAuthenticationAllowedValidation(String username) {
+        long authenticationsAmount = authenticationCounterRepository.get(username);
+        if (authenticationsAmount >= maxAuthAttemptsAmount) {
+            throw new ForbiddenHttpException("Too many authorization attempts, wait " + authAttemptsMinutesTtl + " minutes");
+        }
+    }
 }
