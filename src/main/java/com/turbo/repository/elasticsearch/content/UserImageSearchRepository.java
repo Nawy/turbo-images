@@ -11,6 +11,9 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by ermolaev on 6/24/17.
  */
@@ -23,14 +26,7 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
     }
 
     public void addUserImage(final UserImage image) {
-        ImageSearchEntity searchImage = new ImageSearchEntity(
-                image.getId(),
-                image.getDescription(),
-                image.getImage().getThumbnail(),
-                image.getImage().getSource(),
-                image.getUsername(),
-                image.getCreationDate()
-        );
+        ImageSearchEntity searchImage = ImageSearchEntity.from(image);
 
         elasticClient
                 .prepareIndex(
@@ -42,7 +38,6 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
     }
 
     public void delete(long userImageId){
-        //TODO STUB!
         final SearchResponse response = searchUniqueByField(
                 config.getSearchImageIndexName(),
                 config.getSearchImageTypeName(),
@@ -59,11 +54,26 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
         );
     }
 
-    public void editUserImage(UserImage userImage){
-        //TODO STUB!
+    public void editUserImage(UserImage image){
+        ImageSearchEntity searchImage = ImageSearchEntity.from(image);
+
+        final SearchResponse response = searchUniqueByField(
+                config.getSearchImageIndexName(),
+                config.getSearchImageTypeName(),
+                ImageField.ID.getFieldName(),
+                image.getId()
+        );
+
+        final String elasticId = elasticUtils.parseElasticIdSearchResponse(response);
+        elasticClient.prepareUpdate(
+                config.getSearchImageIndexName(),
+                config.getSearchImageTypeName(),
+                elasticId
+        ).setDoc(searchImage).get();
     }
 
-    public void getUserImages(){
+    public List<Long> getUserImages(final String userName){
         //TODO STUB!
+        return Collections.emptyList();
     }
 }

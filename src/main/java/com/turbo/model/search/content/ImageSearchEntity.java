@@ -2,6 +2,7 @@ package com.turbo.model.search.content;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.UserImage;
 
 import java.time.LocalDateTime;
 
@@ -62,5 +63,16 @@ public class ImageSearchEntity {
     @JsonProperty("username")
     public String getUsername() {
         return username;
+    }
+
+    public static ImageSearchEntity from(final UserImage image) {
+        return new ImageSearchEntity(
+                image.getId(),
+                image.getDescription(),
+                image.getImage().getThumbnail(),
+                image.getImage().getSource(),
+                image.getUsername(),
+                image.getCreationDate()
+        );
     }
 }
