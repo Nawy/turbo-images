@@ -10,6 +10,7 @@ import com.turbo.service.AuthorizationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
  * Created by ermolaev on 5/7/17.
  */
 @RestController
+@CrossOrigin
 public class AuthorisationController {
 
     private final AuthorizationService authorizationService;

@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './components/app.component';
-import {LoginComponent} from "./components/login.component";
+import {SignupComponent} from "./components/signup.component";
 import {SigninComponent} from "./components/signin.component";
 import {PostComponent} from "./components/post.component";
 import {NavbarComponent} from "./components/navbar.component";
@@ -15,11 +15,12 @@ import {CommentComponent} from "./components/comment.component";
 import {SettingsComponent} from "./components/settings.component";
 import {MaterialsComponent} from "./components/materials.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
+import {AuthorizationService} from "./service/authorization.service";
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
+    SignupComponent,
     SigninComponent,
     PostComponent,
     NavbarComponent,
@@ -40,11 +41,11 @@ import {PostPreviewComponent} from "./components/postpreview.component";
         component: ImagesComponent
       },
       {
-        path: "new",
-        component: LoginComponent
+        path: "signup",
+        component: SignupComponent
       },
       {
-        path: "login",
+        path: "signin",
         component: SigninComponent
       },
       {
@@ -61,7 +62,9 @@ import {PostPreviewComponent} from "./components/postpreview.component";
       }
     ])
   ],
-  providers: [],
+  providers: [
+    AuthorizationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -5,13 +5,13 @@
 export class User {
 
   private _id: number;
-  private _nickname: string;
+  private _name: string;
   private _avatarPath: string;
 
 
-  constructor(id: number, nickname: string, avatarPath: string) {
+  constructor(id: number, name: string, avatarPath: string) {
     this._id = id;
-    this._nickname = nickname;
+    this._name = name;
     this._avatarPath = avatarPath;
   }
 
@@ -23,12 +23,13 @@ export class User {
     this._id = value;
   }
 
-  get nickname(): string {
-    return this._nickname;
+
+  get name(): string {
+    return this._name;
   }
 
-  set nickname(value: string) {
-    this._nickname = value;
+  set name(value: string) {
+    this._name = value;
   }
 
   get avatarPath(): string {

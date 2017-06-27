@@ -15,6 +15,6 @@ export class NavbarComponent {
   constructor(private router: Router) {}
 
   logout(): void {
-    this.router.navigateByUrl("login");
+    this.router.navigateByUrl("signin");
   }
 }
