@@ -3,7 +3,6 @@ package com.turbo.controller;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
-import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
@@ -39,9 +38,9 @@ public class UserController {
         return authorizationService.getCurrentUser();
     }
 
-    @GetMapping("/get/user/by_email")
-    public User getUserByEmail(@RequestParam("email") String email) {
-        return userService.findByEmail(email);
+    @GetMapping("/get/user/by_name_or_email")
+    public User getUserByEmail(@RequestParam("nameOrEmail") String email) {
+        return userService.get(email);
     }
 
     @Secured(SecurityRole.USER)
@@ -62,7 +61,6 @@ public class UserController {
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/user/info")
     public User updateUserInfo(@RequestBody User user) {
-        if (user.getName() == null) throw new BadRequestHttpException("No id was found!");
         return userService.update(user);
     }
 }

@@ -16,18 +16,18 @@ public class ImageSearchEntity {
     private String thumbnailPath;
     private String sourcePath;
     private LocalDateTime createDate;
-    private String username;
+    private long userId;
 
     public ImageSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("description") String description,
             @JsonProperty("thumbnail") String thumbnailPath,
             @JsonProperty("source") String sourcePath,
-            @JsonProperty("username") String username,
+            @JsonProperty("user_id") long userId,
             @JsonProperty("create_date") LocalDateTime createDate
     ) {
         this.id = id;
-        this.username = username;
+        this.userId = userId;
         this.description = description;
         this.thumbnailPath = thumbnailPath;
         this.sourcePath = sourcePath;
@@ -60,9 +60,9 @@ public class ImageSearchEntity {
         return createDate;
     }
 
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
+    @JsonProperty("user_id")
+    public long getUserId() {
+        return userId;
     }
 
     public static ImageSearchEntity from(final UserImage image) {
@@ -71,7 +71,7 @@ public class ImageSearchEntity {
                 image.getDescription(),
                 image.getImage().getThumbnail(),
                 image.getImage().getSource(),
-                image.getUsername(),
+                image.getUserId(),
                 image.getCreationDate()
         );
     }

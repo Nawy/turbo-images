@@ -12,7 +12,7 @@ public class UserImage {
     private Long id;
     private Image image;
     private String description;
-    private String username;
+    private long userId;
     private LocalDateTime creationDate;
 
     protected UserImage() {
@@ -21,21 +21,21 @@ public class UserImage {
     public UserImage(
             Long id,
             Image image,
-            String username,
+            long userId,
             String description,
             LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
-        this.username = username;
+        this.userId = userId;
         this.creationDate = creationDate;
     }
 
-    public UserImage(Image image, String username, String description, LocalDateTime creationDate) {
+    public UserImage(Image image, long userId, String description, LocalDateTime creationDate) {
         this.image = image;
         this.description = description;
-        this.username = username;
+        this.userId = userId;
         this.creationDate = creationDate;
     }
 
@@ -51,9 +51,9 @@ public class UserImage {
         return description;
     }
 
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
+    @JsonProperty("user_id")
+    public long getUserId() {
+        return userId;
     }
 
     @JsonProperty("creation_date")

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
-import com.turbo.service.HashIdService;
+import com.turbo.repository.util.EncryptionService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,7 +48,7 @@ public class PostDto {
                 .collect(Collectors.toList());
 
         return new PostDto(
-                HashIdService.encodeHashId(post.getId()),
+                EncryptionService.encodeHashId(post.getId()),
                 post.getName(),
                 post.getUps(),
                 post.getDowns(),

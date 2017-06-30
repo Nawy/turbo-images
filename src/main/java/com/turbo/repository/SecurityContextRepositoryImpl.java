@@ -1,10 +1,15 @@
 package com.turbo.repository;
 
+import com.turbo.model.DeviceType;
 import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.service.AuthorizationService;
+import com.turbo.repository.util.EncryptionService;
+import com.turbo.repository.util.Headers;
 import com.turbo.service.SessionService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,25 +28,31 @@ import java.util.Collections;
 @Component
 public class SecurityContextRepositoryImpl implements SecurityContextRepository {
 
-    private final AuthorizationService authorizationService;
     private final SessionService sessionService;
+    private Logger LOG = LoggerFactory.getLogger(SecurityContextRepositoryImpl.class);
 
     @Autowired
-    public SecurityContextRepositoryImpl(AuthorizationService authorizationService, SessionService sessionService) {
-        this.authorizationService = authorizationService;
+    public SecurityContextRepositoryImpl(SessionService sessionService) {
         this.sessionService = sessionService;
     }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
-        Long sessionId = getSessionIdFromRequest(
-                requestResponseHolder.getRequest()
-        );
+        HttpServletRequest request = requestResponseHolder.getRequest();
+        Long sessionId = getSessionIdFromRequest(request);
         SecurityContext securityContext = new SecurityContextImpl();
-
         if (sessionId != null) {
             Session session = sessionService.get(sessionId);
             if (session != null) {
+                String ipValue = request.getRemoteAddr();
+                String deviceTypeValue = request.getHeader(Headers.DEVICE_TYPE);
+                Session refreshedSession = new Session(
+                        session.getUserId(),
+                        DeviceType.getDeviceType(deviceTypeValue),
+                        StringUtils.isBlank(ipValue) ? null : ipValue
+                );
+                sessionService.save(refreshedSession);
+
                 securityContext.setAuthentication(
                         new UsernamePasswordAuthenticationToken(
                                 session,
@@ -69,6 +80,15 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
         Cookie cookie = Arrays.stream(req.getCookies())
                 .filter((c) -> SecurityHeader.SESSION_COOKIE_NAME.equals(c.getName()))
                 .findFirst().orElse(null);
-        return cookie == null ? null : Long.valueOf(cookie.getValue());
+        if (cookie == null) return null;
+        String cookieValue = cookie.getValue();
+        if (cookieValue == null) return null;
+        try {
+            return EncryptionService.decodeHashId(cookieValue);
+        } catch (Exception e) {
+            LOG.warn("Can't decode cookie sessionId:{}", cookieValue);
+            return null;
+        }
     }
+
 }

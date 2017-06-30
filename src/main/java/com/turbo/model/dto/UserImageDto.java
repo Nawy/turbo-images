@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Image;
 import com.turbo.model.UserImage;
-import com.turbo.service.HashIdService;
+import com.turbo.repository.util.EncryptionService;
 
 import java.time.LocalDateTime;
 
@@ -17,29 +17,29 @@ public class UserImageDto {
     private String id;
     private Image image;
     private String description;
-    private String username;
+    private long userId;
     private LocalDateTime creationDate;
 
     public UserImageDto(
             String id,
             Image image,
-            String username,
+            long userId,
             String description,
             LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
-        this.username = username;
+        this.userId = userId;
         this.creationDate = creationDate;
     }
 
     @JsonIgnore
     public static UserImageDto from(UserImage userImage) {
         return new UserImageDto(
-                HashIdService.encodeHashId(userImage.getId()),
+                EncryptionService.encodeHashId(userImage.getId()),
                 userImage.getImage(),
-                userImage.getUsername(),
+                userImage.getUserId(),
                 userImage.getDescription(),
                 userImage.getCreationDate()
         );
@@ -57,9 +57,9 @@ public class UserImageDto {
         return description;
     }
 
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
+    @JsonProperty("user_id")
+    public long getUserId() {
+        return userId;
     }
 
     @JsonProperty("creation_date")

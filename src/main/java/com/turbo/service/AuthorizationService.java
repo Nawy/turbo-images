@@ -1,5 +1,7 @@
 package com.turbo.service;
 
+import com.turbo.model.DeviceType;
+import com.turbo.model.Nullable;
 import com.turbo.model.Session;
 import com.turbo.model.User;
 import com.turbo.model.exception.ForbiddenHttpException;
@@ -7,7 +9,6 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.repository.aerospike.counter.AuthenticationCounterRepository;
-import netscape.security.ForbiddenTargetException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,7 @@ import org.springframework.util.Assert;
 @Service
 public class AuthorizationService {
 
-    private static final int SECOND_IN_MINUTES = 60;
+    private static final int SECONDS_IN_MINUTES = 60;
 
     private final SessionService sessionService;
     private final UserService userService;
@@ -38,46 +39,46 @@ public class AuthorizationService {
         this.sessionService = sessionService;
         this.userService = userService;
         this.authenticationCounterRepository = authenticationCounterRepository;
-        this.authAttemptsMinutesTtl = authAttemptsMinutesTtl * SECOND_IN_MINUTES;
+        this.authAttemptsMinutesTtl = authAttemptsMinutesTtl * SECONDS_IN_MINUTES;
         this.maxAuthAttemptsAmount = maxAuthAttemptsAmount;
     }
 
-    public Session login(String email, String password) {
+    public Session login(String emailOrName, String password, @Nullable DeviceType deviceType, @Nullable String ip) {
         User user;
-        isAuthenticationAllowedValidation(email);
-        authenticationCounterRepository.incrementAndGet(email, authAttemptsMinutesTtl);
+        isAuthenticationAllowedValidation(emailOrName);
+        authenticationCounterRepository.incrementAndGet(emailOrName, authAttemptsMinutesTtl);
         try {
-            user = userService.findByEmail(email);
+            user = userService.get(emailOrName);
         } catch (NotFoundHttpException e) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
         if (!user.getPassword().equals(password)) {
             throw new ForbiddenHttpException("Wrong credentials!");
         }
-        Session session = login(user.getName());
-        authenticationCounterRepository.delete(email);
+        Session session = login(user.getId(), deviceType, ip);
+        authenticationCounterRepository.delete(emailOrName);
         return session;
     }
 
-    private Session login(String username) {
-        Assert.notNull(username, "user can't be null");
-        Session session = new Session(username);
+    private Session login(long userId, @Nullable DeviceType deviceType, @Nullable String ip) {
+        Assert.notNull(userId, "user id can't be null");
+        DeviceType finalDeviceType = deviceType != null? deviceType : DeviceType.DEFAULT;
         try {
-            return sessionService.save(session);
+            return sessionService.saveIfNotExist(new Session(userId, finalDeviceType, ip));
         } catch (InternalServerErrorHttpException e) {
             throw new InternalServerErrorHttpException("Failed to login");
         }
     }
 
-    public Session signup(User user) {
-        if (userService.isEmailExists(user.getEmail())) {
+    public Session signup(User user, @Nullable DeviceType deviceType, @Nullable String ip) {
+        if (userService.isEmailOrNameExists(user.getEmail())) {
             throw new ForbiddenHttpException("Can't signup, email already exists:" + user.getEmail());
         }
-        if (userService.isUsernameExists(user.getName())) {
+        if (userService.isEmailOrNameExists(user.getName())) {
             throw new ForbiddenHttpException("Can't signup, username already exists:" + user.getName());
         }
         User dbUser = userService.add(user);
-        return login(dbUser.getName());
+        return login(dbUser.getId(), deviceType, ip);
     }
 
     /**
@@ -85,13 +86,13 @@ public class AuthorizationService {
      */
     public long logout() {
         Session session = getCurrentSession();
-        sessionService.delete(session.getId());
-        return session.getId();
+        sessionService.delete(session.getUserId());
+        return session.getUserId();
     }
 
     public User getCurrentUser() {
         return userService.get(
-                getCurrentSession().getUsername()
+                getCurrentSession().getUserId()
         );
     }
 
@@ -103,10 +104,12 @@ public class AuthorizationService {
         return ((Session) securityContext.getAuthentication().getPrincipal());
     }
 
-    private void isAuthenticationAllowedValidation(String username) {
-        long authenticationsAmount = authenticationCounterRepository.get(username);
+    private void isAuthenticationAllowedValidation(String usernameOrEmail) {
+        long authenticationsAmount = authenticationCounterRepository.get(usernameOrEmail);
         if (authenticationsAmount >= maxAuthAttemptsAmount) {
             throw new ForbiddenHttpException("Too many authorization attempts, wait " + authAttemptsMinutesTtl + " minutes");
         }
     }
+
+
 }

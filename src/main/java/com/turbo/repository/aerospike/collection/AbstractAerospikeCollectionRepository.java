@@ -28,26 +28,26 @@ public class AbstractAerospikeCollectionRepository {
         this.binName = tableName + "_bin";
     }
 
-    public void add(String username, List<Long> ids) {
-        getLargeList(username).add(ids);
+    public void add(long id, List<Long> ids) {
+        getLargeList(id).add(ids);
     }
 
     @SuppressWarnings("unchecked")
-    public List<Long> get(String username) {
-        LargeList llist = getLargeList(username);
+    public List<Long> get(long id) {
+        LargeList llist = getLargeList(id);
         int size = llist.size();
         return (List<Long>) llist.findLast(size);
     }
 
-    public void remove(String username, List<Long> ids) {
-        getLargeList(username).remove(ids);
+    public void remove(long id, List<Long> ids) {
+        getLargeList(id).remove(ids);
     }
 
-    private LargeList getLargeList(String username) {
-        return client.getLargeList(null, generateKey(username), binName);
+    private LargeList getLargeList(long id) {
+        return client.getLargeList(null, generateKey(id), binName);
     }
 
-    protected Key generateKey(String username) {
-        return new Key(databaseName, tableName, username);
+    protected Key generateKey(long id) {
+        return new Key(databaseName, tableName, id);
     }
 }

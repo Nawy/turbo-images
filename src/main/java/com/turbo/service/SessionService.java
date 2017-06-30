@@ -2,7 +2,6 @@ package com.turbo.service;
 
 import com.turbo.model.Session;
 import com.turbo.repository.aerospike.SessionRepository;
-import com.turbo.repository.aerospike.counter.SessionCounterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,48 +16,38 @@ public class SessionService {
     private static final int SECONDS_IN_DAYS = SECONDS_IN_MINUTES * 60 * 24;
 
     private final SessionRepository sessionRepository;
-    private final SessionCounterRepository sessionCounterRepository;
     private final int sessionTtl;
-    private final int sessionCounterMinutesTtl;
-    private final int sessionCounterAttemptsAmount;
 
     @Autowired
     public SessionService(
             SessionRepository sessionRepository,
-            SessionCounterRepository sessionCounterRepository,
-            @Value("${session.days.ttl}") int sessionTtl,
-            @Value("${session.creation.attempts.minutes.ttl}") int sessionCounterMinutesTtl,
-            @Value("${session.creation.attempts.amount}") int sessionCounterAttemptsAmount
+            @Value("${session.days.ttl}") int sessionTtl
     ) {
         this.sessionRepository = sessionRepository;
-        this.sessionCounterRepository = sessionCounterRepository;
         this.sessionTtl = sessionTtl * SECONDS_IN_DAYS;
-        this.sessionCounterMinutesTtl = sessionCounterMinutesTtl;
-        this.sessionCounterAttemptsAmount = sessionCounterAttemptsAmount;
     }
 
     public Session save(Session session) {
-
-        return sessionRepository.save(session, sessionTtl);
+        sessionRepository.save(session, sessionTtl);
+        return session;
     }
 
-    public Session get(long sessionId) {
-        sessionRepository.touch(sessionId, sessionTtl);
-        return sessionRepository.get(sessionId);
+    public Session saveIfNotExist(Session session) {
+        Session dbSession = get(session.getUserId());
+        return dbSession != null ?
+                dbSession :
+                save(new Session(session.getUserId())); // if session not exists create new
     }
 
-    public void delete(long sessionId) {
-        sessionRepository.delete(sessionId);
+    public Session get(long userId) {
+        return sessionRepository.get(userId);
     }
 
-    /*private void sessionCreationVlidation(Session session){
-        String username = session.getUsername();
-        Integer attemptsAmount = sessionCounterRepository.get(username);
-        if (attemptsAmount != null && attemptsAmount > sessionCounterAttemptsAmount)
-        sessionCounterRepository.incrementAndGet(session.getUsername(), )
-    }*/
+    public void delete(long userId) {
+        sessionRepository.delete(userId);
+    }
 
-    public int getSessionMaxAge(){
+    public int getSessionMaxAge() {
         return sessionTtl;
     }
 }

@@ -6,12 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.UserImage;
-import com.turbo.service.HashIdService;
+import com.turbo.repository.util.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -116,7 +115,7 @@ public class PostSearchDto {
                 .findFirst().orElse(null);
 
         return new PostSearchDto(
-                HashIdService.encodeHashId(post.getId()),
+                EncryptionService.encodeHashId(post.getId()),
                 post.getName(),
                 firstNonNull(
                         post.getDescription(),

@@ -14,29 +14,29 @@ public class UserImageContent implements Serializable, IdHolder {
     private Long id;
     private long imageId;
     private String description;
-    private String username;
+    private long userId;
     private LocalDateTime createDate;
 
     public UserImageContent(UserImage userImage) {
         this.id = userImage.getId();
         this.imageId = userImage.getImage().getId();
         this.description = userImage.getDescription();
-        this.username = userImage.getUsername();
+        this.userId = userImage.getUserId();
         this.createDate = userImage.getCreationDate();
     }
 
-    public UserImageContent(Long id, long imageId, String description, String username, LocalDateTime createDate) {
+    public UserImageContent(Long id, long imageId, String description, long userId, LocalDateTime createDate) {
         this.id = id;
         this.imageId = imageId;
         this.description = description;
-        this.username = username;
+        this.userId = userId;
         this.createDate = createDate;
     }
 
-    public UserImageContent(long imageId, String username, String description, LocalDateTime createDate) {
+    public UserImageContent(long imageId, long userId, String description, LocalDateTime createDate) {
         this.imageId = imageId;
         this.description = description;
-        this.username = username;
+        this.userId = userId;
         this.createDate = createDate;
     }
 
@@ -60,8 +60,8 @@ public class UserImageContent implements Serializable, IdHolder {
         return description;
     }
 
-    public String getUsername() {
-        return username;
+    public long getUserId() {
+        return userId;
     }
 
     public LocalDateTime getCreateDate() {

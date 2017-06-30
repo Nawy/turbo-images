@@ -6,7 +6,7 @@ import com.turbo.model.User;
 import com.turbo.model.UserImage;
 import com.turbo.model.dto.UserImageDto;
 import com.turbo.service.AuthorizationService;
-import com.turbo.service.HashIdService;
+import com.turbo.repository.util.EncryptionService;
 import com.turbo.service.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -33,7 +33,7 @@ public class UserImageController {
     @GetMapping("/get/user/image/{id}")
     public UserImageDto getImageInfo(@PathVariable("id") String id) {
         return UserImageDto.from(
-                userImageService.getUserImage(HashIdService.decodeHashId(id))
+                userImageService.getUserImage(EncryptionService.decodeHashId(id))
         );
     }
 
@@ -43,7 +43,7 @@ public class UserImageController {
             @RequestBody byte[] source
     ) {
         User user = authorizationService.getCurrentUser();
-        UserImage userImage = userImageService.addUserImage(user.getName(), source);
+        UserImage userImage = userImageService.addUserImage(user.getId(), source);
         return UserImageDto.from(userImage);
     }
 
@@ -58,30 +58,30 @@ public class UserImageController {
     }
 
     @GetMapping("/get/user/images")
-    public List<UserImageDto> getUserImages(@RequestParam("username") String username) {
-        List<UserImage> userImages = userImageService.getUserImages(username);
+    public List<UserImageDto> getUserImages(@RequestParam("user_id") long userId) {
+        List<UserImage> userImages = userImageService.getUserImages(userId);
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
 
     @DeleteMapping("/remove/user/image")
     public void removeUserImage(@RequestBody UserImageRemoveDto userImageRemoveDto) {
-        userImageService.removeUserImage(userImageRemoveDto.getUsername(), userImageRemoveDto.getUserImageId());
+        userImageService.removeUserImage(userImageRemoveDto.getUserId(), userImageRemoveDto.getUserImageId());
     }
 
     private static class UserImageRemoveDto {
-        private String username;
+        private long userId;
         private long userImageId;
 
         public UserImageRemoveDto(
-                @JsonProperty(value = "username", required = true) String username,
+                @JsonProperty(value = "user_id", required = true) long userId,
                 @JsonProperty(value = "user_image_id", required = true) long userImageId
         ) {
-            this.username = username;
+            this.userId = userId;
             this.userImageId = userImageId;
         }
 
-        public String getUsername() {
-            return username;
+        public long getUserId() {
+            return userId;
         }
 
         public long getUserImageId() {

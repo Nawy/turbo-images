@@ -24,7 +24,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
     protected static final int ITERATIONS_TO_GENERATE_ID = 3;
 
-    private final String defaultBinName;
+    private final String binName;
     private final AerospikeClient client;
     private final String databaseName;
     private final String tableName;
@@ -37,7 +37,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         this.client = config.aerospikeClient();
         this.databaseName = config.getDatabaseName();
         this.tableName = tableName;
-        this.defaultBinName = tableName + "_bin";
+        this.binName = tableName + "_bin";
     }
 
     public T save(T entity) {
@@ -71,7 +71,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)
                 .filter(Objects::nonNull)
-                .map(record -> (T) record.getValue(defaultBinName))
+                .map(record -> (T) record.getValue(binName))
                 .collect(Collectors.toList());
     }
 
@@ -79,10 +79,9 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     public T get(long id) {
         Record record = client.get(null, generateKey(id));
         return record != null ?
-                (T) record.getValue(defaultBinName) :
+                (T) record.getValue(binName) :
                 null;
     }
-
 
     /**
      * reset ttl time
@@ -109,7 +108,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     protected Bin generateBin(T entity) {
-        return new Bin(defaultBinName, entity);
+        return new Bin(binName, entity);
     }
 
     protected Long generateId() {

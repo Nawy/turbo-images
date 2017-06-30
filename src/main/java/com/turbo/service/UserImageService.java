@@ -5,7 +5,7 @@ import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.UserImageContent;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.repository.aerospike.collection.UserImageCollectionRepository;
-import com.turbo.repository.aerospike.UserImageRepository;
+import com.turbo.repository.aerospike.user.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,31 +40,31 @@ public class UserImageService {
     }
 
     //TODO paged request?
-    public List<UserImage> getUserImages(String username) {
-        List<Long> userImageIds = userImageCollectionRepository.get(username);
+    public List<UserImage> getUserImages(long userId) {
+        List<Long> userImageIds = userImageCollectionRepository.get(userId);
         return getUserImages(userImageIds);
     }
 
-    public void removeUserImage(String username, long userImageId) {
-        userImageCollectionRepository.remove(username, Collections.singletonList(userImageId));
+    public void removeUserImage(long userId, long userImageId) {
+        userImageCollectionRepository.remove(userId, Collections.singletonList(userImageId));
         userImageRepository.delete(userImageId);
         userImageSearchRepository.delete(userImageId);
     }
 
-    public UserImage addUserImage(String username, byte[] picture) {
+    public UserImage addUserImage(long userId, byte[] picture) {
         //save image to files
         Image image = imageService.saveImage(picture);
         //save user image to content repo
         UserImage userImage = saveUserImage(
                 new UserImage(
                         image,
-                        username,
+                        userId,
                         null,
                         LocalDateTime.now()
                 )
         );
         //add to UserImageCollection
-        userImageCollectionRepository.add(username, Collections.singletonList(userImage.getId()));
+        userImageCollectionRepository.add(userId, Collections.singletonList(userImage.getId()));
         //add image to elastic search
         userImageSearchRepository.addUserImage(userImage);
         return userImage;
@@ -92,7 +92,7 @@ public class UserImageService {
         UserImageContent updatedUserImage = userImageRepository.save(
                 new UserImageContent(
                         userImageContent.getId(),
-                        userImageContent.getUsername(),
+                        userImageContent.getUserId(),
                         description,
                         userImageContent.getCreateDate()
                 )
@@ -124,7 +124,7 @@ public class UserImageService {
         return new UserImage(
                 userImageContent.getId(),
                 image,
-                userImageContent.getUsername(),
+                userImageContent.getUserId(),
                 userImageContent.getDescription(),
                 userImageContent.getCreateDate()
         );

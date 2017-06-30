@@ -1,20 +1,16 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.SecurityHeader;
-import com.turbo.model.SecurityRole;
-import com.turbo.model.Session;
-import com.turbo.model.User;
+import com.turbo.model.*;
 import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.repository.util.EncryptionService;
+import com.turbo.repository.util.Headers;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.SessionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -38,16 +34,22 @@ public class AuthorisationController {
     }
 
     @PostMapping("/signin")
-    public void signin(@RequestBody UserCredentialsDto userCredentialsDto, HttpServletResponse response) {
-        if (StringUtils.isBlank(userCredentialsDto.getEmail())
-                || StringUtils.isBlank(userCredentialsDto.getPassword())) {
+    public void signin(
+            @RequestBody UserCredentialsDto userCredentialsDto,
+            @RequestHeader(value = Headers.DEVICE_TYPE, required = false) DeviceType deviceType,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        if (StringUtils.isBlank(userCredentialsDto.getEmail()) || StringUtils.isBlank(userCredentialsDto.getPassword())) {
             throw new BadRequestHttpException("Bad credentials");
         }
         Session session = authorizationService.login(
                 userCredentialsDto.getEmail(),
-                userCredentialsDto.getPassword()
+                userCredentialsDto.getPassword(),
+                deviceType,
+                request.getRemoteAddr()
         );
-        addSessionCookieToResponse(response, session.getId());
+        addSessionCookieToResponse(response, session.getUserId());
     }
 
     private void addSessionCookieToResponse(HttpServletResponse response, long sessionId) {
@@ -56,7 +58,8 @@ public class AuthorisationController {
     }
 
     private Cookie createCookie(long sessionId) {
-        Cookie cookie = new Cookie(SecurityHeader.SESSION_COOKIE_NAME, Long.toString(sessionId));
+        String encryptedSessionId = EncryptionService.encodeHashId(sessionId);
+        Cookie cookie = new Cookie(SecurityHeader.SESSION_COOKIE_NAME, encryptedSessionId);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
@@ -74,18 +77,23 @@ public class AuthorisationController {
     }
 
     @PostMapping("/signup")
-    public Session signup(@RequestBody UserSignupDto userDto, HttpServletRequest request, HttpServletResponse response) {
+    public Session signup(
+            @RequestBody UserSignupDto userDto,
+            @RequestHeader(value = Headers.DEVICE_TYPE, required = false) DeviceType deviceType,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
         if (!userDto.isValidCredentials()) throw new BadRequestHttpException("None of fields can be blank");
         User user = new User(
+                null,
                 userDto.getName(),
                 null,
                 userDto.getEmail(),
                 userDto.getPassword(),
-                LocalDateTime.now(),
-                request.getRemoteAddr()
+                LocalDateTime.now()
         );
-        Session session = authorizationService.signup(user);
-        addSessionCookieToResponse(response, session.getId());
+        Session session = authorizationService.signup(user, deviceType, request.getRemoteAddr());
+        addSessionCookieToResponse(response, session.getUserId());
         return session;
     }
 
@@ -137,7 +145,7 @@ public class AuthorisationController {
             return password;
         }
 
-        public boolean isValidCredentials(){
+        public boolean isValidCredentials() {
             return StringUtils.isNotBlank(name) &&
                     StringUtils.isNotBlank(email) &&
                     StringUtils.isNotBlank(password);

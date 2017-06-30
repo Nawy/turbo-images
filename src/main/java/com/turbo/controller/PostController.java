@@ -7,8 +7,7 @@ import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.SearchSort;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.page.Paginator;
-import com.turbo.model.search.SearchOrder;
-import com.turbo.service.HashIdService;
+import com.turbo.repository.util.EncryptionService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -47,7 +46,7 @@ public class PostController {
     @GetMapping("/get/post/{id}")
     public PostDto get(@PathVariable("id") String id) {
         return PostDto.from(
-                postService.getPostById(HashIdService.decodeHashId(id))
+                postService.getPostById(EncryptionService.decodeHashId(id))
         );
     }
 
@@ -63,7 +62,7 @@ public class PostController {
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable("id") String id) {
         postService.delete(
-                HashIdService.decodeHashId(id)
+                EncryptionService.decodeHashId(id)
         );
     }
 }

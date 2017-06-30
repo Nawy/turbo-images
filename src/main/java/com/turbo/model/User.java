@@ -13,12 +13,12 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * This data for every foreign user
  */
-public class User implements Serializable {
+public class User implements Serializable, IdHolder {
 
-    private String name;
+    private Long id;
+    private String name; // should be unique!
     private String avatarPath;
-    private String ip; // last ip from what was came in
-    private String email;
+    private String email; // should be unique!
     private String password;
     private LocalDateTime createDate;
 
@@ -26,19 +26,19 @@ public class User implements Serializable {
     }
 
     public User(
+            @JsonProperty("id") Long id,
             @JsonProperty(value = "name", required = true) String name,
             @JsonProperty(value = "avatar_path") String avatarPath,
             @JsonProperty(value = "email", required = true) String email,
             @JsonProperty(value = "password", required = true) String password,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
-            @JsonProperty(value = "ip", required = true) String ip
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
+        this.id = id;
         this.name = name;
         this.avatarPath = avatarPath;
         this.email = email;
         this.password = password;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
-        this.ip = ip;
     }
 
     //will be id
@@ -68,7 +68,13 @@ public class User implements Serializable {
         return createDate;
     }
 
-    public String getIp() {
-        return ip;
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 }
