@@ -26,7 +26,7 @@ export class SignupComponent {
   constructor(private authorizedService : AuthorizationService, private router: Router) {
   }
 
-  onCreateAccount() : void {
+  onCreateAccount() {
     this.authorizedService.signin(
       new UserSignup(
         this.signupData.name,
@@ -34,15 +34,13 @@ export class SignupComponent {
         this.signupData.email
       )
     ).then(
-      rs => {
-        if (rs) {
-          this.router.navigateByUrl("signin");
+      (result : string) => {
+        if(result != null) {
+          this.alert = new Alert(AlertType.DANGER, result)
         } else {
-          this.alert = new Alert(AlertType.DANGER, "Error!");
+          this.router.navigateByUrl("signin");
         }
       }
     );
   }
-
-
 }
