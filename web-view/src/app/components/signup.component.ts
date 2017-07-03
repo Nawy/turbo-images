@@ -23,24 +23,41 @@ export class SignupComponent {
     passwordRepeat : ""
   };
 
+  nameRegExp : RegExp = new RegExp("[a-zA-Z0-9]{1,20}");
+  passwordRegExp : RegExp = new RegExp("[a-zA-Z0-9]{6,32}")
+
   constructor(private authorizedService : AuthorizationService, private router: Router) {
   }
 
   onCreateAccount() {
-    this.authorizedService.signin(
-      new UserSignup(
-        this.signupData.name,
-        this.signupData.password,
-        this.signupData.email
-      )
-    ).then(
-      (result : string) => {
-        if(result != null) {
-          this.alert = new Alert(AlertType.DANGER, result)
-        } else {
-          this.router.navigateByUrl("signin");
+    if(this.isCorrectForm()) {
+      this.authorizedService.signin(
+        new UserSignup(
+          this.signupData.name,
+          this.signupData.password,
+          this.signupData.email
+        )
+      ).then(
+        (result : string) => {
+          if(result != null) {
+            this.alert = new Alert(AlertType.DANGER, result)
+          } else {
+            this.router.navigateByUrl("signin");
+          }
         }
-      }
-    );
+      );
+    }
+  }
+
+  isCorrectForm() : boolean {
+    if (!this.nameRegExp.test(this.signupData.name)) {
+      this.alert = new Alert(AlertType.DANGER, "Name is wrong!");
+      return false
+    }
+
+    if(!this.passwordRegExp.test(this.signupData.password)) {
+      this.alert = new Alert(AlertType.DANGER, "Password is wrong!");
+      return false
+    }
   }
 }
