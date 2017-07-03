@@ -31,7 +31,7 @@ export class SignupComponent {
 
   onCreateAccount() {
     if(this.isCorrectForm()) {
-      this.authorizedService.signin(
+      this.authorizedService.signup(
         new UserSignup(
           this.signupData.name,
           this.signupData.password,
@@ -59,5 +59,11 @@ export class SignupComponent {
       this.alert = new Alert(AlertType.DANGER, "Password is wrong!");
       return false
     }
+
+    if(this.signupData.password != this.signupData.passwordRepeat) {
+      this.alert = new Alert(AlertType.DANGER, "Password doesn't match!");
+      return false
+    }
+    return true
   }
 }

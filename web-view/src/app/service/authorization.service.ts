@@ -8,6 +8,7 @@ import {Http, Response} from "@angular/http";
 import {UserSignup} from "../models/user-signup.model";
 import {jsonHeader} from "../utils/http.utils";
 import 'rxjs/add/operator/toPromise';
+import {UserSignin} from "../models/user-signin.model";
 
 @Injectable()
 export class AuthorizationService {
@@ -15,13 +16,17 @@ export class AuthorizationService {
   constructor(private http: Http) {
   }
 
-  public signin(signupData: UserSignup) : Promise<string> {
+  public signup(signupData: UserSignup) : Promise<string> {
     const url = `${environment.host}${environment.requests.signupUrl}`;
     return this.http
       .post(url, JSON.stringify(signupData), {headers: jsonHeader})
       .toPromise()
       .then(this.successHandler)
       .catch(this.errorHandler)
+  }
+
+  public signin(signinData: UserSignin) {
+
   }
 
   successHandler(response : Response) : string {
