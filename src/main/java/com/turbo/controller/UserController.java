@@ -1,7 +1,6 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
@@ -14,7 +13,6 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
-import com.turbo.util.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -83,50 +81,39 @@ public class UserController {
 
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/user/info")
-    public UserDto updateUserInfo(@RequestBody UserDto userDto) {
-        User user = userDto.toUser();
-        userService.userFieldValidation(user.getName());
-        userService.userFieldValidation(user.getPassword());
-        userService.emailValidation(user.getEmail());
-        User updatedUser = userService.update(user);
+    public UserDto updateUserInfo(@RequestBody User userDto) {
+        userService.userFieldValidation(userDto.getName());
+        userService.userFieldValidation(userDto.getPassword());
+        userService.emailValidation(userDto.getEmail());
+        User currentUser = authorizationService.getCurrentUser();
+        userDto.setId(currentUser.getId());
+        User updatedUser = userService.update(userDto);
         return new UserDto(updatedUser);
     }
 
     private final class UserDto {
-        private String id;
         private String name; // should be unique!
         private String avatarPath;
         private String email; // should be unique!
-        private String password;
         private LocalDateTime createDate;
 
         public UserDto(User user) {
-            this.id = EncryptionService.encodeHashId(user.getId());
             this.name = user.getName();
             this.avatarPath = user.getAvatarPath();
             this.email = user.getEmail();
-            this.password = user.getPassword();
             this.createDate = user.getCreateDate();
         }
 
         public UserDto(
-                @JsonProperty("id") String id,
                 @JsonProperty("name") String name,
                 @JsonProperty("avatar_path") String avatarPath,
                 @JsonProperty("email") String email,
-                @JsonProperty("password") String password,
                 @JsonProperty("create_date") LocalDateTime createDate
         ) {
-            this.id = id;
             this.name = name;
             this.avatarPath = avatarPath;
             this.email = email;
-            this.password = password;
             this.createDate = createDate;
-        }
-
-        public String getId() {
-            return id;
         }
 
         public String getName() {
@@ -142,26 +129,10 @@ public class UserController {
             return email;
         }
 
-        public String getPassword() {
-            return password;
-        }
-
         @JsonProperty("create_date")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
         public LocalDateTime getCreateDate() {
             return createDate;
-        }
-
-        @JsonIgnore
-        public User toUser() {
-            return new User(
-                    EncryptionService.decodeHashId(id),
-                    name,
-                    avatarPath,
-                    email,
-                    password,
-                    createDate
-            );
         }
     }
 }

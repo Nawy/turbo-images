@@ -46,7 +46,7 @@ public class UserService {
         }
     }
 
-    public void emailValidation(String email){
+    public void emailValidation(String email) {
         userFieldValidation(email);
         if (!EmailValidator.getInstance().isValid(email)) {
             throw new BadRequestHttpException("Email incorrect format!");
