@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
  * Created by ermolaev on 5/7/17.
  */
 @RestController
-@CrossOrigin
+@RequestMapping("/api")
 public class AuthorisationController {
 
     private final AuthorizationService authorizationService;
@@ -49,6 +49,7 @@ public class AuthorisationController {
                 deviceType,
                 request.getRemoteAddr()
         );
+
         addSessionHeaderToResponse(response, session.getUserId());
     }
 

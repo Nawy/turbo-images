@@ -7,6 +7,7 @@ import {AuthorizationService} from "../service/authorization.service";
 import {UserSignin} from "../models/user-signin.model";
 import {Alert, AlertType} from "../models/alert.model";
 import {UserSigninForm} from "../models/forms/user-signin-form.model";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: "s-login",
@@ -29,14 +30,19 @@ export class SigninComponent {
         this.signinData.email,
         this.signinData.password
       )
-    ).then(
-      (result : string) => {
-        if(result != null) {
-          this.alert = new Alert(AlertType.DANGER, result)
-        } else {
-          this.router.navigateByUrl("/");
-        }
-      }
-    )
+    ).then(res => {
+      localStorage.setItem(environment.tokenName, res)
+      this.router.navigateByUrl("/");
+    });
+  //
+  // .then(
+  //     (result : boolean) => {
+  //       if(result != null) {
+  //         this.alert = new Alert(AlertType.DANGER, result)
+  //       } else {
+  //         this.router.navigateByUrl("/");
+  //       }
+  //     }
+  //   )
   }
 }

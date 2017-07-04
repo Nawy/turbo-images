@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * Created by rakhmetov on 09.05.17.
  */
 @RestController
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;

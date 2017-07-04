@@ -3,11 +3,11 @@
  */
 
 export class UserSignin {
-  email : string;
+  email_or_name : string;
   password : string;
 
-  constructor(email: string = "", password: string = "") {
-    this.email = email;
+  constructor(email_or_name: string = "", password: string = "") {
+    this.email_or_name = email_or_name;
     this.password = password;
   }
 }

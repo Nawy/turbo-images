@@ -84,15 +84,9 @@ export class SignupComponent {
           this.signupData.email
         )
       );
-    }).then(
-      (result : string) => {
-        if(result != null) {
-          this.alert = new Alert(AlertType.DANGER, result)
-        } else {
-          this.router.navigateByUrl("signin");
-        }
-      }
-    );
+    })
+    .then(result => this.router.navigateByUrl("signin"))
+    .catch(res => this.alert = new Alert(AlertType.DANGER, res));
   }
 
   checkFormName() {

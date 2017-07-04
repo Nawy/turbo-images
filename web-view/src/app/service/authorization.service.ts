@@ -25,16 +25,21 @@ export class AuthorizationService {
     return this.http
       .post(url, JSON.stringify(signupData), {headers: jsonHeader})
       .toPromise()
-      .then(this.successHandler)
+      .then(res => null)
       .catch(this.errorHandler)
   }
 
-  public signin(signinData: UserSignin) {
+  public signin(signinData: UserSignin) : Promise<string> {
     const url = `${environment.host}${environment.requests.signinUrl}`;
     return this.http
       .post(url, JSON.stringify(signinData), {headers: jsonHeader})
       .toPromise()
-      .then(this.successHandler)
+      .then(res => {
+        let sessionId = res.headers.get("session");
+        debugger;
+        console.info("SESSION_ID:", sessionId);
+        return sessionId;
+      })
       .catch(this.errorHandler)
   }
 
@@ -61,7 +66,7 @@ export class AuthorizationService {
     return null;
   }
 
-  errorHandler(response : Response) : string {
-    return response.json().message;
+  errorHandler(response : Response) {
+    return Promise.reject(response.json().message);
   }
 }

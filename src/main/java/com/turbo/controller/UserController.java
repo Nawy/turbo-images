@@ -27,7 +27,7 @@ import java.util.Map;
  * Created by rakhmetov on 24.05.17.
  */
 @RestController
-@CrossOrigin
+@RequestMapping("/api")
 public class UserController {
 
     private final AuthorizationService authorizationService;

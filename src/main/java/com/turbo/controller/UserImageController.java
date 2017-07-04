@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * Created by rakhmetov on 01.05.17.
  */
 @RestController
+@RequestMapping("/api")
 public class UserImageController {
 
     private final UserImageService userImageService;
