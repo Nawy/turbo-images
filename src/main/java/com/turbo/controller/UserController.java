@@ -44,11 +44,13 @@ public class UserController {
 
     @GetMapping("/get/user/by_name_or_email")
     public User getUserByEmail(@RequestParam("name_or_email") String nameOrEmail) {
+        userService.userFieldValidation(nameOrEmail);
         return userService.get(nameOrEmail);
     }
 
     @GetMapping("/is/user/exists")
     public Map<String, Boolean> userExists(@RequestParam("name_or_email") String nameOrEmail) {
+        userService.userFieldValidation(nameOrEmail);
         return Collections.singletonMap(
                 "exists",
                 userService.isEmailOrNameExists(nameOrEmail)
@@ -73,6 +75,9 @@ public class UserController {
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/user/info")
     public User updateUserInfo(@RequestBody User user) {
+        userService.userFieldValidation(user.getName());
+        userService.userFieldValidation(user.getPassword());
+        userService.emailValidation(user.getEmail());
         return userService.update(user);
     }
 }

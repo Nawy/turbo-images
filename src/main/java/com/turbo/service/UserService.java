@@ -1,13 +1,16 @@
 package com.turbo.service;
 
 import com.turbo.model.User;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.ForbiddenHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.repository.aerospike.user.UserNameEmailRepository;
 import com.turbo.repository.aerospike.user.UserRepository;
 import com.turbo.repository.elasticsearch.content.UserSearchRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,12 +22,35 @@ public class UserService {
     private final UserSearchRepository userSearchRepository;
     private final UserNameEmailRepository userNameEmailRepository;
     private final UserRepository userRepository;
+    private final int maxFieldSize;
 
     @Autowired
-    public UserService(UserSearchRepository userSearchRepository, UserNameEmailRepository userNameEmailRepository, UserRepository userRepository) {
+    public UserService(
+            UserSearchRepository userSearchRepository,
+            UserNameEmailRepository userNameEmailRepository,
+            UserRepository userRepository,
+            @Value("${auth.field.size}") int maxFieldSize
+    ) {
         this.userSearchRepository = userSearchRepository;
         this.userNameEmailRepository = userNameEmailRepository;
         this.userRepository = userRepository;
+        this.maxFieldSize = maxFieldSize;
+    }
+
+    public void userFieldValidation(String field) {
+        if (StringUtils.isBlank(field)) {
+            throw new BadRequestHttpException("None of fields can be blank");
+        }
+        if (field.length() >= maxFieldSize) {
+            throw new BadRequestHttpException("None of the fields could be longer than:" + maxFieldSize);
+        }
+    }
+
+    public void emailValidation(String email){
+        userFieldValidation(email);
+        if (!EmailValidator.getInstance().isValid(email)) {
+            throw new BadRequestHttpException("Email incorrect format!");
+        }
     }
 
     public User update(User user) {
@@ -63,7 +89,7 @@ public class UserService {
 
     public User get(long userId) {
         User user = userRepository.get(userId);
-        if (user == null) throw new NotFoundHttpException("No user found for id:" + user);
+        if (user == null) throw new NotFoundHttpException("No user found for id:" + userId);
         return user;
     }
 

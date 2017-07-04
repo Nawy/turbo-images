@@ -7,7 +7,8 @@ import com.turbo.repository.util.EncryptionService;
 import com.turbo.repository.util.Headers;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.SessionService;
-import org.apache.commons.lang3.StringUtils;
+import com.turbo.service.UserService;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +27,17 @@ public class AuthorisationController {
 
     private final AuthorizationService authorizationService;
     private final SessionService sessionService;
+    private final UserService userService;
 
     @Autowired
-    public AuthorisationController(AuthorizationService authorizationService, SessionService sessionService) {
+    public AuthorisationController(
+            AuthorizationService authorizationService,
+            SessionService sessionService,
+            UserService userService
+    ) {
         this.authorizationService = authorizationService;
         this.sessionService = sessionService;
+        this.userService = userService;
     }
 
     @PostMapping("/signin")
@@ -40,11 +47,11 @@ public class AuthorisationController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (StringUtils.isBlank(userCredentialsDto.getEmail()) || StringUtils.isBlank(userCredentialsDto.getPassword())) {
-            throw new BadRequestHttpException("Bad credentials");
-        }
+        userService.userFieldValidation(userCredentialsDto.getEmailOrName());
+        userService.userFieldValidation(userCredentialsDto.getPassword());
+
         Session session = authorizationService.login(
-                userCredentialsDto.getEmail(),
+                userCredentialsDto.getEmailOrName(),
                 userCredentialsDto.getPassword(),
                 deviceType,
                 request.getRemoteAddr()
@@ -83,7 +90,10 @@ public class AuthorisationController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (!userDto.isValidCredentials()) throw new BadRequestHttpException("None of fields can be blank");
+        userService.emailValidation(userDto.getEmail());
+        userService.userFieldValidation(userDto.getName());
+        userService.userFieldValidation(userDto.getPassword());
+
         User user = new User(
                 null,
                 userDto.getName(),
@@ -98,26 +108,25 @@ public class AuthorisationController {
     }
 
     private static class UserCredentialsDto {
-        private String email;
+        private String emailOrName;
         private String password;
 
         public UserCredentialsDto(
-                @JsonProperty(value = "email", required = true) String email,
+                @JsonProperty(value = "email_or_name", required = true) String emailOrName,
                 @JsonProperty(value = "password", required = true) String password
         ) {
-            this.email = email;
+            this.emailOrName = emailOrName;
             this.password = password;
         }
 
-        public String getEmail() {
-            return email;
+        public String getEmailOrName() {
+            return emailOrName;
         }
 
         public String getPassword() {
             return password;
         }
     }
-
 
     private static class UserSignupDto {
         private String name;
@@ -143,12 +152,6 @@ public class AuthorisationController {
 
         public String getPassword() {
             return password;
-        }
-
-        public boolean isValidCredentials() {
-            return StringUtils.isNotBlank(name) &&
-                    StringUtils.isNotBlank(email) &&
-                    StringUtils.isNotBlank(password);
         }
     }
 }
