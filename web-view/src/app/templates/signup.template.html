@@ -5,20 +5,48 @@
         <div class="card-block">
           <form>
             <ngb-alert *ngIf="alert" [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="name" [(ngModel)]="signupData.name" [ngModelOptions]="{standalone: true}">
+            <div class="form-group {{nameForm.groupClass}}">
+              <input
+                type="text"
+                class="form-control {{nameForm.formControlClass}}"
+                placeholder="name"
+                (blur)="checkName()"
+                [(ngModel)]="signupData.name"
+                [ngModelOptions]="{standalone: true}">
+              <div class="form-control-feedback">{{nameForm.value}}</div>
             </div>
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="vasya@example.com"  [(ngModel)]="signupData.email" [ngModelOptions]="{standalone: true}">
+            <div class="form-group {{emailForm.groupClass}}">
+              <input
+                type="text"
+                class="form-control {{emailForm.formControlClass}}"
+                placeholder="vasya@example.com"
+                (blur)="checkEmail()"
+                [(ngModel)]="signupData.email"
+                [ngModelOptions]="{standalone: true}">
+              <div class="form-control-feedback">{{emailForm.value}}</div>
             </div>
-            <div class="form-group">
-              <input type="password" class="form-control" placeholder="password" [(ngModel)]="signupData.password" [ngModelOptions]="{standalone: true}">
+            <div class="form-group {{passwordForm.groupClass}}">
+              <input
+                type="password"
+                class="form-control {{passwordForm.formControlClass}}"
+                placeholder="password"
+                (blur)="checkPassword()"
+                [(ngModel)]="signupData.password"
+                [ngModelOptions]="{standalone: true}">
+              <div class="form-control-feedback">{{passwordForm.value}}</div>
             </div>
-            <div class="form-group">
-              <input type="password" class="form-control" placeholder="repeat password" [(ngModel)]="signupData.passwordRepeat" [ngModelOptions]="{standalone: true}">
+            <div class="form-group {{repeatPasswordForm.groupClass}}">
+              <input
+                type="password"
+                class="form-control {{repeatPasswordForm.formControlClass}}"
+                placeholder="repeat password"
+                (blur)="checkPasswordsSimilarity()"
+                [(ngModel)]="signupData.passwordRepeat"
+                [ngModelOptions]="{standalone: true}">
+              <div class="form-control-feedback">{{repeatPasswordForm.value}}</div>
             </div>
             <div class="btn-group" role="group">
-              <button type="submit" class="btn btn-primary" (click)="onCreateAccount()">Let's Go!</button>
+              <button type="submit" class="btn btn-primary" (click)="onSignup()">Let's Go!</button>
               <a class="btn btn-warning" routerLink="/signin" role="button">Already have account</a>
             </div>
           </form>

@@ -26,8 +26,17 @@ export class AuthorizationService {
   }
 
   public signin(signinData: UserSignin) {
-
+    const url = `${environment.host}${environment.requests.signinUrl}`;
+    return this.http
+      .post(url, JSON.stringify(signinData), {headers: jsonHeader})
+      .toPromise()
+      .then(this.successHandler)
+      .catch(this.errorHandler)
   }
+
+  // public checkName(name : string) : Promise<boolean> {
+  //
+  // }
 
   successHandler(response : Response) : string {
     return null;
