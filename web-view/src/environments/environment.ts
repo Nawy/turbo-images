@@ -9,6 +9,7 @@ export const environment = {
   requests: {
     signinUrl: "/signin",
     signupUrl: "/signup",
-    logoutUrl: "/logout"
+    logoutUrl: "/logout",
+    isUserExistsUrl: "/is/user/exists"
   }
 };

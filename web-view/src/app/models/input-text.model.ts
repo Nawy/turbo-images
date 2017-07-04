@@ -37,7 +37,7 @@ export class InputTextForm extends InputTextFormClass {
   value : string;
 
   constructor(inputForm : InputTextFormClass, value : string) {
-    super(inputForm.groupClass, inputForm.formControlClass)
+    super(inputForm.groupClass, inputForm.formControlClass);
     this.value = value;
   }
 

@@ -10,6 +10,10 @@ import {jsonHeader} from "../utils/http.utils";
 import 'rxjs/add/operator/toPromise';
 import {UserSignin} from "../models/user-signin.model";
 
+class IsExistsClass {
+  exists : boolean;
+}
+
 @Injectable()
 export class AuthorizationService {
 
@@ -34,9 +38,24 @@ export class AuthorizationService {
       .catch(this.errorHandler)
   }
 
-  // public checkName(name : string) : Promise<boolean> {
-  //
-  // }
+  public isExistsNameOrEmail(name : string) : Promise<boolean> {
+    const url = `${environment.host}${environment.requests.isUserExistsUrl}`;
+    return this.http
+      .get(url, {
+        headers: jsonHeader,
+        params: {
+          "name_or_email": name
+        }
+      })
+      .toPromise()
+      .then(res => {
+        let response : IsExistsClass = res.json() as IsExistsClass;
+        return response.exists;
+      })
+      .catch(res => {
+        return false
+      })
+  }
 
   successHandler(response : Response) : string {
     return null;
