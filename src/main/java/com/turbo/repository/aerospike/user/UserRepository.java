@@ -16,9 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepository extends AbstractAerospikeRepo<User> {
 
-    private final String usernameBinName;
-    private final String userEmailBinName;
-    private final String userIdBinName;
+    private final static String USERNAME_BIN_NAME = "username";
+    private final static String USER_EMAIL_BIN_NAME = "email";
+    private final static String USER_ID_BIN_NAME = "id";
+    private final static String USER_ENTITY_BIN_NAME = "entity";
+
     private final AerospikeClient client;
 
     @Autowired
@@ -28,9 +30,6 @@ public class UserRepository extends AbstractAerospikeRepo<User> {
     ) {
         super(config, tableName);
         this.client = config.aerospikeClient();
-        this.usernameBinName = "username_" + tableName;
-        this.userEmailBinName = "email_" + tableName;
-        this.userIdBinName = "id_" + tableName;
     }
 
     public User save(User user) {
@@ -44,6 +43,7 @@ public class UserRepository extends AbstractAerospikeRepo<User> {
                 null,
                 generateKey(id),
                 generateBin(user),
+                generateUserBin(user),
                 generateEmailBin(user),
                 generateUsernameBin(user),
                 generateIdBin(user)
@@ -56,7 +56,7 @@ public class UserRepository extends AbstractAerospikeRepo<User> {
     public User get(long id) {
         Record record = client.get(null, generateKey(id));
         return record != null ?
-                (User) record.getValue(usernameBinName) :
+                (User) record.getValue(USER_ENTITY_BIN_NAME) :
                 null;
     }
 
@@ -69,15 +69,19 @@ public class UserRepository extends AbstractAerospikeRepo<User> {
     }
 
 
+    protected Bin generateUserBin(User user) {
+        return new Bin(USER_ENTITY_BIN_NAME, user);
+    }
+
     protected Bin generateUsernameBin(User entity) {
-        return new Bin(usernameBinName, entity.getName());
+        return new Bin(USERNAME_BIN_NAME, entity.getName());
     }
 
     protected Bin generateEmailBin(User entity) {
-        return new Bin(userEmailBinName, entity.getEmail());
+        return new Bin(USER_EMAIL_BIN_NAME, entity.getEmail());
     }
 
     protected Bin generateIdBin(User entity) {
-        return new Bin(userIdBinName, entity.getId());
+        return new Bin(USER_ID_BIN_NAME, entity.getId());
     }
 }
