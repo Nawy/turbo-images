@@ -4,8 +4,8 @@ import com.turbo.model.DeviceType;
 import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.repository.util.EncryptionService;
-import com.turbo.repository.util.Headers;
+import com.turbo.util.EncryptionService;
+import com.turbo.util.Headers;
 import com.turbo.service.SessionService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,10 +19,8 @@ import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.Collections;
 
 @Component
@@ -76,17 +74,12 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
     }
 
     private Long getSessionIdFromRequest(HttpServletRequest req) {
-        if (req.getCookies() == null) return null;
-        Cookie cookie = Arrays.stream(req.getCookies())
-                .filter((c) -> SecurityHeader.SESSION_COOKIE_NAME.equals(c.getName()))
-                .findFirst().orElse(null);
-        if (cookie == null) return null;
-        String cookieValue = cookie.getValue();
-        if (cookieValue == null) return null;
+        String sessionHeaderValue = req.getHeader(SecurityHeader.SESSION_COOKIE_NAME);
+        if (sessionHeaderValue == null) return null;
         try {
-            return EncryptionService.decodeHashId(cookieValue);
+            return EncryptionService.decodeHashId(sessionHeaderValue);
         } catch (Exception e) {
-            LOG.warn("Can't decode cookie sessionId:{}", cookieValue);
+            LOG.warn("Can't decode cookie sessionId:{}", sessionHeaderValue);
             return null;
         }
     }

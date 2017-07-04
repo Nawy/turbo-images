@@ -2,18 +2,14 @@ package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.*;
-import com.turbo.model.exception.BadRequestHttpException;
-import com.turbo.repository.util.EncryptionService;
-import com.turbo.repository.util.Headers;
+import com.turbo.util.EncryptionService;
+import com.turbo.util.Headers;
 import com.turbo.service.AuthorizationService;
-import com.turbo.service.SessionService;
 import com.turbo.service.UserService;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
@@ -26,17 +22,14 @@ import java.time.LocalDateTime;
 public class AuthorisationController {
 
     private final AuthorizationService authorizationService;
-    private final SessionService sessionService;
     private final UserService userService;
 
     @Autowired
     public AuthorisationController(
             AuthorizationService authorizationService,
-            SessionService sessionService,
             UserService userService
     ) {
         this.authorizationService = authorizationService;
-        this.sessionService = sessionService;
         this.userService = userService;
     }
 
@@ -56,35 +49,22 @@ public class AuthorisationController {
                 deviceType,
                 request.getRemoteAddr()
         );
-        addSessionCookieToResponse(response, session.getUserId());
+        addSessionHeaderToResponse(response, session.getUserId());
     }
 
-    private void addSessionCookieToResponse(HttpServletResponse response, long sessionId) {
-        Cookie cookie = createCookie(sessionId);
-        response.addCookie(cookie);
-    }
-
-    private Cookie createCookie(long sessionId) {
+    private void addSessionHeaderToResponse(HttpServletResponse response, long sessionId) {
         String encryptedSessionId = EncryptionService.encodeHashId(sessionId);
-        Cookie cookie = new Cookie(SecurityHeader.SESSION_COOKIE_NAME, encryptedSessionId);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setMaxAge(sessionService.getSessionMaxAge());
-        return cookie;
+        response.addHeader(SecurityHeader.SESSION_COOKIE_NAME,encryptedSessionId);
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/logout")
-    public void logout(HttpServletResponse response) {
-        long sessionId = authorizationService.logout();
-        Cookie cookie = createCookie(sessionId);
-        cookie.setMaxAge(0); // age = 0 make cookie self delete
-        response.addCookie(cookie);
+    public void logout() {
+        authorizationService.logout();
     }
 
     @PostMapping("/signup")
-    public Session signup(
+    public void signup(
             @RequestBody UserSignupDto userDto,
             @RequestHeader(value = Headers.DEVICE_TYPE, required = false) DeviceType deviceType,
             HttpServletRequest request,
@@ -103,8 +83,7 @@ public class AuthorisationController {
                 LocalDateTime.now()
         );
         Session session = authorizationService.signup(user, deviceType, request.getRemoteAddr());
-        addSessionCookieToResponse(response, session.getUserId());
-        return session;
+        addSessionHeaderToResponse(response, session.getUserId());
     }
 
     private static class UserCredentialsDto {

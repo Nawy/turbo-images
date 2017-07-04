@@ -1,7 +1,7 @@
 package com.turbo;
 
-import com.turbo.repository.util.EncryptionService;
-import com.turbo.repository.util.IdGenerator;
+import com.turbo.util.EncryptionService;
+import com.turbo.util.IdGenerator;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

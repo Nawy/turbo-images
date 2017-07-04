@@ -11,7 +11,7 @@ import com.turbo.model.search.content.PostSearchEntity;
 import com.turbo.model.search.field.PostField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
-import com.turbo.repository.util.ElasticUtils;
+import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;

@@ -1,4 +1,4 @@
-package com.turbo.repository.util;
+package com.turbo.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

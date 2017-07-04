@@ -1,12 +1,10 @@
-package com.turbo.repository.util;
+package com.turbo.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.turbo.model.exception.NotFoundHttpException;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;

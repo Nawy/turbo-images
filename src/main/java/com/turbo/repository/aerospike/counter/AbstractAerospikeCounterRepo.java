@@ -3,9 +3,6 @@ package com.turbo.repository.aerospike.counter;
 import com.aerospike.client.*;
 import com.aerospike.client.policy.WritePolicy;
 import com.turbo.config.AerospikeConfig;
-import com.turbo.model.exception.InternalServerErrorHttpException;
-import com.turbo.repository.util.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by rakhmetov on 21.05.17.

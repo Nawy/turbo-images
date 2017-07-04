@@ -7,7 +7,7 @@ import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.SearchSort;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.page.Paginator;
-import com.turbo.repository.util.EncryptionService;
+import com.turbo.util.EncryptionService;
 import com.turbo.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

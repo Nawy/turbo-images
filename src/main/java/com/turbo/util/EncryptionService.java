@@ -1,4 +1,4 @@
-package com.turbo.repository.util;
+package com.turbo.util;
 
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.apache.commons.lang3.StringUtils;

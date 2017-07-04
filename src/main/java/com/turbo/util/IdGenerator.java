@@ -1,4 +1,4 @@
-package com.turbo.repository.util;
+package com.turbo.util;
 
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;

@@ -1,4 +1,4 @@
-package com.turbo.repository.util;
+package com.turbo.util;
 
 /**
  * Created by rakhmetov on 30.06.17.

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Image;
 import com.turbo.model.UserImage;
-import com.turbo.repository.util.EncryptionService;
+import com.turbo.util.EncryptionService;
 
 import java.time.LocalDateTime;
 

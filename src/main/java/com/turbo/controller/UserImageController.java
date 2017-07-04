@@ -6,7 +6,7 @@ import com.turbo.model.User;
 import com.turbo.model.UserImage;
 import com.turbo.model.dto.UserImageDto;
 import com.turbo.service.AuthorizationService;
-import com.turbo.repository.util.EncryptionService;
+import com.turbo.util.EncryptionService;
 import com.turbo.service.UserImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

@@ -8,7 +8,7 @@ import com.aerospike.client.policy.WritePolicy;
 import com.turbo.config.AerospikeConfig;
 import com.turbo.model.IdHolder;
 import com.turbo.model.exception.InternalServerErrorHttpException;
-import com.turbo.repository.util.IdGenerator;
+import com.turbo.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;

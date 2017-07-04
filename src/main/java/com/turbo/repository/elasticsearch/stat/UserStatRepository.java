@@ -2,7 +2,7 @@ package com.turbo.repository.elasticsearch.stat;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
-import com.turbo.repository.util.ElasticUtils;
+import com.turbo.util.ElasticUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

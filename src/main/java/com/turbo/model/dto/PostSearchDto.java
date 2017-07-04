@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.UserImage;
-import com.turbo.repository.util.EncryptionService;
+import com.turbo.util.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;

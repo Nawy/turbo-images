@@ -5,7 +5,7 @@ import com.turbo.model.UserImage;
 import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.model.search.field.ImageField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
-import com.turbo.repository.util.ElasticUtils;
+import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;

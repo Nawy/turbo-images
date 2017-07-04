@@ -4,7 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
-import com.turbo.repository.util.ElasticUtils;
+import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
