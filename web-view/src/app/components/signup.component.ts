@@ -27,7 +27,7 @@ export class SignupComponent {
   nameRegExp : RegExp = new RegExp("[a-zA-Z0-9]{3,20}");
   passwordRegExp : RegExp = new RegExp("[a-zA-Z0-9]{6,32}");
   emailRegExp : RegExp = new RegExp('^([a-zA-Z0-9]+\.?[a-zA-Z0-9]+)*\@{1,1}([a-zA-Z0-9]+\.?[a-zA-Z0-9]+)*$');
-  emailRegExp2 : RegExp = new RegExp('/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/');
+  emailRegExp2 : RegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
   nameForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
   emailForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
@@ -37,32 +37,32 @@ export class SignupComponent {
   constructor(private authorizedService : AuthorizationService, private router: Router) {}
 
   onSignup() {
+
     const promise = new Promise((resolve, reject) => {
       //check correct name
       if (!this.nameRegExp.test(this.signupData.name)) {
         this.nameForm.setValue(DANGER_INPUT, "Name is wrong!")
-        return Promise.reject(null)
+        reject(false)
       }
       //correct email
       if(this.signupData.email != "") {
         if (!this.emailRegExp.test(this.signupData.email)) {
           this.emailForm.setValue(DANGER_INPUT, "Email is wrong!")
-          return Promise.reject(null)
+          reject(false)
         }
       }
       //correct password
       if(!this.passwordRegExp.test(this.signupData.password)) {
         this.passwordForm.setValue(DANGER_INPUT, "Password is wrong!")
-        return Promise.reject(null)
+        reject(false)
       }
 
       //check similarity of passwords
       if(this.signupData.password != this.signupData.passwordRepeat) {
         this.repeatPasswordForm.setValue(DANGER_INPUT, "Password doesn't match!")
-        return Promise.reject(null)
+        reject(false)
       }
-      console.info("CHECK PASSED");
-      return Promise.resolve(true);
+      resolve(true)
     }).then(res => {
         return this.authorizedService.isExistsNameOrEmail(this.signupData.name);
     }).then(res => {
@@ -70,14 +70,13 @@ export class SignupComponent {
         this.nameForm.setValue(DANGER_INPUT, `${this.signupData.name} already exists!`);
         return Promise.reject(null)
       }
-      console.info("NAME CHECK PASSED");
       return this.authorizedService.isExistsNameOrEmail(this.signupData.email);
     }).then(res => {
       if(res != false) {
         this.emailForm.setValue(DANGER_INPUT, `${this.signupData.email} already exists!`);
         return Promise.reject(null)
       }
-      console.info("EMAIL CHECK PASSED");
+
       return this.authorizedService.signup(
         new UserSignup(
           this.signupData.name,
@@ -96,76 +95,59 @@ export class SignupComponent {
     );
   }
 
-  isCorrectForm() : boolean {
-    if (!this.checkName()) {
-      return false
-    }
-
-    if (!this.checkPassword()) {
-      return false
-    }
-
-    if(this.signupData.email != "") {
-      if (!this.checkEmail()) {
-        return false
-      }
-    }
-    return true
-  }
-
-  checkName() : boolean {
+  checkFormName() {
     if (!this.nameRegExp.test(this.signupData.name)) {
       this.nameForm.setValue(DANGER_INPUT, "Name is wrong!")
       return false
     }
 
-    // this.authorizedService
-    //   .isExistsNameOrEmail(this.signupData.name)
-    //   .then(res => {
-    //     if(res) {
-    //       this.nameForm.setValue(DANGER_INPUT, `${this.signupData.name} already exists!`);
-    //       return false;
-    //     } else {
-    //       this.nameForm.setValue(EMPTY_INPUT, "");
-    //     }
-    //   });
+    this.authorizedService
+      .isExistsNameOrEmail(this.signupData.name)
+      .then(res => {
+        if(res) {
+          this.nameForm.setValue(DANGER_INPUT, `${this.signupData.name} already exists!`);
+          return false;
+        } else {
+          this.nameForm.setValue(EMPTY_INPUT, "");
+        }
+      });
 
     return true
   }
 
-  checkEmail() : boolean {
-    if(this.signupData.email != "") {
-      if (!this.emailRegExp.test(this.signupData.email)) {
-        this.emailForm.setValue(DANGER_INPUT, "Email is wrong!")
-        return false
-      }
+  checkFormEmail() {
+    if(this.signupData.email == null || this.signupData.email == "") {
+      return false
     }
-
-    // this.authorizedService
-    //   .isExistsNameOrEmail(this.signupData.email)
-    //   .then(res => {
-    //     if(res) {
-    //       this.emailForm.setValue(DANGER_INPUT, `${this.signupData.email} already exists!`);
-    //       return false;
-    //     } else {
-    //       this.emailForm.setValue(EMPTY_INPUT, "");
-    //     }
-    //   });
+    if (!this.emailRegExp2.test(this.signupData.email)) {
+      this.emailForm.setValue(DANGER_INPUT, "Email is wrong!")
+      return false
+    }
+    this.authorizedService
+      .isExistsNameOrEmail(this.signupData.email)
+      .then(res => {
+        if(res) {
+          this.emailForm.setValue(DANGER_INPUT, `${this.signupData.email} already exists!`);
+          return false;
+        } else {
+          this.emailForm.setValue(EMPTY_INPUT, "");
+        }
+      });
 
     return true
   }
 
-  checkPassword() : boolean {
+  checkFormPassword() {
     if(!this.passwordRegExp.test(this.signupData.password)) {
       this.passwordForm.setValue(DANGER_INPUT, "Password is wrong!")
       return false
     }
 
     this.passwordForm.setValue(EMPTY_INPUT, "");
-    return this.checkPasswordsSimilarity()
+    return this.checkFormPasswordsSimilarity()
   }
 
-  checkPasswordsSimilarity() : boolean {
+  checkFormPasswordsSimilarity() : boolean {
     if(this.signupData.password != this.signupData.passwordRepeat) {
       this.repeatPasswordForm.setValue(DANGER_INPUT, "Password doesn't match!")
       return false

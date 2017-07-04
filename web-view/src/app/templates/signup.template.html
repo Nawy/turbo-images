@@ -10,7 +10,7 @@
                 type="text"
                 class="form-control {{nameForm.formControlClass}}"
                 placeholder="name"
-                (blur)="checkName()"
+                (blur)="checkFormName()"
                 [(ngModel)]="signupData.name"
                 [ngModelOptions]="{standalone: true}">
               <div class="form-control-feedback">{{nameForm.value}}</div>
@@ -20,7 +20,7 @@
                 type="text"
                 class="form-control {{emailForm.formControlClass}}"
                 placeholder="vasya@example.com"
-                (blur)="checkEmail()"
+                (blur)="checkFormEmail()"
                 [(ngModel)]="signupData.email"
                 [ngModelOptions]="{standalone: true}">
               <div class="form-control-feedback">{{emailForm.value}}</div>
@@ -30,7 +30,7 @@
                 type="password"
                 class="form-control {{passwordForm.formControlClass}}"
                 placeholder="password"
-                (blur)="checkPassword()"
+                (blur)="checkFormPassword()"
                 [(ngModel)]="signupData.password"
                 [ngModelOptions]="{standalone: true}">
               <div class="form-control-feedback">{{passwordForm.value}}</div>
@@ -40,7 +40,7 @@
                 type="password"
                 class="form-control {{repeatPasswordForm.formControlClass}}"
                 placeholder="repeat password"
-                (blur)="checkPasswordsSimilarity()"
+                (blur)="checkFormPasswordsSimilarity()"
                 [(ngModel)]="signupData.passwordRepeat"
                 [ngModelOptions]="{standalone: true}">
               <div class="form-control-feedback">{{repeatPasswordForm.value}}</div>
