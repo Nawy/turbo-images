@@ -11,9 +11,13 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
+import org.luaj.vm2.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Created by rakhmetov on 24.05.17.
@@ -39,8 +43,16 @@ public class UserController {
     }
 
     @GetMapping("/get/user/by_name_or_email")
-    public User getUserByEmail(@RequestParam("nameOrEmail") String email) {
-        return userService.get(email);
+    public User getUserByEmail(@RequestParam("name_or_email") String nameOrEmail) {
+        return userService.get(nameOrEmail);
+    }
+
+    @GetMapping("/is/user/exists")
+    public Map<String, Boolean> userExists(@RequestParam("name_or_email") String nameOrEmail) {
+        return Collections.singletonMap(
+                "exists",
+                userService.isEmailOrNameExists(nameOrEmail)
+        );
     }
 
     @Secured(SecurityRole.USER)
