@@ -4,6 +4,9 @@
 
 import {Component} from '@angular/core'
 import { Router } from '@angular/router';
+import {UserService} from "../service/user.service";
+import {UserInfo} from "../models/user-info.model";
+import {AuthorizationService} from "../service/authorization.service";
 
 @Component({
   selector: "s-navbar",
@@ -12,11 +15,20 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent {
 
-  constructor(private router: Router) {}
+  userInfo : UserInfo;
 
+  constructor(private userService : UserService, private authorizedService : AuthorizationService, private router: Router) {
+    userService.getUserInfo()
+      .then(userInfo => {
+        this.userInfo = userInfo;
+      })
+  }
 
-
-  logout(): void {
-    this.router.navigateByUrl("signin");
+  logout() {
+    this.authorizedService.logout()
+      .then(res => {
+        this.userInfo = null;
+        this.router.navigateByUrl("signin");
+      });
   }
 }

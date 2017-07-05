@@ -31,18 +31,7 @@ export class SigninComponent {
         this.signinData.password
       )
     ).then(res => {
-      localStorage.setItem(environment.tokenName, res)
       this.router.navigateByUrl("/");
     });
-  //
-  // .then(
-  //     (result : boolean) => {
-  //       if(result != null) {
-  //         this.alert = new Alert(AlertType.DANGER, result)
-  //       } else {
-  //         this.router.navigateByUrl("/");
-  //       }
-  //     }
-  //   )
   }
 }

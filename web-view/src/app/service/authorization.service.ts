@@ -4,7 +4,7 @@
 
 import {Injectable} from "@angular/core";
 import {environment} from "environments/environment";
-import {Http, Response} from "@angular/http";
+import {Headers, Http, Response} from "@angular/http";
 import {UserSignup} from "../models/user-signup.model";
 import {jsonHeader} from "../utils/http.utils";
 import 'rxjs/add/operator/toPromise';
@@ -36,9 +36,25 @@ export class AuthorizationService {
       .toPromise()
       .then(res => {
         let sessionId = res.headers.get("session");
-        debugger;
-        console.info("SESSION_ID:", sessionId);
+        localStorage.setItem(environment.tokenName, sessionId);
         return sessionId;
+      })
+      .catch(this.errorHandler)
+  }
+
+  public logout() : Promise<boolean> {
+    let sessionID: string = localStorage.getItem(environment.tokenName);
+    const url = `${environment.host}${environment.requests.logoutUrl}`;
+    return this.http
+      .post(
+        url,
+        null,
+        {headers: new Headers({"session": sessionID})}
+      )
+      .toPromise()
+      .then(res => {
+        localStorage.removeItem(environment.tokenName)
+        return true;
       })
       .catch(this.errorHandler)
   }

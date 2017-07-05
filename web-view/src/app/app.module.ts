@@ -16,6 +16,7 @@ import {SettingsComponent} from "./components/settings.component";
 import {MaterialsComponent} from "./components/materials.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
 import {AuthorizationService} from "./service/authorization.service";
+import {UserService} from "./service/user.service";
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import {AuthorizationService} from "./service/authorization.service";
     ])
   ],
   providers: [
-    AuthorizationService
+    AuthorizationService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
