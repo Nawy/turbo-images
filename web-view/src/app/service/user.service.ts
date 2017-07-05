@@ -10,6 +10,8 @@ import {environment} from "../../environments/environment";
 @Injectable()
 export class UserService {
 
+  userInfo : UserInfo;
+
   constructor(private http: Http) {
   }
 
@@ -29,7 +31,8 @@ export class UserService {
         {headers: new Headers({"session": sessionID})}
       ).toPromise()
       .then(res => {
-        return res.json() as UserInfo
+        this.userInfo = res.json() as UserInfo;
+        return this.userInfo
       })
     });
   }

@@ -53,7 +53,7 @@ export class AuthorizationService {
       )
       .toPromise()
       .then(res => {
-        localStorage.removeItem(environment.tokenName)
+        localStorage.removeItem(environment.tokenName);
         return true;
       })
       .catch(this.errorHandler)

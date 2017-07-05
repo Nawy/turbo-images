@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from "@angular/core";
+import {UserInfo} from "../models/user-info.model";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./../css/app.style.css']
 })
 export class AppComponent {
-  title = 'Привет саморитянин!';
+  userInfo : UserInfo;
 }

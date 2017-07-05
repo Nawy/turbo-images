@@ -12,7 +12,7 @@ import {PostPreview} from "../models/postpreview.model";
 export class ImagesComponent {
 
   postPreviews: PostPreview[];
-
+  model = 1;
   searchSort: SearchSort;
 
   constructor() {
@@ -20,7 +20,7 @@ export class ImagesComponent {
 
     const count: number = 100;
     this.postPreviews = new Array<PostPreview>(count);
-    var pathes: string[] = ["https://i.imgur.com/uuh9RZ9b.jpg", "https://i.imgur.com/djKgENAb.jpg"];
+    var pathes: string[] = ["http://192.168.1.64/t/N/d1TnKviN.jpg", "http://192.168.1.64/t/N/6hv7tkzMsEb.jpg"];
 
     for (var i = 0; i < count;) {
       var path: string;

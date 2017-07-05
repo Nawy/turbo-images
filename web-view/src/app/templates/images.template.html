@@ -1,18 +1,16 @@
 <div class="container space-top">
+  <div [(ngModel)]="model" ngbRadioGroup name="radioBasic">
+    <label class="btn btn-outline-primary">
+      <input type="radio" [value]="1"> Top Rating
+    </label>
+    <label class="btn btn-outline-primary">
+      <input type="radio" value="middle"> Top Views
+    </label>
+    <label class="btn btn-outline-primary">
+      <input type="radio" [value]="false"> New
+    </label>
+  </div>
   <div class="card">
-    <div class="card-header">
-          <ul class="nav nav-pills card-header-pills">
-            <li class="nav-item">
-              <a class="nav-link cursor-pointer {{getClassState('RATING')}}" (click)="chooseTopRatingState()">Top Rating</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link cursor-pointer {{getClassState('VIEW')}}" (click)="chooseTopViewState()">Top Views</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link cursor-pointer {{getClassState('NEW')}}" (click)="chooseNewState()">New</a>
-            </li>
-          </ul>
-    </div>
 
     <div class="card-block medium-margin">
       <div class="row justify-content-center">
