@@ -55,7 +55,7 @@ export class AuthorizationService {
       .toPromise()
       .then(res => {
         localStorage.removeItem(environment.tokenName);
-        this.userService.updateUserInfo();
+        this.userService.clearUserSession();
         return true;
       })
       .catch(this.errorHandler)

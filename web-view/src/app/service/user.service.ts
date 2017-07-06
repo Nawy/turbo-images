@@ -11,13 +11,10 @@ import {Subject} from "rxjs/Subject";
 @Injectable()
 export class UserService {
 
-  private userInfo : UserInfo;
   private userInfoSource = new Subject<UserInfo>();
   userInfoObserver$ = this.userInfoSource.asObservable();
 
-  constructor(private http: Http) {
-    this.userInfoObserver$.subscribe(userInfo => this.userInfo = userInfo);
-  }
+  constructor(private http: Http) {}
 
   public updateUserInfo() : Promise<UserInfo> {
     return new Promise((resolve, reject) => {
@@ -40,11 +37,12 @@ export class UserService {
         return userInfo
       })
     }).catch(res => {
-      if(res.code() != 500) {
-        localStorage.removeItem(environment.tokenName);
-      }
       this.userInfoSource.next(null);
     });
+  }
+
+  public clearUserSession() {
+    this.userInfoSource.next(null);
   }
 
   public isLoggedIn() : boolean {

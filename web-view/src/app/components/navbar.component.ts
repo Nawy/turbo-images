@@ -19,7 +19,6 @@ export class NavbarComponent {
 
   constructor(private userService : UserService, private authorizedService : AuthorizationService, private router: Router) {
     this.userService.updateUserInfo();
-    console.error("NAVBAR IS LOGGED: " + this.userService.isLoggedIn());
     userService.userInfoObserver$.subscribe(
       userInfo => this.userInfo = userInfo
     )
