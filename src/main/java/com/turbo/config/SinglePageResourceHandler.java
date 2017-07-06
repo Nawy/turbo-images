@@ -1,7 +1,7 @@
 package com.turbo.config;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -23,19 +23,16 @@ public class SinglePageResourceHandler extends WebMvcConfigurerAdapter {
     private static final String API_PATH = "/api";
     private static final String PATH_PATTERNS = "/**";
 
-    private final ResourceProperties resourceProperties;
+    private final String staticPath;
 
-    public SinglePageResourceHandler(
-            final ResourceProperties resourceProperties
-    ) {
-        this.resourceProperties = resourceProperties;
+    public SinglePageResourceHandler(@Value("${html.path}") String staticPath) {
+        this.staticPath = staticPath;
     }
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler(PATH_PATTERNS)
-                .addResourceLocations(resourceProperties.getStaticLocations())
-                .setCachePeriod(resourceProperties.getCachePeriod())
+                .addResourceLocations(staticPath)
                 .resourceChain(true)
                 .addResolver(new SinglePageAppResourceResolver());
     }
