@@ -8,6 +8,7 @@ import {UserSignin} from "../models/user-signin.model";
 import {Alert} from "../models/alert.model";
 import {UserSigninForm} from "../models/forms/user-signin-form.model";
 import {UserService} from "../service/user.service";
+import {UserInfo} from "../models/user-info.model";
 
 @Component({
   selector: "s-login",
@@ -22,12 +23,13 @@ export class SigninComponent implements OnInit {
     password : ""
   };
 
-  constructor(private authorizedService : AuthorizationService, private userService : UserService, private router: Router) {}
+  userInfo : UserInfo;
+
+  constructor(private authorizedService : AuthorizationService, private userService : UserService, private router: Router) {
+    userService.userInfoObserver$.subscribe(userInfo => this.userInfo = userInfo);
+  }
 
   ngOnInit() {
-    if(this.userService.userInfo != null) {
-      this.router.navigateByUrl("/");
-    }
   }
 
   onSignin() {
@@ -37,7 +39,7 @@ export class SigninComponent implements OnInit {
         this.signinData.password
       )
     ).then(res => {
-      return this.userService.getUserInfo()
+      return this.userService.updateUserInfo()
     }).then(userInfo => {
       this.router.navigateByUrl("/");
     });

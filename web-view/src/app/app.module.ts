@@ -17,6 +17,7 @@ import {MaterialsComponent} from "./components/materials.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
 import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
+import {AuthorizationGuard} from "./utils/authorization.guard";
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {UserService} from "./service/user.service";
       },
       {
         path: "signin",
-        component: SigninComponent
+        component: SigninComponent,
+        canActivate: [AuthorizationGuard]
       },
       {
         path: "settings",
@@ -65,7 +67,8 @@ import {UserService} from "./service/user.service";
   ],
   providers: [
     AuthorizationService,
-    UserService
+    UserService,
+    AuthorizationGuard
   ],
   bootstrap: [AppComponent]
 })

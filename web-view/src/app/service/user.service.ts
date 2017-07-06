@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Headers, Http, Response} from "@angular/http";
 import {UserInfo} from "../models/user-info.model";
 import {environment} from "../../environments/environment";
+import {Subject} from "rxjs/Subject";
 /**
  * Created by ermolaev on 7/4/17.
  */
@@ -10,12 +11,15 @@ import {environment} from "../../environments/environment";
 @Injectable()
 export class UserService {
 
-  userInfo : UserInfo;
+  private userInfo : UserInfo;
+  private userInfoSource = new Subject<UserInfo>();
+  userInfoObserver$ = this.userInfoSource.asObservable();
 
   constructor(private http: Http) {
+    this.userInfoObserver$.subscribe(userInfo => this.userInfo = userInfo);
   }
 
-  public getUserInfo() : Promise<UserInfo> {
+  public updateUserInfo() : Promise<UserInfo> {
     return new Promise((resolve, reject) => {
       let sessionID: string = localStorage.getItem(environment.tokenName);
       if(sessionID == null) {
@@ -31,9 +35,20 @@ export class UserService {
         {headers: new Headers({"session": sessionID})}
       ).toPromise()
       .then(res => {
-        this.userInfo = res.json() as UserInfo;
-        return this.userInfo
+        let userInfo = res.json() as UserInfo;
+        this.userInfoSource.next(userInfo);
+        return userInfo
       })
+    }).catch(res => {
+      if(res.code() != 500) {
+        localStorage.removeItem(environment.tokenName);
+      }
+      this.userInfoSource.next(null);
     });
+  }
+
+  public isLoggedIn() : boolean {
+    let token = localStorage.getItem(environment.tokenName);
+    return token != null;
   }
 }

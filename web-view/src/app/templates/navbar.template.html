@@ -8,13 +8,13 @@
         </div>
         <div class="col-6 col-right">
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" *ngIf="userService.userInfo == null" routerLink="/signin" class="btn btn-info">Sign n</button>
+            <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign n</button>
 
-            <button type="button" *ngIf="userService.userInfo" class="btn btn-success">Add Images</button>
+            <button type="button" *ngIf="userInfo" class="btn btn-success">Add Images</button>
 
-            <div ngbDropdown *ngIf="userService.userInfo" class="btn-group" role="group">
+            <div ngbDropdown *ngIf="userInfo" class="btn-group" role="group">
               <button type="button" class="btn btn-primary" id="userMenu" ngbDropdownToggle>
-                @{{userService.userInfo.name}} <span class="caret"></span>
+                @{{userInfo.name}} <span class="caret"></span>
               </button>
               <div class="dropdown-menu" aria-labelledby="userMenu">
                 <a class="dropdown-item" routerLink="/materials">My Materials</a>

@@ -9,6 +9,7 @@ import {UserSignup} from "../models/user-signup.model";
 import {jsonHeader} from "../utils/http.utils";
 import 'rxjs/add/operator/toPromise';
 import {UserSignin} from "../models/user-signin.model";
+import {UserService} from "./user.service";
 
 class IsExistsClass {
   exists : boolean;
@@ -17,7 +18,7 @@ class IsExistsClass {
 @Injectable()
 export class AuthorizationService {
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private userService : UserService) {
   }
 
   public signup(signupData: UserSignup) : Promise<string> {
@@ -54,6 +55,7 @@ export class AuthorizationService {
       .toPromise()
       .then(res => {
         localStorage.removeItem(environment.tokenName);
+        this.userService.updateUserInfo();
         return true;
       })
       .catch(this.errorHandler)

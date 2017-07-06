@@ -9,4 +9,5 @@ export class UserInfo {
   email : string;
   avatar_path : string;
   create_date : string;
+
 }

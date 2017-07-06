@@ -15,14 +15,19 @@ import {AuthorizationService} from "../service/authorization.service";
 })
 export class NavbarComponent {
 
+  userInfo : UserInfo;
+
   constructor(private userService : UserService, private authorizedService : AuthorizationService, private router: Router) {
-    userService.getUserInfo();
+    this.userService.updateUserInfo();
+    console.error("NAVBAR IS LOGGED: " + this.userService.isLoggedIn());
+    userService.userInfoObserver$.subscribe(
+      userInfo => this.userInfo = userInfo
+    )
   }
 
   logout() {
     this.authorizedService.logout()
       .then(res => {
-        this.userService.userInfo = null;
         this.router.navigateByUrl("signin");
       });
   }
