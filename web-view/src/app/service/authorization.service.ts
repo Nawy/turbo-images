@@ -38,6 +38,7 @@ export class AuthorizationService {
       .then(res => {
         let sessionId = res.headers.get("session");
         localStorage.setItem(environment.tokenName, sessionId);
+        sessionStorage.setItem(environment.tokenName, sessionId);
         return sessionId;
       })
       .catch(this.errorHandler)

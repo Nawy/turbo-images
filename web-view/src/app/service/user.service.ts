@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnInit} from "@angular/core";
 import {Headers, Http, Response} from "@angular/http";
 import {UserInfo} from "../models/user-info.model";
 import {environment} from "../../environments/environment";
@@ -11,8 +11,7 @@ import {Subject} from "rxjs/Subject";
 @Injectable()
 export class UserService {
 
-  private userInfoSource = new Subject<UserInfo>();
-  userInfoObserver$ = this.userInfoSource.asObservable();
+  private _userInfoSource = new Subject<UserInfo>();
 
   constructor(private http: Http) {}
 
@@ -25,7 +24,6 @@ export class UserService {
       return resolve(sessionID)
 
     }).then(sessionID => {
-
       const url = `${environment.host}${environment.requests.getUserInfoUrl}`;
       return this.http.get(
         url,
@@ -33,16 +31,21 @@ export class UserService {
       ).toPromise()
       .then(res => {
         let userInfo = res.json() as UserInfo;
-        this.userInfoSource.next(userInfo);
+        this._userInfoSource.next(userInfo);
         return userInfo
       })
     }).catch(res => {
-      this.userInfoSource.next(null);
+      this._userInfoSource.next(null);
     });
   }
 
+
+  get userInfoSource(): Subject<UserInfo> {
+    return this._userInfoSource;
+  }
+
   public clearUserSession() {
-    this.userInfoSource.next(null);
+    this._userInfoSource.next(null);
   }
 
   public isLoggedIn() : boolean {

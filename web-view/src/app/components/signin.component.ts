@@ -26,7 +26,7 @@ export class SigninComponent implements OnInit {
   userInfo : UserInfo;
 
   constructor(private authorizedService : AuthorizationService, private userService : UserService, private router: Router) {
-    userService.userInfoObserver$.subscribe(userInfo => this.userInfo = userInfo);
+    userService.userInfoSource.subscribe(userInfo => this.userInfo = userInfo);
   }
 
   ngOnInit() {

@@ -17,7 +17,8 @@ import {MaterialsComponent} from "./components/materials.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
 import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
-import {AuthorizationGuard} from "./utils/authorization.guard";
+import {LoggedGuard} from "./utils/logged.guard";
+import {NotLoggedGuard} from "./utils/not-logged.guard";
 
 @NgModule({
   declarations: [
@@ -44,20 +45,23 @@ import {AuthorizationGuard} from "./utils/authorization.guard";
       },
       {
         path: "signup",
-        component: SignupComponent
+        component: SignupComponent,
+        canActivate: [LoggedGuard]
       },
       {
         path: "signin",
         component: SigninComponent,
-        canActivate: [AuthorizationGuard]
+        canActivate: [LoggedGuard]
       },
       {
         path: "settings",
-        component: SettingsComponent
+        component: SettingsComponent,
+        canActivate: [NotLoggedGuard]
       },
       {
         path: "materials",
-        component: MaterialsComponent
+        component: MaterialsComponent,
+        canActivate: [NotLoggedGuard]
       },
       {
         path: 'post/:id',
@@ -68,7 +72,8 @@ import {AuthorizationGuard} from "./utils/authorization.guard";
   providers: [
     AuthorizationService,
     UserService,
-    AuthorizationGuard
+    LoggedGuard,
+    NotLoggedGuard
   ],
   bootstrap: [AppComponent]
 })

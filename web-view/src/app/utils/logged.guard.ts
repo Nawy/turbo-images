@@ -2,13 +2,12 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "
 import {Observable} from "rxjs/Observable";
 import {UserService} from "../service/user.service";
 import {Injectable} from "@angular/core";
-import {UserInfo} from "../models/user-info.model";
 /**
  * Created by ermolaev on 7/6/17.
  */
 
 @Injectable()
-export class AuthorizationGuard implements CanActivate {
+export class LoggedGuard implements CanActivate {
 
   constructor (
     private router : Router,
@@ -23,7 +22,6 @@ export class AuthorizationGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
 
     if(this.userService.isLoggedIn()) {
-      console.error("USER IS LOGGED!");
       this.router.navigateByUrl("/");
       return false;
     }

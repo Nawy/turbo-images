@@ -19,7 +19,7 @@ export class NavbarComponent {
 
   constructor(private userService : UserService, private authorizedService : AuthorizationService, private router: Router) {
     this.userService.updateUserInfo();
-    userService.userInfoObserver$.subscribe(
+    userService.userInfoSource.subscribe(
       userInfo => this.userInfo = userInfo
     )
   }
