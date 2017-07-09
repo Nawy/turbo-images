@@ -3,6 +3,7 @@
     <div class="col-4">
       <div class="card">
         <div class="card-block">
+          <ngb-alert *ngIf="alert" [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
           <form>
             <div class="form-group">
               <input type="text" class="form-control" id="nicknameInput" placeholder="name or email" [(ngModel)]="signinData.email" [ngModelOptions]="{standalone: true}">

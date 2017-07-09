@@ -19,6 +19,7 @@ import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
 import {LoggedGuard} from "./utils/logged.guard";
 import {NotLoggedGuard} from "./utils/not-logged.guard";
+import {UploadComponent} from "./components/upload.component";
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {NotLoggedGuard} from "./utils/not-logged.guard";
     CommentComponent,
     SettingsComponent,
     MaterialsComponent,
-    PostPreviewComponent
+    PostPreviewComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,

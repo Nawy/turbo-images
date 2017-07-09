@@ -10,7 +10,28 @@
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
 
-            <button type="button" *ngIf="userInfo" class="btn btn-success">Add Images</button>
+            <ng-template #content let-c="close" let-d="dismiss">
+              <div class="modal-header">
+                <h4 class="modal-title">Upload image</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="card" (drop)="dropImage($event, content)" (dragover)="dropoverImage($event, content)">
+                  <div class="card-block">
+                    Drag here your images...<br>
+                    <label class="btn btn-outline-success">
+                      Browse image path ... <input type="file" hidden>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
+              </div>
+            </ng-template>
+            <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage(content)">Add Images</button>
 
             <div ngbDropdown *ngIf="userInfo" class="btn-group" role="group">
               <button type="button" class="btn btn-primary" id="userMenu" ngbDropdownToggle>
