@@ -8,11 +8,15 @@ export const environment = {
   host: "http://localhost:8030/api",
   imageHost: "http://192.168.200.1", // should be port 80
   requests: {
+    // authorization
     signinUrl: "/signin",
     signupUrl: "/signup",
     logoutUrl: "/logout",
+    // user service
     getUserInfoUrl: "/get/user/info",
     isUserExistsUrl: "/is/user/exists",
+
+    // image service
     addUserImageUrl: "/add/user/image"
   },
   tokenName: "SESSIONID"
