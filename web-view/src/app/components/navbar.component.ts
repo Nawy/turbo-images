@@ -8,6 +8,7 @@ import {UserService} from "../service/user.service";
 import {UserInfo} from "../models/user-info.model";
 import {AuthorizationService} from "../service/authorization.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ImageService} from "../service/image.service";
 
 @Component({
   selector: "s-navbar",
@@ -17,7 +18,15 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 export class NavbarComponent {
 
   userInfo : UserInfo;
-  constructor(private userService : UserService, private authorizedService : AuthorizationService, private modalService: NgbModal, private router: Router) {
+  imagePath : string;
+
+  constructor(
+    private userService : UserService,
+    private authorizedService : AuthorizationService,
+    private modalService: NgbModal,
+    private imageService: ImageService,
+    private router: Router
+  ) {
     this.userService.updateUserInfo();
     userService.userInfoSource.subscribe(
       userInfo => this.userInfo = userInfo
@@ -35,18 +44,23 @@ export class NavbarComponent {
       });
   }
 
-  dropImage(event : any, content : any) {
+  dropImage(event : any) {
     event.preventDefault();
-    console.info(content);
-
+    event.stopPropagation();
+    this.imagePath = URL.createObjectURL(event.dataTransfer.files[0]);
+    this.imageService.uploadImage(event.dataTransfer.files[0]);
     //content.close();
-    console.info("UPLOOOOOAAAD!");
-    console.info(event.dataTransfer.files[0]);
-    console.info(event.dataTransfer.getData());
   }
 
-  dropoverImage(event : any, content : any) {
+  dragoverImage(event : any) {
     event.preventDefault();
+    event.stopPropagation();
     console.info("DRAGG OVER");
+  }
+
+  dragoverTest(event : any) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.info("TEST DRAGG OVER");
   }
 }

@@ -18,14 +18,22 @@
                 </button>
               </div>
               <div class="modal-body">
-                <div class="card" (drop)="dropImage($event, content)" (dragover)="dropoverImage($event, content)">
+
+                <div class="card" (drop)="dropImage($event)" (dragover)="dragoverImage($event)">
                   <div class="card-block">
-                    Drag here your images...<br>
-                    <label class="btn btn-outline-success">
-                      Browse image path ... <input type="file" hidden>
-                    </label>
+                    <div class="container">
+                      <div class="row justify-content-md-center">
+                        <div class="col-12 col-md-auto">
+                          Drag here your images...<br>
+                          <label class="btn btn-outline-success">
+                            Browse image path ... <input type="file" #fileUploader hidden>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
@@ -38,7 +46,8 @@
                 @{{userInfo.name}} <span class="caret"></span>
               </button>
               <div class="dropdown-menu" aria-labelledby="userMenu">
-                <a class="dropdown-item" routerLink="/materials">My Materials</a>
+                <a class="dropdown-item" routerLink="/my-images">My Images</a>
+                <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
                 <a class="dropdown-item" routerLink="/settings">Settings</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="logout()">Log Out</a>

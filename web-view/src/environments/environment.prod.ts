@@ -6,7 +6,8 @@ export const environment = {
     signupUrl: "/signup",
     logoutUrl: "/logout",
     getUserInfoUrl: "/get/user/info",
-    isUserExistsUrl: "/is/user/exists"
+    isUserExistsUrl: "/is/user/exists",
+    addUserImageUrl: "/add/user/image"
   },
   tokenName: "SESSIONID"
 };

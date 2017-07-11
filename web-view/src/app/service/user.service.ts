@@ -35,16 +35,18 @@ export class UserService {
         return userInfo
       })
     }).catch(res => {
-      this._userInfoSource.next(null);
+      this.clearUserSession();
     });
   }
 
 
   get userInfoSource(): Subject<UserInfo> {
+
     return this._userInfoSource;
   }
 
   public clearUserSession() {
+    localStorage.removeItem(environment.tokenName);
     this._userInfoSource.next(null);
   }
 

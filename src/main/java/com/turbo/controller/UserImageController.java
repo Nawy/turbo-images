@@ -8,9 +8,12 @@ import com.turbo.model.dto.UserImageDto;
 import com.turbo.service.AuthorizationService;
 import com.turbo.util.EncryptionService;
 import com.turbo.service.UserImageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class UserImageController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserImageController.class);
 
     private final UserImageService userImageService;
     private final AuthorizationService authorizationService;
@@ -41,11 +46,16 @@ public class UserImageController {
     @Secured(SecurityRole.USER)
     @PostMapping("/add/user/image")
     public UserImageDto saveImage(
-            @RequestBody byte[] source
+            @RequestParam("file") MultipartFile file
     ) {
         User user = authorizationService.getCurrentUser();
-        UserImage userImage = userImageService.addUserImage(user.getId(), source);
-        return UserImageDto.from(userImage);
+        LOG.info("File uploaded with name='{}'", file.getOriginalFilename());
+        try {
+            UserImage userImage = userImageService.addUserImage(user.getId(), file.getBytes());
+            return UserImageDto.from(userImage);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Secured(SecurityRole.USER)

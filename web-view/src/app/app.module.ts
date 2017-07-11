@@ -13,13 +13,15 @@ import {NavbarComponent} from "./components/navbar.component";
 import {ImagesComponent} from "./components/images.component";
 import {CommentComponent} from "./components/comment.component";
 import {SettingsComponent} from "./components/settings.component";
-import {MaterialsComponent} from "./components/materials.component";
+import {PersonalPostsComponent} from "./components/personal-posts.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
 import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
 import {LoggedGuard} from "./utils/logged.guard";
 import {NotLoggedGuard} from "./utils/not-logged.guard";
 import {UploadComponent} from "./components/upload.component";
+import {ImageService} from "./service/image.service";
+import {PersonalImagesComponent} from "./components/personal-images.component";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import {UploadComponent} from "./components/upload.component";
     ImagesComponent,
     CommentComponent,
     SettingsComponent,
-    MaterialsComponent,
+    PersonalPostsComponent,
+    PersonalImagesComponent,
     PostPreviewComponent,
     UploadComponent
   ],
@@ -61,8 +64,13 @@ import {UploadComponent} from "./components/upload.component";
         canActivate: [NotLoggedGuard]
       },
       {
-        path: "materials",
-        component: MaterialsComponent,
+        path: "my-posts",
+        component: PersonalPostsComponent,
+        canActivate: [NotLoggedGuard]
+      },
+      {
+        path: "my-images",
+        component: PersonalImagesComponent,
         canActivate: [NotLoggedGuard]
       },
       {
@@ -74,6 +82,7 @@ import {UploadComponent} from "./components/upload.component";
   providers: [
     AuthorizationService,
     UserService,
+    ImageService,
     LoggedGuard,
     NotLoggedGuard
   ],
