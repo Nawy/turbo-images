@@ -52,7 +52,7 @@ public abstract class AbstractSearchRepository {
             final String indexName,
             final String typeName,
             final String fieldName,
-            final String fieldValue,
+            final Object fieldValue,
             final int page,
             @Nullable final String fieldNameSort,
             @Nullable final SearchOrder searchOrder

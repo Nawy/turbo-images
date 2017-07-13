@@ -22,6 +22,8 @@ import {NotLoggedGuard} from "./utils/not-logged.guard";
 import {UploadComponent} from "./components/upload.component";
 import {ImageService} from "./service/image.service";
 import {PersonalImagesComponent} from "./components/personal-images.component";
+import {ImagePreviewComponent} from "./components/image-preview.component";
+import {UploadPreviewComponent} from "./components/upload-preview.component";
 
 @NgModule({
   declarations: [
@@ -36,6 +38,9 @@ import {PersonalImagesComponent} from "./components/personal-images.component";
     PersonalPostsComponent,
     PersonalImagesComponent,
     PostPreviewComponent,
+    ImagePreviewComponent,
+    UploadComponent,
+    UploadPreviewComponent,
     UploadComponent
   ],
   imports: [
@@ -76,6 +81,10 @@ import {PersonalImagesComponent} from "./components/personal-images.component";
       {
         path: 'post/:id',
         component: PostComponent
+      },
+      {
+        path: 'uploads',
+        component: UploadComponent
       }
     ])
   ],

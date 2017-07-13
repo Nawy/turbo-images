@@ -2,9 +2,12 @@ package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.UserImage;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.model.search.field.ImageField;
+import com.turbo.model.search.field.UserField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
+import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by ermolaev on 6/24/17.
@@ -72,8 +76,19 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
         ).setDoc(searchImage).get();
     }
 
-    public List<Long> getUserImages(final String userName){
-        //TODO STUB!
-        return Collections.emptyList();
+    public List<Long> getUserImages(final Long userId){
+        SearchResponse response = searchByField(
+                config.getSearchImageIndexName(),
+                config.getSearchImageTypeName(),
+                ImageField.USER_ID.getFieldName(),
+                userId,
+                0,
+                null,
+                null
+        );
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
     }
 }

@@ -2,7 +2,15 @@
   <div class="card">
     <div class="card-block">
       <h3 class="card-title">My Images</h3>
-      <p class="card-text">Content will be here</p>
+
+        <div class="card-block medium-margin">
+          <div class="row justify-content-center">
+            <div class="col-auto" *ngFor="let image of images">
+              <s-image-preview [user_image]="image"></s-image-preview>
+            </div>
+          </div>
+        </div>
+
     </div>
   </div>
 </div>

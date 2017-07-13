@@ -15,6 +15,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,11 +69,20 @@ public class UserImageController {
         return UserImageDto.from(userImage);
     }
 
+    @Secured(SecurityRole.USER)
     @GetMapping("/get/user/images")
-    public List<UserImageDto> getUserImages(@RequestParam("user_id") long userId) {
-        List<UserImage> userImages = userImageService.getUserImages(userId);
+    public List<UserImageDto> getUserImages(HttpServletRequest request) {
+        String session = request.getHeader("session");
+        List<UserImage> userImages = userImageService.getUserImages(EncryptionService.decodeHashId(session));
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
+
+//    // TODO strange! you should define user id by session id. And bulk get doesn't work
+//    @GetMapping("/get/user/images")
+//    public List<UserImageDto> getUserImages(@RequestParam("user_id") long userId) {
+//        List<UserImage> userImages = userImageService.getUserImages(userId);
+//        return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
+//    }
 
     @DeleteMapping("/remove/user/image")
     public void removeUserImage(@RequestBody UserImageRemoveDto userImageRemoveDto) {

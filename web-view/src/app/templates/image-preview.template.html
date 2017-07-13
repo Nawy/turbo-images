@@ -1,0 +1,12 @@
+<a>
+  <img
+    src="{{getThumbnail()}}"
+    alt="{{getThumbnail()}}"
+    class="rounded postpreview-margin postpreview-medium-size {{useClass}}"
+    (mouseover)="onMouseOver()"
+    (mouseout)="onMouseOut()"
+    popoverTitle="{{getHeaderString()}}"
+    ngbPopover="Description long or not, but description"
+    placement="bottom"
+    triggers="mouseenter:mouseleave">
+</a>

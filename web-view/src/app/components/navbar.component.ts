@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import {UserService} from "../service/user.service";
 import {UserInfo} from "../models/user-info.model";
 import {AuthorizationService} from "../service/authorization.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {ImageService} from "../service/image.service";
 
 @Component({
@@ -18,7 +18,7 @@ import {ImageService} from "../service/image.service";
 export class NavbarComponent {
 
   userInfo : UserInfo;
-  imagePath : string;
+  uploadModal : NgbModalRef;
 
   constructor(
     private userService : UserService,
@@ -34,7 +34,7 @@ export class NavbarComponent {
   }
 
   addImage(content) {
-    this.modalService.open(content, { windowClass: 'dark-modal' });
+    this.uploadModal = this.modalService.open(content, { windowClass: 'dark-modal' });
   }
 
   logout() {
@@ -45,10 +45,12 @@ export class NavbarComponent {
   }
 
   dropImage(event : any) {
+    console.info("DROP");
     event.preventDefault();
     event.stopPropagation();
-    this.imagePath = URL.createObjectURL(event.dataTransfer.files[0]);
-    this.imageService.uploadImage(event.dataTransfer.files[0]);
+    this.imageService.uploadFiles = event.dataTransfer.files;
+    this.uploadModal.close();
+    this.router.navigateByUrl("uploads");
     //content.close();
   }
 

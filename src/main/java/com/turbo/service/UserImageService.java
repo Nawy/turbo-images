@@ -9,6 +9,7 @@ import com.turbo.repository.aerospike.user.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +42,10 @@ public class UserImageService {
 
     //TODO paged request?
     public List<UserImage> getUserImages(long userId) {
-        List<Long> userImageIds = userImageCollectionRepository.get(userId);
+        List<Long> userImageIds = userImageSearchRepository.getUserImages(userId);
+        if(CollectionUtils.isEmpty(userImageIds)) {
+            userImageIds = userImageCollectionRepository.get(userId);
+        }
         return getUserImages(userImageIds);
     }
 

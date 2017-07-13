@@ -9,28 +9,27 @@ import com.turbo.util.EncryptionService;
 
 import java.time.LocalDateTime;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 /**
  * Created by rakhmetov on 06.06.17.
  */
 public class UserImageDto {
 
     private String id;
-    private Image image;
+    private ImageDto image;
     private String description;
-    private long userId;
     private LocalDateTime creationDate;
 
     public UserImageDto(
             String id,
-            Image image,
-            long userId,
+            ImageDto image,
             String description,
             LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
         this.description = description;
-        this.userId = userId;
         this.creationDate = creationDate;
     }
 
@@ -38,9 +37,8 @@ public class UserImageDto {
     public static UserImageDto from(UserImage userImage) {
         return new UserImageDto(
                 EncryptionService.encodeHashId(userImage.getId()),
-                userImage.getImage(),
-                userImage.getUserId(),
-                userImage.getDescription(),
+                ImageDto.from(userImage.getImage()),
+                firstNonNull(userImage.getDescription(), ""),
                 userImage.getCreationDate()
         );
     }
@@ -49,17 +47,12 @@ public class UserImageDto {
         return id;
     }
 
-    public Image getImage() {
+    public ImageDto getImage() {
         return image;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    @JsonProperty("user_id")
-    public long getUserId() {
-        return userId;
     }
 
     @JsonProperty("creation_date")

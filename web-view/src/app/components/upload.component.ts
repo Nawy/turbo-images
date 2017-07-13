@@ -1,5 +1,7 @@
 import {Component} from "@angular/core";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ImageService} from "../service/image.service";
+import {UserImage} from "../models/user-image.model";
 /**
  * Created by ermolaev on 7/9/17.
  */
@@ -12,19 +14,13 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class UploadComponent {
 
-  constructor(private modalService: NgbModal) {}
+  images : Array<UserImage>;
 
-  open(content) {
-    this.modalService.open(content, { windowClass: 'dark-modal' });
+  constructor(private imageService : ImageService) {
+    this.images = [];
+    for (var file of imageService.uploadFiles) {
+      this.imageService.uploadImage(file).then(userImage => this.images.push(userImage));
+    }
   }
 
-  uploadImage(event : any) {
-    event.preventDefault();
-    console.info("UPLOOOOOAAAD~!");
-  }
-
-  allowCheck(event : any) {
-    event.preventDefault();
-    console.info("DRAGG OVER");
-  }
 }

@@ -3,6 +3,7 @@
  */
 import {Component} from "@angular/core";
 import {PostPreview} from "../models/postpreview.model";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: "s-images",
@@ -20,7 +21,7 @@ export class ImagesComponent {
 
     const count: number = 100;
     this.postPreviews = new Array<PostPreview>(count);
-    var pathes: string[] = ["http://192.168.200.1/t/N/d1TnKviN.jpg", "http://192.168.200.1/t/N/6hv7tkzMsEb.jpg"];
+    var pathes: string[] = [`http://${environment.imageHost}/t/N/d1TnKviN.jpg`, `http://${environment.imageHost}/t/N/6hv7tkzMsEb.jpg`];
 
     for (var i = 0; i < count;) {
       var path: string;

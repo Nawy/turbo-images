@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   host: "http://localhost:8030/api",
-  imageHost: "http://192.168.200.1", // should be port 80
+  imageHost: "192.168.200.1", // should be port 80
   requests: {
     // authorization
     signinUrl: "/signin",
@@ -17,7 +17,8 @@ export const environment = {
     isUserExistsUrl: "/is/user/exists",
 
     // image service
-    addUserImageUrl: "/add/user/image"
+    addUserImageUrl: "/add/user/image",
+    getUserImageUrl: "/get/user/images"
   },
   tokenName: "SESSIONID"
 };
