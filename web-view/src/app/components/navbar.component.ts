@@ -9,6 +9,7 @@ import {UserInfo} from "../models/user-info.model";
 import {AuthorizationService} from "../service/authorization.service";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {ImageService} from "../service/image.service";
+import {UploadModalComponent} from "./uploads/upload-modal.component";
 
 @Component({
   selector: "s-navbar",
@@ -24,7 +25,6 @@ export class NavbarComponent {
     private userService : UserService,
     private authorizedService : AuthorizationService,
     private modalService: NgbModal,
-    private imageService: ImageService,
     private router: Router
   ) {
     this.userService.updateUserInfo();
@@ -33,8 +33,8 @@ export class NavbarComponent {
     )
   }
 
-  addImage(content) {
-    this.uploadModal = this.modalService.open(content, { windowClass: 'dark-modal' });
+  addImage() {
+    this.uploadModal = this.modalService.open(UploadModalComponent);
   }
 
   logout() {
@@ -42,27 +42,5 @@ export class NavbarComponent {
       .then(res => {
         this.router.navigateByUrl("signin");
       });
-  }
-
-  dropImage(event : any) {
-    console.info("DROP");
-    event.preventDefault();
-    event.stopPropagation();
-    this.imageService.uploadFiles = event.dataTransfer.files;
-    this.uploadModal.close();
-    this.router.navigateByUrl("uploads");
-    //content.close();
-  }
-
-  dragoverImage(event : any) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.info("DRAGG OVER");
-  }
-
-  dragoverTest(event : any) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.info("TEST DRAGG OVER");
   }
 }

@@ -17,7 +17,7 @@
 //POST PREVIEW
 
 .postpreview-medium-size {
-  width: 200px;
+  width: $postpreview-medium-size;
 }
 
 .postpreview-margin {
@@ -36,12 +36,19 @@
   cursor: pointer;
 }
 
+//MY IMAGE PREVIEW
+
+.imagepreview-medium-size {
+  width: $imagepreview-medium-size;
+}
+
+
+// SCROLLBAR SETTINGS
+
 html {
   overflow: -moz-scrollbars-vertical;
   overflow-y: scroll;
 }
-
-// SCROLLBAR SETTINGS
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;

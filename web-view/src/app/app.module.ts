@@ -19,11 +19,14 @@ import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
 import {LoggedGuard} from "./utils/logged.guard";
 import {NotLoggedGuard} from "./utils/not-logged.guard";
-import {UploadComponent} from "./components/upload.component";
+import {UploadComponent} from "./components/uploads/upload.component";
 import {ImageService} from "./service/image.service";
-import {PersonalImagesComponent} from "./components/personal-images.component";
+import {PersonalImagesComponent} from "./components/personal-images/personal-images.component";
 import {ImagePreviewComponent} from "./components/image-preview.component";
-import {UploadPreviewComponent} from "./components/upload-preview.component";
+import {UploadPreviewComponent} from "./components/uploads/upload-preview.component";
+import {UploadModalComponent} from "./components/uploads/upload-modal.component";
+import {PersonalImageModalComponent} from "./components/personal-images/personal-image-modal.component";
+import {PersonalHolderService} from "./service/personal-holder.service";
 
 @NgModule({
   declarations: [
@@ -41,7 +44,9 @@ import {UploadPreviewComponent} from "./components/upload-preview.component";
     ImagePreviewComponent,
     UploadComponent,
     UploadPreviewComponent,
-    UploadComponent
+    UploadComponent,
+    UploadModalComponent,
+    PersonalImageModalComponent
   ],
   imports: [
     BrowserModule,
@@ -92,9 +97,14 @@ import {UploadPreviewComponent} from "./components/upload-preview.component";
     AuthorizationService,
     UserService,
     ImageService,
+    PersonalHolderService,
     LoggedGuard,
     NotLoggedGuard
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    UploadModalComponent,
+    PersonalImageModalComponent
+  ]
 })
 export class AppModule { }

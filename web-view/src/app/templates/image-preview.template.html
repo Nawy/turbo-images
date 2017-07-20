@@ -2,7 +2,8 @@
   <img
     src="{{getThumbnail()}}"
     alt="{{getThumbnail()}}"
-    class="rounded postpreview-margin postpreview-medium-size {{useClass}}"
+    class="rounded postpreview-margin imagepreview-medium-size {{useClass}}"
+    (click)="showImage()"
     (mouseover)="onMouseOver()"
     (mouseout)="onMouseOut()"
     popoverTitle="{{getHeaderString()}}"

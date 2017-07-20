@@ -2,10 +2,12 @@
  * Created by ermolaev on 5/14/17.
  */
 
-import {Component, Input} from '@angular/core';
-import {PostPreview} from "../models/postpreview.model";
+import {Component, Input} from "@angular/core";
 import {UserImage} from "../models/user-image.model";
 import {environment} from "../../environments/environment";
+import {PersonalImageModalComponent} from "./personal-images/personal-image-modal.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {PersonalHolderService} from "../service/personal-holder.service";
 
 @Component({
   selector: "s-image-preview",
@@ -15,33 +17,39 @@ export class ImagePreviewComponent {
   @Input("user_image") userImage: UserImage;
 
   //style
-  activeClass : string;
-  defaultClass : string;
-  useClass : string;
+  activeClass: string;
+  defaultClass: string;
+  useClass: string;
 
   //data
   hintHeaderString: string;
 
-  constructor() {
+  constructor(private personalHolderService: PersonalHolderService,
+              private modalService: NgbModal) {
     this.activeClass = "postpreview-active";
     this.defaultClass = "postpreview-default";
 
     this.useClass = this.defaultClass;
   }
 
-  getThumbnail() : string {
+  showImage() {
+    this.personalHolderService.personalImage = this.userImage;
+    this.modalService.open(PersonalImageModalComponent);
+  }
+
+  getThumbnail(): string {
     return `http://${environment.imageHost}${this.userImage.image.thumbnail}`
   }
 
-  getHeaderString() : string {
+  getHeaderString(): string {
     return "Rating " + this.userImage.create_date;
   }
 
-  onMouseOver() : void {
+  onMouseOver(): void {
     this.useClass = this.activeClass;
   }
 
-  onMouseOut() : void {
+  onMouseOut(): void {
     this.useClass = this.defaultClass;
   }
 }

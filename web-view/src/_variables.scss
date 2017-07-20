@@ -1,9 +1,13 @@
 $space-on-top: 20px !global;
 
 // Post Preview
+$postpreview-medium-size: 200px !global;
 $postpreview-margin-size: 4px !global;
 $postpreview-border-default: 3px solid black !global; //mouse out
 $postpreview-border-active: 3px solid #ffa500 !global; //mouse over
+
+// Image Preview
+$imagepreview-medium-size: 150px !global;
 
 // ScrollBar
 $scrollbar-width: 7px !global;
