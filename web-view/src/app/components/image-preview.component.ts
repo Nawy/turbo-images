@@ -21,9 +21,6 @@ export class ImagePreviewComponent {
   defaultClass: string;
   useClass: string;
 
-  //data
-  hintHeaderString: string;
-
   constructor(private personalHolderService: PersonalHolderService,
               private modalService: NgbModal) {
     this.activeClass = "postpreview-active";
@@ -34,7 +31,7 @@ export class ImagePreviewComponent {
 
   showImage() {
     this.personalHolderService.personalImage = this.userImage;
-    this.modalService.open(PersonalImageModalComponent);
+    this.modalService.open(PersonalImageModalComponent, { size: "lg"});
   }
 
   getThumbnail(): string {

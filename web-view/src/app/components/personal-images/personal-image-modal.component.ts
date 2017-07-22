@@ -10,7 +10,7 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "ngbd-modal-personal-image",
   templateUrl: './../../templates/personal-images/personal-image-modal.template.html',
-  styleUrls: ['./../../css/personal-images.style.css']
+  styleUrls: ['./../../css/personal-images/personal-image-modal.style.css']
 })
 export class PersonalImageModalComponent {
   userImage: UserImage;
