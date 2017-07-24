@@ -35,10 +35,4 @@ export class UploadModalComponent {
     event.stopPropagation();
     console.debug("DRAGG OVER");
   }
-
-  dragoverTest(event : any) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.debug("TEST DRAGG OVER");
-  }
 }

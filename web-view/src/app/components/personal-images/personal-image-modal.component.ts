@@ -26,4 +26,10 @@ export class PersonalImageModalComponent {
     this.activeModal.close();
   }
 
+  copyToClipBoard(object : any) {
+    console.info(object);
+    object.select();
+    document.execCommand("copy");
+  }
+
 }
