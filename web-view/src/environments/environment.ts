@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   host: "http://localhost:8030/api",
-  imageHost: "192.168.200.1", // should be port 80
+  imageHost: "192.168.1.64", // should be port 80
   requests: {
     // authorization
     signinUrl: "/signin",
@@ -18,7 +18,9 @@ export const environment = {
 
     // image service
     addUserImageUrl: "/add/user/image",
-    getUserImageUrl: "/get/user/images"
+    getUserImageUrl: "/get/user/images",
+    // "/get/user/image/{id}"
+    getUserImageByIdUrl: "/get/user/image/"
   },
   tokenName: "SESSIONID"
 };

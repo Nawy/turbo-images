@@ -20,9 +20,10 @@ export class UploadComponent {
   constructor(private imageService : ImageService) {
     this.images = [];
     this.uploadedImage.subscribe(userImage => this.images.push(userImage));
-    imageService.uploadFiles.forEach((file, index, array)=> {
+
+    for (var file of imageService.uploadFiles) {
       this.imageService.uploadImage(file).then(userImage => this.uploadedImage.next(userImage));
-    });
+    }
 
 
     // let img1 = new UserImage();
