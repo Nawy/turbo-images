@@ -1,23 +1,56 @@
-import {environment} from "../../../environments/environment";
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {PersonalHolderService} from "../../service/personal-holder.service";
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {UserImage} from "../../models/user-image.model";
+import {ActivatedRoute, Router} from "@angular/router";
+import {ImageService} from "../../service/image.service";
+import {Location} from '@angular/common';
+import {environment} from "../../../environments/environment";
+
 /**
  * Created by ermolaev on 7/23/17.
  */
 
 @Component({
-  selector: "ngbd-modal-personal-image",
-  templateUrl: './../../templates/personal-images/personal-image-modal.template.html',
-  styleUrls: ['./../../css/personal-images/personal-image-modal.style.css']
+  templateUrl: './../../templates/images/image-page.template.html',
 })
-export class ImagePageComponent {
-  userImage : UserImage;
-  imageSource : string;
+export class ImagePageComponent implements OnInit {
+  userImage: UserImage;
+  imageSource: string;
 
-  constructor(private personalHolderService: PersonalHolderService) {
-    this.userImage = personalHolderService.personalImage;
+  constructor(private route: ActivatedRoute,
+              private imageService: ImageService,
+              private location: Location,
+              private personalHolderService: PersonalHolderService) {
+  }
+
+  ngOnInit(): void {
+    window.scrollTo(0, 0);
+
+    if (this.userImage == null) {
+      this.route.params.subscribe(
+        params => {
+          if (this.personalHolderService.personalImage != null) {
+            console.info(this.personalHolderService.personalImage);
+            this.userImage = this.personalHolderService.personalImage;
+            this.createImageSource();
+          }
+
+          this.imageService
+            .getUserImage(params['id'])
+            .then(image => {
+              this.userImage = image;
+              this.createImageSource();
+            });
+        }
+      )
+    }
+  }
+
+  goBack() {
+    this.location.back();
+  }
+
+  private createImageSource() {
     this.imageSource = `http://${environment.imageHost}${this.userImage.image.source}`;
   }
 }

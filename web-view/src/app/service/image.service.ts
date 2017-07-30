@@ -14,6 +14,20 @@ export class ImageService {
   constructor(private http: Http) {
   }
 
+  getUserImage(imageId : string) : Promise<UserImage> {
+    const url = `${environment.host}${environment.requests.getUserImageByIdUrl}${imageId}`;
+    return this.http.get(
+      url
+    ).toPromise()
+      .then(res => {
+        console.info(res.json() );
+        let images = res.json() as UserImage;
+        return images
+      }).catch(res => {
+        return Promise.reject(res);
+      });
+  }
+
   getUserImages() : Promise<Array<UserImage>> {
     return new Promise((resolve, reject) => {
       let sessionID: string = localStorage.getItem(environment.tokenName);
@@ -33,6 +47,7 @@ export class ImageService {
           return images
         })
     }).catch(res => {
+      return Promise.reject(res);
     });
   }
 
