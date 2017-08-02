@@ -4,6 +4,7 @@ import com.turbo.model.Image;
 import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.UserImageContent;
 import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.repository.aerospike.collection.UserImageCollectionRepository;
 import com.turbo.repository.aerospike.user.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
@@ -14,6 +15,8 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +52,24 @@ public class UserImageService {
         return getUserImages(userImageIds);
     }
 
+//    //TODO paged request?
+//    public List<UserImage> getUserImages(long userId) {
+//        List<ImageSearchEntity> userImages = userImageSearchRepository.getUserImages(userId);
+//        return userImages.stream().map(
+//                tone -> new UserImage(
+//                        tone.getId(),
+//                        new Image(
+//                                11L,
+//                                tone.getSourcePath(),
+//                                tone.getThumbnailPath()
+//                        ),
+//                        tone.getUserId(),
+//                        tone.getDescription(),
+//                        tone.getCreateDate()
+//                )
+//        ).collect(Collectors.toList());
+//    }
+
     public void removeUserImage(long userId, long userImageId) {
         userImageCollectionRepository.remove(userId, Collections.singletonList(userImageId));
         userImageRepository.delete(userImageId);
@@ -81,8 +102,18 @@ public class UserImageService {
     }
 
     public List<UserImage> getUserImages(List<Long> userImageIds) {
-        List<UserImageContent> userImageContents = userImageRepository.bulkGet(userImageIds);
-        return userImageContents.stream().map(this::makeUserImage).collect(Collectors.toList());
+        final List<UserImageContent> userImageContents = userImageRepository.bulkGet(userImageIds);
+
+        final List<Long> imageIds = userImageContents.stream()
+                .map(UserImageContent::getImageId)
+                .collect(Collectors.toList());
+
+        final List<Image> images = imageService.getImages(imageIds);
+        final Map<Long, Image> imageMap = images.stream().collect(Collectors.toMap(Image::getId, Function.identity()));
+
+        return userImageContents.stream()
+                .map(userImage -> makeUserImage(userImage, imageMap.get(userImage.getImageId())))
+                .collect(Collectors.toList());
     }
 
     private UserImage saveUserImage(UserImage userImage) {
@@ -125,6 +156,16 @@ public class UserImageService {
      */
     private UserImage makeUserImage(UserImageContent userImageContent) {
         Image image = imageService.getImage(userImageContent.getImageId());
+        return new UserImage(
+                userImageContent.getId(),
+                null,
+                userImageContent.getUserId(),
+                userImageContent.getDescription(),
+                userImageContent.getCreateDate()
+        );
+    }
+
+    private UserImage makeUserImage(UserImageContent userImageContent, Image image) {
         return new UserImage(
                 userImageContent.getId(),
                 image,

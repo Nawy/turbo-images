@@ -6,6 +6,8 @@ import com.turbo.repository.ImageConverterRepository;
 import com.turbo.repository.aerospike.ImageRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by ermolaev on 5/7/17.
  */
@@ -24,6 +26,10 @@ public class ImageService {
         Image image = imageRepository.get(id);
         if (image == null) throw new NotFoundHttpException("No image was found for id:" + id);
         return image;
+    }
+
+    public List<Image> getImages(List<Long> ids) {
+        return imageRepository.bulkGet(ids);
     }
 
     public Image saveImage(byte[] picture) {

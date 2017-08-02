@@ -3,7 +3,7 @@
   <button type="button" class="btn btn-success" (click)="goToImagePage()">Go To Page</button>
   <button type="button" class="btn btn-warning" (click)="close()">Close</button>
 </div>
-<div class="modal-body" style="margin: 0px;padding: 0px;align-content: center;">
+<div class="modal-body no-border">
 
   <img src="{{imageSource}}" class="img-fluid">
 
@@ -15,7 +15,7 @@
           <div class="form-group">
             <div class="input-group">
               <label class="col-4 col-form-label">Direct Link</label>
-              <input #directLinkInput type="text" class="form-control" value="{{imageSource}}" readonly>
+              <input #directLinkInput class="form-control" value="{{imageSource}}" readonly>
               <span class="input-group-btn">
                 <button class="btn btn-primary" (click)="copyToClipBoard(directLinkInput)" type="button">Copy</button>
               </span>
@@ -25,7 +25,7 @@
           <div class="form-group">
             <div class="input-group">
               <label class="col-4 col-form-label">HTML Code</label>
-              <input #htmlCodeInput type="text" class="form-control" value='<img src="{{imageSource}}">' readonly>
+              <input #htmlCodeInput class="form-control" value='<img src="{{imageSource}}">' readonly>
               <span class="input-group-btn">
                 <button class="btn btn-primary" (click)="copyToClipBoard(htmlCodeInput)" type="button">Copy</button>
               </span>
@@ -38,7 +38,7 @@
                 Markdown Link
                 <small class="text-muted">(Raddit comments)</small>
               </label>
-              <input #markdownLinkInput type="text" class="form-control" value="[turbo-images]({{imageSource}})" readonly>
+              <input #markdownLinkInput class="form-control" value="[turbo-images]({{imageSource}})" readonly>
               <span class="input-group-btn">
                 <button class="btn btn-primary" (click)="copyToClipBoard(markdownLinkInput)"  type="button">Copy</button>
               </span>
@@ -51,7 +51,7 @@
                 BBCode
                 <small class="text-muted">(forums, blogs)</small>
               </label>
-              <input #bbCodeInput type="text" class="form-control" value="[img]{{imageSource}}[/img]"  readonly>
+              <input #bbCodeInput class="form-control" value="[img]{{imageSource}}[/img]"  readonly>
               <span class="input-group-btn">
                 <button class="btn btn-primary" (click)="copyToClipBoard(bbCodeInput)" type="button">Copy</button>
               </span>

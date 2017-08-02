@@ -14,6 +14,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,6 +76,19 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
                 elasticId
         ).setDoc(searchImage).get();
     }
+
+//    public List<ImageSearchEntity> getUserImages(final Long userId){
+//        SearchResponse response = searchByField(
+//                config.getSearchImageIndexName(),
+//                config.getSearchImageTypeName(),
+//                ImageField.USER_ID.getFieldName(),
+//                userId,
+//                0,
+//                null,
+//                null
+//        );
+//        return new ArrayList<>(elasticUtils.parseSearchResponse(response, ImageSearchEntity.class));
+//    }
 
     public List<Long> getUserImages(final Long userId){
         SearchResponse response = searchByField(

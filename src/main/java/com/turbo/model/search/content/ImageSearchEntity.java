@@ -24,7 +24,7 @@ public class ImageSearchEntity {
             @JsonProperty("thumbnail") String thumbnailPath,
             @JsonProperty("source") String sourcePath,
             @JsonProperty("user_id") long userId,
-            @JsonProperty("create_date") LocalDateTime createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
     ) {
         this.id = id;
         this.userId = userId;
