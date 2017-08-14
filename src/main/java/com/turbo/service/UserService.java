@@ -3,6 +3,7 @@ package com.turbo.service;
 import com.turbo.model.User;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.ForbiddenHttpException;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.repository.aerospike.user.UserNameEmailRepository;
 import com.turbo.repository.aerospike.user.UserRepository;
@@ -55,7 +56,7 @@ public class UserService {
 
     public User update(User user) {
         if (user.getId() == null) throw new ForbiddenHttpException("Can't update entity without id");
-        isBlankNameEmailValidation(user, "Can't update user with blank name/email");
+        isBlankNameEmailValidation(user);
         User oldUser = get(user.getId());
         User newUser = userRepository.save(user);
         updateNameEmailKey(oldUser, newUser);
@@ -64,7 +65,7 @@ public class UserService {
     }
 
     public User add(User user) {
-        isBlankNameEmailValidation(user, "Can't add user with blank name/email");
+        isBlankNameEmailValidation(user);
         User dbUser = userRepository.save(user);
         addNameEmailKey(dbUser);
         userSearchRepository.addUser(dbUser);
@@ -94,26 +95,30 @@ public class UserService {
     }
 
     private void updateNameEmailKey(User oldUser, User newUser) {
-        deleteNameEmailKey(oldUser);
-        addNameEmailKey(newUser);
+        isBlankNameEmailValidation(oldUser);
+        isBlankNameEmailValidation(newUser);
+
+        updateNameEmailKey(oldUser.getEmail(), newUser.getEmail(), newUser.getId());
+        updateNameEmailKey(oldUser.getName(), newUser.getName(), newUser.getId());
     }
 
-    private void deleteNameEmailKey(User user) {
-        isBlankNameEmailValidation(user, "Can't delete name/email entity with name/email blank");
-        userNameEmailRepository.delete(user.getName());
-        userNameEmailRepository.delete(user.getEmail());
+    private void updateNameEmailKey(String oldKey, String newKey, long userId) {
+        if (oldKey == null) throw new InternalServerErrorHttpException("Old key can't be null!");
+        if (oldKey.equals(newKey)) return;
+        userNameEmailRepository.delete(oldKey);
+        userNameEmailRepository.save(newKey, userId);
     }
 
     private void addNameEmailKey(User user) {
         if (user.getId() == null) throw new ForbiddenHttpException("Can't save name/email entity without id");
-        isBlankNameEmailValidation(user, "Can't save name/email entity with name/email blank");
+        isBlankNameEmailValidation(user);
         userNameEmailRepository.save(user.getEmail(), user.getId());
         userNameEmailRepository.save(user.getName(), user.getId());
     }
 
-    private void isBlankNameEmailValidation(User user, String message) {
+    private void isBlankNameEmailValidation(User user) {
         if (StringUtils.isBlank(user.getName()) || StringUtils.isBlank(user.getEmail())) {
-            throw new ForbiddenHttpException(message);
+            throw new ForbiddenHttpException("entity with name/email blank");
         }
     }
 }

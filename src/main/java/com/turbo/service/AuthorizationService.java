@@ -61,8 +61,7 @@ public class AuthorizationService {
     }
 
     private Session login(long userId, @Nullable DeviceType deviceType, @Nullable String ip) {
-        Assert.notNull(userId, "user id can't be null");
-        DeviceType finalDeviceType = deviceType != null? deviceType : DeviceType.DEFAULT;
+        DeviceType finalDeviceType = deviceType != null ? deviceType : DeviceType.DEFAULT;
         try {
             return sessionService.saveIfNotExist(new Session(userId, finalDeviceType, ip));
         } catch (InternalServerErrorHttpException e) {
@@ -94,6 +93,10 @@ public class AuthorizationService {
         return userService.get(
                 getCurrentSession().getUserId()
         );
+    }
+
+    public long getCurrentUserId() {
+        return getCurrentSession().getUserId();
     }
 
     private Session getCurrentSession() {
