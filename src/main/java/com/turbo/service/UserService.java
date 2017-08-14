@@ -54,14 +54,36 @@ public class UserService {
         }
     }
 
-    public User update(User user) {
-        if (user.getId() == null) throw new ForbiddenHttpException("Can't update entity without id");
-        isBlankNameEmailValidation(user);
-        User oldUser = get(user.getId());
-        User newUser = userRepository.save(user);
-        updateNameEmailKey(oldUser, newUser);
-        userSearchRepository.updateUser(newUser);
-        return newUser;
+    public User updateUserPassword(long oldUserId, String oldPassword, String newPassword) {
+        User oldUser = get(oldUserId);
+        if (!oldUser.getPassword().equals(oldPassword)) throw new ForbiddenHttpException("Incorrect old password!");
+
+        User userUpdateFields = new User(null, null, null, newPassword);
+        return updateUser(oldUser, userUpdateFields);
+    }
+
+    public User updateUserName(long oldUserId, String newName) {
+        User oldUser = get(oldUserId);
+
+        User userUpdateFields = new User(newName, null, null, null);
+        return updateUser(oldUser, userUpdateFields);
+    }
+
+    public User updateUserEmail(long oldUserId, String newEmail) {
+        User oldUser = get(oldUserId);
+
+        User userUpdateFields = new User(null, null, newEmail, null);
+        return updateUser(oldUser, userUpdateFields);
+    }
+
+    // userWithUpdateFields - have not null fields that should be updated
+    private User updateUser(User oldUser, User userWithUpdateFields) {
+        User userWithUpdatedFields = new User(oldUser, userWithUpdateFields);
+
+        User dbUser = userRepository.save(userWithUpdatedFields);
+        updateNameEmailKey(oldUser, dbUser);
+        userSearchRepository.updateUser(dbUser);
+        return dbUser;
     }
 
     public User add(User user) {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Paginator;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
@@ -82,24 +83,79 @@ public class UserController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping("/edit/user/info")
-    public UserDto updateUserInfo(@RequestBody UserDto userDto) {
-        validateIfNotBlank(userDto.getName());
-        validateIfNotBlank(userDto.getPassword());
-        validateEmailIfNotBlank(userDto.getEmail());
-        User userToUpdate = userDto.toUser();
+    @PostMapping
+    public UserDto updateUserPassword(@RequestBody UserPasswordChangeDto userPasswordChangeDto) {
+        String newPassword = userPasswordChangeDto.getNewPassword();
+        String oldPassword = userPasswordChangeDto.getOldPassword();
+        validateField(newPassword, "new_password");
+        validateField(oldPassword, "old_password");
+        if (oldPassword.equals(newPassword)) throw new BadRequestHttpException("Old and new Passwords are the same!");
         long currentUserId = authorizationService.getCurrentUserId();
-        userToUpdate.setId(currentUserId);
-        User updatedUser = userService.update(userToUpdate);
-        return new UserDto(updatedUser);
+        User user = userService.updateUserPassword(currentUserId, oldPassword, newPassword);
+        return new UserDto(user);
     }
 
-    private void validateIfNotBlank(String field) {
-        if (StringUtils.isNotBlank(field)) userService.userFieldValidation(field);
+    @Secured(SecurityRole.USER)
+    @PostMapping
+    public UserDto updateUserName(@RequestBody UserFieldUpdateDto userPasswordChangeDto) {
+        String newName = userPasswordChangeDto.getNewField();
+        validateField(newName, "new_name");
+        long currentUserId = authorizationService.getCurrentUserId();
+        User user = userService.updateUserName(currentUserId, newName);
+        return new UserDto(user);
     }
 
-    private void validateEmailIfNotBlank(String field) {
-        if (StringUtils.isNotBlank(field)) userService.emailValidation(field);
+    @Secured(SecurityRole.USER)
+    @PostMapping
+    public UserDto updateUserEmail(@RequestBody UserFieldUpdateDto userPasswordChangeDto) {
+        String newEmail = userPasswordChangeDto.getNewField();
+        validateEmail(newEmail);
+        long currentUserId = authorizationService.getCurrentUserId();
+        User user = userService.updateUserEmail(currentUserId, newEmail);
+        return new UserDto(user);
+    }
+
+    private void validateField(String field, String fieldName) {
+        if (StringUtils.isBlank(field)) throw new BadRequestHttpException(fieldName + " can't be blank");
+        userService.userFieldValidation(field);
+    }
+
+    private void validateEmail(String field) {
+        if (StringUtils.isBlank(field)) throw new BadRequestHttpException("email can't be blank");
+        userService.emailValidation(field);
+    }
+
+    private static class UserFieldUpdateDto{
+        private String newField;
+
+        public UserFieldUpdateDto(@JsonProperty("new_user_field") String newField) {
+            this.newField = newField;
+        }
+
+        public String getNewField() {
+            return newField;
+        }
+    }
+
+    private static class UserPasswordChangeDto {
+        private String oldPassword;
+        private String newPassword;
+
+        public UserPasswordChangeDto(
+                @JsonProperty(value = "old_password", required = true) String oldPassword,
+                @JsonProperty(value = "new_password", required = true) String newPassword
+        ) {
+            this.oldPassword = oldPassword;
+            this.newPassword = newPassword;
+        }
+
+        public String getOldPassword() {
+            return oldPassword;
+        }
+
+        public String getNewPassword() {
+            return newPassword;
+        }
     }
 
     private final class UserDto {

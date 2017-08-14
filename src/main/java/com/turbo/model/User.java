@@ -41,6 +41,25 @@ public class User implements Serializable, IdHolder {
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
     }
 
+    public User(String name, String avatarPath, String email, String password) {
+        this.name = name;
+        this.avatarPath = avatarPath;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(
+            User oldUser,
+            User newUser
+    ) {
+        this.id = oldUser.id;
+        this.name = firstNonNull(oldUser.name, newUser.name);
+        this.avatarPath = firstNonNull(oldUser.avatarPath, newUser.avatarPath);
+        this.email = firstNonNull(oldUser.email, newUser.email);
+        this.password = firstNonNull(oldUser.password, newUser.password);
+        this.createDate = oldUser.createDate;
+    }
+
     //will be id
     @JsonProperty(value = "name")
     public String getName() {
