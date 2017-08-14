@@ -158,7 +158,7 @@ public class UserImageService {
         Image image = imageService.getImage(userImageContent.getImageId());
         return new UserImage(
                 userImageContent.getId(),
-                null,
+                image,
                 userImageContent.getUserId(),
                 userImageContent.getDescription(),
                 userImageContent.getCreateDate()
