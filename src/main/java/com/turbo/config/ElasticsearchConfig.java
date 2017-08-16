@@ -1,13 +1,22 @@
 package com.turbo.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.turbo.config.elastic.mapping.DefaultMappingPropertyBuilder;
+import com.turbo.config.elastic.mapping.MappingBuilder;
+import com.turbo.config.elastic.mapping.MappingPropertyType;
 import org.apache.http.util.Asserts;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +24,8 @@ import javax.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Objects;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 /**
  * Created by ermolaev on 5/15/17.
@@ -43,8 +54,11 @@ public class ElasticsearchConfig {
     private int maxSizeUsersPerPage;
 
     private TransportClient elasticClient;
+    private ObjectMapper objectMapper;
 
-    public ElasticsearchConfig() {
+    @Autowired
+    public ElasticsearchConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @PostConstruct
@@ -90,12 +104,49 @@ public class ElasticsearchConfig {
         IndicesAdminClient indices = elasticClient.admin().indices();
         final boolean isPostExists = indices.exists(new IndicesExistsRequest(searchPostIndexName)).actionGet().isExists();
         final boolean isUserExists = indices.exists(new IndicesExistsRequest(searchUserIndexName)).actionGet().isExists();
+        final boolean isImageExists = indices.exists(new IndicesExistsRequest(searchImageIndexName)).actionGet().isExists();
 
         if(!isPostExists) {
             indices.create(new CreateIndexRequest(searchPostIndexName)).actionGet();
         }
         if(!isUserExists) {
             indices.create(new CreateIndexRequest(searchUserIndexName)).actionGet();
+        }
+        if(!isImageExists) {
+            indices.create(new CreateIndexRequest(searchImageIndexName)).actionGet();
+        }
+
+        try {
+            indices.preparePutMapping(searchImageIndexName)
+                    .setType(searchImageTypeName)
+                    .setSource(
+                            objectMapper.writeValueAsBytes(
+                                    new MappingBuilder()
+                                            .addProperty(
+                                                    "id",
+                                                    new DefaultMappingPropertyBuilder()
+                                                            .setType(MappingPropertyType.LONG)
+                                                            .createMappingProperty()
+                                            )
+                                            .addProperty(
+                                                    "user_id",
+                                                    new DefaultMappingPropertyBuilder()
+                                                            .setType(MappingPropertyType.LONG)
+                                                            .createMappingProperty()
+                                            )
+                                            .addProperty(
+                                                    "creation_date",
+                                                    new DefaultMappingPropertyBuilder()
+                                                            .setType(MappingPropertyType.DATE)
+                                                            .setFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                                                            .setDocValues(false)
+                                                            .createMappingProperty()
+                                            ).createMapping()
+                            ),
+                            XContentType.JSON
+                    ).execute().actionGet();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 

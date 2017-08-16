@@ -3,6 +3,22 @@
     <div class="card-block">
       <h3 class="card-title">My Images</h3>
 
+      <div class="row justify-content-md-center">
+        <h2><span class="badge badge-pill badge-default">Today</span></h2>
+      </div>
+
+        <div class="card-block medium-margin">
+          <div class="row justify-content-center">
+            <div class="col-auto" *ngFor="let image of images">
+              <s-image-preview [user_image]="image"></s-image-preview>
+            </div>
+          </div>
+        </div>
+
+      <div class="row justify-content-md-center">
+        <h2><span class="badge badge-pill badge-default">Date 2</span></h2>
+      </div>
+
         <div class="card-block medium-margin">
           <div class="row justify-content-center">
             <div class="col-auto" *ngFor="let image of images">

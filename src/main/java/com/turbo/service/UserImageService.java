@@ -43,14 +43,14 @@ public class UserImageService {
         this.userImageCollectionRepository = userImageCollectionRepository;
     }
 
-    //TODO paged request?
-    public List<UserImage> getUserImages(long userId) {
-        List<Long> userImageIds = userImageSearchRepository.getUserImages(userId);
-        if (CollectionUtils.isEmpty(userImageIds)) {
-            userImageIds = userImageCollectionRepository.get(userId);
-        }
-        return getUserImages(userImageIds);
-    }
+//    //TODO paged request?
+//    public List<UserImage> getUserImages(long userId) {
+//        List<Long> userImageIds = userImageSearchRepository.getUserImages(userId);
+//        if (CollectionUtils.isEmpty(userImageIds)) {
+//            userImageIds = userImageCollectionRepository.get(userId);
+//        }
+//        return getUserImages(userImageIds);
+//    }
 
 //    //TODO paged request?
 //    public List<UserImage> getUserImages(long userId) {

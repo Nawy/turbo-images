@@ -11,11 +11,13 @@ import com.turbo.service.UserImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,9 +73,10 @@ public class UserImageController {
 
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/images")
-    public List<UserImageDto> getUserImages(HttpServletRequest request) {
+    public List<UserImageDto> getUserImages(
+            HttpServletRequest request) {
         String session = request.getHeader("session");
-        List<UserImage> userImages = userImageService.getUserImages(EncryptionService.decodeHashId(session));
+        List<UserImage> userImages = userImageService.getUserImages(EncryptionService.decodeHashId(session), null);
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
 
