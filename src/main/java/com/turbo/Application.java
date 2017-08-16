@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 public class Application {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(Application.class, args);
+
 	}
 }

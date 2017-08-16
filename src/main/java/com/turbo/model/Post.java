@@ -7,7 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -16,7 +18,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * Just post on site with picture and comments
  */
-public class Post implements Serializable, IdHolder {
+public class Post {
 
     private Long id;
     private String name;
@@ -24,12 +26,12 @@ public class Post implements Serializable, IdHolder {
     private long downs;
     private long rating;
     private long views;
-    private List<UserImage> images;
+    private Map<UserImage, String> images; // value is description
     private DeviceType deviceType;
     private List<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
-    private String username;
+    private User user;
     private String description;
 
     public Post(
@@ -39,10 +41,10 @@ public class Post implements Serializable, IdHolder {
             @JsonProperty(value = "downs", required = true) long downs,
             @JsonProperty(value = "rating", required = true) long rating,
             @JsonProperty(value = "views", required = true) long views,
-            @JsonProperty(value = "images", required = true) List<UserImage> images,
+            @JsonProperty(value = "images", required = true) Map<UserImage, String> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags", required = true) List<String> tags,
-            @JsonProperty(value = "username", required = true) String username,
+            @JsonProperty(value = "user", required = true) User user,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
             @JsonProperty(value = "visible", defaultValue = "false") boolean visible,
             @JsonProperty("description") String description
@@ -53,10 +55,10 @@ public class Post implements Serializable, IdHolder {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.images = images;
+        this.images = Collections.unmodifiableMap(images);
         this.deviceType = deviceType;
-        this.tags = tags;
-        this.username = username;
+        this.tags = Collections.unmodifiableList(tags);
+        this.user = user;
         this.visible = visible;
         this.description = description;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
@@ -67,7 +69,6 @@ public class Post implements Serializable, IdHolder {
         return id;
     }
 
-    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -98,7 +99,7 @@ public class Post implements Serializable, IdHolder {
     }
 
     @JsonProperty("images")
-    public List<UserImage> getImages() {
+    public Map<UserImage, String> getImages() {
         return images;
     }
 
@@ -112,9 +113,9 @@ public class Post implements Serializable, IdHolder {
         return tags;
     }
 
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
+    @JsonProperty("user")
+    public User getUser() {
+        return user;
     }
 
     @JsonProperty("create_date")
@@ -149,7 +150,12 @@ public class Post implements Serializable, IdHolder {
                 .append(visible, post.visible)
                 .append(id, post.id)
                 .append(name, post.name)
-                .append(username, post.username)
+                .append(images, post.images)
+                .append(deviceType, post.deviceType)
+                .append(tags, post.tags)
+                .append(createDate, post.createDate)
+                .append(user, post.user)
+                .append(description, post.description)
                 .isEquals();
     }
 
@@ -162,8 +168,13 @@ public class Post implements Serializable, IdHolder {
                 .append(downs)
                 .append(rating)
                 .append(views)
+                .append(images)
+                .append(deviceType)
+                .append(tags)
+                .append(createDate)
                 .append(visible)
-                .append(username)
+                .append(user)
+                .append(description)
                 .toHashCode();
     }
 }

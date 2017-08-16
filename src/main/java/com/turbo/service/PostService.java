@@ -1,10 +1,11 @@
 package com.turbo.service;
 
 import com.turbo.model.Post;
+import com.turbo.model.User;
+import com.turbo.model.UserImage;
+import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
-import com.turbo.model.page.Page;
-import com.turbo.model.page.Paginator;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
@@ -15,12 +16,14 @@ import com.turbo.model.search.field.stat.PostStatPeriod;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.repository.elasticsearch.stat.PostStatRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -31,16 +34,15 @@ public class PostService {
     private final PostSearchRepository postSearchRepository;
     private final PostStatRepository postStatRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
+    private final UserImageService userImageService;
 
-    @Autowired
-    public PostService(
-            PostSearchRepository postSearchRepository,
-            PostRepository postRepository,
-            PostStatRepository postStatRepository
-    ) {
+    public PostService(PostSearchRepository postSearchRepository, PostStatRepository postStatRepository, PostRepository postRepository, UserService userService, UserImageService userImageService) {
         this.postSearchRepository = postSearchRepository;
         this.postStatRepository = postStatRepository;
         this.postRepository = postRepository;
+        this.userService = userService;
+        this.userImageService = userImageService;
     }
 
     public Post save(Post post) {
@@ -50,18 +52,25 @@ public class PostService {
     }
 
     private Post addPost(Post post) {
-        Post postWithId = postRepository.save(post);
+        PostRepoModel postWithId = postRepository.save(new PostRepoModel(post));
         postSearchRepository.addPost(postWithId);
-        return postWithId;
+        post.setId(postWithId.getId());
+        return post;
     }
 
     private Post update(Post post) {
-        postSearchRepository.updatePost(post);
-        return postRepository.save(post);
+        PostRepoModel updatedPost = postRepository.save(new PostRepoModel(post));
+        postSearchRepository.updatePost(updatedPost);
+        return post;
     }
 
     public Post getPostById(final long id) {
-        return postRepository.get(id);
+        PostRepoModel postRepoModel = postRepository.get(id);
+        User user = userService.get(postRepoModel.getUserId());
+        Map<Long, String> repoPostImageMap = postRepoModel.getImages();
+        List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages().keySet());
+        Map<UserImage, String> postUserImages = userImages.stream().collect(Collectors.toMap(Function.identity(), userImage -> repoPostImageMap.get(userImage.getId())));
+        return makePost(postRepoModel, user, postUserImages);
     }
 
     public List<Post> getMostViral(int page, SearchPeriod searchPeriod, SearchSort searchSort) {
@@ -69,19 +78,19 @@ public class PostService {
         List<Long> resultIds = null;
 
         // NEWEST
-        if(searchSort == SearchSort.NEWEST) {
+        if (searchSort == SearchSort.NEWEST) {
             resultIds = postSearchRepository.getNewestPost(page);
         }
 
         // RATING or VIEWS for ALL_TIME from CONTENT
-        if(searchPeriod == SearchPeriod.ALL_TIME && searchSort != SearchSort.NEWEST) {
+        if (searchPeriod == SearchPeriod.ALL_TIME && searchSort != SearchSort.NEWEST) {
             final PostField sortingField = getContentPostField(searchSort);
 
             resultIds = postSearchRepository.getSortedPost(page, sortingField, SearchOrder.DESC);
         }
 
         //RATING or VIEWS for specific time from STATISTICS
-        if(searchSort != SearchSort.NEWEST && searchPeriod != SearchPeriod.ALL_TIME) {
+        if (searchSort != SearchSort.NEWEST && searchPeriod != SearchPeriod.ALL_TIME) {
             final PostDiffStatField sortingField = getStatPostField(searchSort);
 
             PostStatPeriod period;
@@ -122,21 +131,21 @@ public class PostService {
 
         // PROCESSING ALL OF REQUESTS
         Objects.requireNonNull(resultIds);
-        if(resultIds.isEmpty()) {
+        if (resultIds.isEmpty()) {
             throw new NotFoundHttpException("Post not found!");
         }
 
-        return postRepository.bulkGet(resultIds);
+        return bulkGetPosts(resultIds);
     }
 
-    public List<Post> getUserPosts(int page, String username, SearchPattern searchPattern) {
+    public List<Post> getUserPosts(int page, long userId, SearchPattern searchPattern) {
 
         List<Long> resultIds;
 
-        if(searchPattern.getSort() == SearchSort.NEWEST) {
+        if (searchPattern.getSort() == SearchSort.NEWEST) {
             // ONLY NEWEST
             resultIds = postSearchRepository.getPostByAuthor(
-                    username,
+                    userId,
                     page,
                     searchPattern.getPeriod(),
                     PostField.CREATION_DATE,
@@ -147,7 +156,7 @@ public class PostService {
             final PostField sortingField = getContentPostField(searchPattern.getSort());
 
             resultIds = postSearchRepository.getPostByAuthor(
-                    username,
+                    userId,
                     page,
                     searchPattern.getPeriod(),
                     sortingField,
@@ -155,7 +164,7 @@ public class PostService {
             );
         }
 
-        return postRepository.bulkGet(resultIds);
+        return bulkGetPosts(resultIds, userId);
     }
 
     public void delete(long id) {
@@ -164,8 +173,10 @@ public class PostService {
 
     private PostField getContentPostField(SearchSort searchSort) {
         switch (searchSort) {
-            case RATING: return PostField.RATING;
-            case VIEWS: return PostField.VIEWS;
+            case RATING:
+                return PostField.RATING;
+            case VIEWS:
+                return PostField.VIEWS;
             default:
                 throw new InternalServerErrorHttpException(" unknown sorting field");
         }
@@ -173,11 +184,66 @@ public class PostService {
 
     private PostDiffStatField getStatPostField(SearchSort searchSort) {
         switch (searchSort) {
-            case RATING: return PostDiffStatField.RATING;
-            case VIEWS: return PostDiffStatField.VIEWS;
+            case RATING:
+                return PostDiffStatField.RATING;
+            case VIEWS:
+                return PostDiffStatField.VIEWS;
             default:
                 throw new InternalServerErrorHttpException(" unknown sorting field in statistic");
         }
+    }
+
+    private List<Post> bulkGetPosts(List<Long> postIds, long userId) {
+        User user = userService.get(userId);
+        List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
+        List<Long> postsUserImageIds = postRepoModels.stream()
+                .flatMap(postRepoModel -> postRepoModel.getImages().keySet().stream())
+                .collect(Collectors.toList());
+        List<UserImage> userImages = userImageService.getUserImages(postsUserImageIds);
+        Map<Long, UserImage> userImageMap = userImages.stream().collect(Collectors.toMap(UserImage::getId, Function.identity()));
+        return postRepoModels.stream().map(postRepoModel -> {
+
+            Map<Long, String> repoImages = postRepoModel.getImages();
+            Map<UserImage, String> postImageMap = repoImages.entrySet().stream().collect(Collectors.toMap(entry -> userImageMap.get(entry.getKey()), Map.Entry::getValue));
+            return makePost(postRepoModel, user, postImageMap);
+
+        })
+                .collect(Collectors.toList());
+    }
+
+    private List<Post> bulkGetPosts(List<Long> postIds) {
+        List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
+        List<Long> postsUserImageIds = postRepoModels.stream()
+                .flatMap(postRepoModel -> postRepoModel.getImages().keySet().stream())
+                .collect(Collectors.toList());
+        List<UserImage> userImages = userImageService.getUserImages(postsUserImageIds);
+        Map<Long, UserImage> userImageMap = userImages.stream().collect(Collectors.toMap(UserImage::getId, Function.identity()));
+        return postRepoModels.stream().map(postRepoModel -> {
+            User user = userService.get(postRepoModel.getUserId());
+            Map<Long, String> repoImages = postRepoModel.getImages();
+            Map<UserImage, String> postImageMap = repoImages.entrySet().stream().collect(Collectors.toMap(entry -> userImageMap.get(entry.getKey()), Map.Entry::getValue));
+            return makePost(postRepoModel, user, postImageMap);
+
+        })
+                .collect(Collectors.toList());
+    }
+
+    private Post makePost(PostRepoModel postRepoModel, User user, Map<UserImage, String> postUserImages) {
+        return new Post(
+                postRepoModel.getId(),
+                postRepoModel.getName(),
+                postRepoModel.getUps(),
+                postRepoModel.getDowns(),
+                postRepoModel.getRating(),
+                postRepoModel.getViews(),
+                postUserImages,
+                postRepoModel.getDeviceType(),
+                postRepoModel.getTags(),
+                user,
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                postRepoModel.getDescription()
+        );
     }
 
 }

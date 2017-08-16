@@ -63,7 +63,7 @@ public class AuthorizationService {
     private Session login(long userId, @Nullable DeviceType deviceType, @Nullable String ip) {
         DeviceType finalDeviceType = deviceType != null ? deviceType : DeviceType.DEFAULT;
         try {
-            return sessionService.saveIfNotExist(new Session(userId, finalDeviceType, ip));
+            return sessionService.save(new Session(userId, finalDeviceType, ip));
         } catch (InternalServerErrorHttpException e) {
             throw new InternalServerErrorHttpException("Failed to login");
         }
@@ -85,8 +85,8 @@ public class AuthorizationService {
      */
     public long logout() {
         Session session = getCurrentSession();
-        sessionService.delete(session.getUserId());
-        return session.getUserId();
+        sessionService.delete(session.getId());
+        return session.getId();
     }
 
     public User getCurrentUser() {

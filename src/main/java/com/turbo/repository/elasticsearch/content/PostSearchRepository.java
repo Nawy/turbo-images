@@ -3,6 +3,7 @@ package com.turbo.repository.elasticsearch.content;
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.Post;
+import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
@@ -43,7 +44,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param post
      * @return
      */
-    public void addPost(final Post post) {
+    public void addPost(final PostRepoModel post) {
         elasticClient
                 .prepareIndex(
                         config.getSearchPostIndexName(),
@@ -53,7 +54,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .get();
     }
 
-    public void updatePost(final Post post) {
+    public void updatePost(final PostRepoModel post) {
         Objects.requireNonNull(post.getId(), "for update post you need have id for update");
         final String elasticId = getPostElasticId(post.getId());
         elasticClient.prepareUpdate(
@@ -97,7 +98,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
     }
 
     public List<Long> getPostByAuthor(
-            final String username,
+            final long userId,
             final int page,
             final SearchPeriod period,
             @Nullable final PostField postField,

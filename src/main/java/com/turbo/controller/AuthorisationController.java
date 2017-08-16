@@ -2,10 +2,10 @@ package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.*;
-import com.turbo.util.EncryptionService;
-import com.turbo.util.Headers;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.UserService;
+import com.turbo.util.EncryptionService;
+import com.turbo.util.Headers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -50,12 +50,12 @@ public class AuthorisationController {
                 request.getRemoteAddr()
         );
 
-        addSessionHeaderToResponse(response, session.getUserId());
+        addSessionHeaderToResponse(response, session.getId());
     }
 
     private void addSessionHeaderToResponse(HttpServletResponse response, long sessionId) {
         String encryptedSessionId = EncryptionService.encodeHashId(sessionId);
-        response.addHeader(SecurityHeader.SESSION_COOKIE_NAME,encryptedSessionId);
+        response.addHeader(SecurityHeader.SESSION_COOKIE_NAME, encryptedSessionId);
     }
 
     @Secured(SecurityRole.USER)
@@ -84,7 +84,7 @@ public class AuthorisationController {
                 LocalDateTime.now()
         );
         Session session = authorizationService.signup(user, deviceType, request.getRemoteAddr());
-        addSessionHeaderToResponse(response, session.getUserId());
+        addSessionHeaderToResponse(response, session.getId());
     }
 
     private static class UserCredentialsDto {

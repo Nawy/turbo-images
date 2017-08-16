@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,7 +26,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     protected static final int ITERATIONS_TO_GENERATE_ID = 3;
 
     private final String binName;
-    private final AerospikeClient client;
+    protected final AerospikeClient client;
     private final String databaseName;
     private final String tableName;
 
@@ -66,7 +67,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> bulkGet(List<Long> ids) {
+    public List<T> bulkGet(Collection<Long> ids) {
         Key[] keys = ids.stream().map(this::generateKey).toArray(Key[]::new);
         Record[] records = client.get(null, keys);
         return Arrays.stream(records)

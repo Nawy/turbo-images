@@ -4,9 +4,9 @@ import com.turbo.model.DeviceType;
 import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
+import com.turbo.service.SessionService;
 import com.turbo.util.EncryptionService;
 import com.turbo.util.Headers;
-import com.turbo.service.SessionService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +45,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
                 String ipValue = request.getRemoteAddr();
                 String deviceTypeValue = request.getHeader(Headers.DEVICE_TYPE);
                 Session refreshedSession = new Session(
+                        sessionId,
                         session.getUserId(),
                         DeviceType.getDeviceType(deviceTypeValue),
                         StringUtils.isBlank(ipValue) ? null : ipValue

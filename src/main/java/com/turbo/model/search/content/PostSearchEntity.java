@@ -65,7 +65,7 @@ public class PostSearchEntity {
 
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
-        this.username = post.getUsername();
+        this.username = post.getUser();
         this.ups = post.getUps();
         this.downs = post.getDowns();
         this.rating = post.getRating();

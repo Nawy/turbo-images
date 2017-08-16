@@ -2,9 +2,8 @@ package com.turbo.service;
 
 import com.turbo.model.Image;
 import com.turbo.model.UserImage;
-import com.turbo.model.aerospike.UserImageContent;
+import com.turbo.model.aerospike.UserImageRepoModel;
 import com.turbo.model.exception.NotFoundHttpException;
-import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.repository.aerospike.collection.UserImageCollectionRepository;
 import com.turbo.repository.aerospike.user.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class UserImageService {
     //TODO paged request?
     public List<UserImage> getUserImages(long userId) {
         List<Long> userImageIds = userImageSearchRepository.getUserImages(userId);
-        if(CollectionUtils.isEmpty(userImageIds)) {
+        if (CollectionUtils.isEmpty(userImageIds)) {
             userImageIds = userImageCollectionRepository.get(userId);
         }
         return getUserImages(userImageIds);
@@ -65,7 +65,7 @@ public class UserImageService {
 //                        ),
 //                        tone.getUserId(),
 //                        tone.getDescription(),
-//                        tone.getCreateDate()
+//                        tone.getCreationDateTime()
 //                )
 //        ).collect(Collectors.toList());
 //    }
@@ -101,35 +101,35 @@ public class UserImageService {
         );
     }
 
-    public List<UserImage> getUserImages(List<Long> userImageIds) {
-        final List<UserImageContent> userImageContents = userImageRepository.bulkGet(userImageIds);
+    public List<UserImage> getUserImages(Collection<Long> userImageIds) {
+        final List<UserImageRepoModel> userImageRepoModels = userImageRepository.bulkGet(userImageIds);
 
-        final List<Long> imageIds = userImageContents.stream()
-                .map(UserImageContent::getImageId)
+        final List<Long> imageIds = userImageRepoModels.stream()
+                .map(UserImageRepoModel::getImageId)
                 .collect(Collectors.toList());
 
         final List<Image> images = imageService.getImages(imageIds);
         final Map<Long, Image> imageMap = images.stream().collect(Collectors.toMap(Image::getId, Function.identity()));
 
-        return userImageContents.stream()
+        return userImageRepoModels.stream()
                 .map(userImage -> makeUserImage(userImage, imageMap.get(userImage.getImageId())))
                 .collect(Collectors.toList());
     }
 
     private UserImage saveUserImage(UserImage userImage) {
         return makeUserImage(
-                userImageRepository.save(new UserImageContent(userImage))
+                userImageRepository.save(new UserImageRepoModel(userImage))
         );
     }
 
     public UserImage editUserImageDescription(long userImageId, String description) {
-        UserImageContent userImageContent = getUserImageContent(userImageId);
-        UserImageContent updatedUserImage = userImageRepository.save(
-                new UserImageContent(
-                        userImageContent.getId(),
-                        userImageContent.getUserId(),
+        UserImageRepoModel userImageRepoModel = getUserImageContent(userImageId);
+        UserImageRepoModel updatedUserImage = userImageRepository.save(
+                new UserImageRepoModel(
+                        userImageRepoModel.getId(),
+                        userImageRepoModel.getUserId(),
                         description,
-                        userImageContent.getCreateDate()
+                        userImageRepoModel.getCreateDate()
                 )
         );
 
@@ -142,36 +142,30 @@ public class UserImageService {
     /**
      * get Repo userImage entity
      */
-    private UserImageContent getUserImageContent(long id) {
-        UserImageContent userImageContent = userImageRepository.get(id);
-        if (userImageContent == null) throw new NotFoundHttpException("No user image was fund for id:" + id);
-        return userImageContent;
+    private UserImageRepoModel getUserImageContent(long id) {
+        UserImageRepoModel userImageRepoModel = userImageRepository.get(id);
+        if (userImageRepoModel == null) throw new NotFoundHttpException("No user image was fund for id:" + id);
+        return userImageRepoModel;
     }
 
     /**
      * Create from 2 repo one business entity UserImage
      *
-     * @param userImageContent repository entity
+     * @param userImageRepoModel repository entity
      * @return UserImage
      */
-    private UserImage makeUserImage(UserImageContent userImageContent) {
-        Image image = imageService.getImage(userImageContent.getImageId());
-        return new UserImage(
-                userImageContent.getId(),
-                image,
-                userImageContent.getUserId(),
-                userImageContent.getDescription(),
-                userImageContent.getCreateDate()
-        );
+    private UserImage makeUserImage(UserImageRepoModel userImageRepoModel) {
+        Image image = imageService.getImage(userImageRepoModel.getImageId());
+        return makeUserImage(userImageRepoModel, image);
     }
 
-    private UserImage makeUserImage(UserImageContent userImageContent, Image image) {
+    private UserImage makeUserImage(UserImageRepoModel userImageRepoModel, Image image) {
         return new UserImage(
-                userImageContent.getId(),
+                userImageRepoModel.getId(),
                 image,
-                userImageContent.getUserId(),
-                userImageContent.getDescription(),
-                userImageContent.getCreateDate()
+                userImageRepoModel.getUserId(),
+                userImageRepoModel.getDescription(),
+                userImageRepoModel.getCreateDate()
         );
     }
 }

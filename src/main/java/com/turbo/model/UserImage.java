@@ -1,6 +1,8 @@
 package com.turbo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalDateTime;
 
@@ -59,5 +61,29 @@ public class UserImage {
     @JsonProperty("creation_date")
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserImage userImage = (UserImage) o;
+
+        return new EqualsBuilder()
+                .append(userId, userImage.userId)
+                .append(image, userImage.image)
+                .append(creationDate, userImage.creationDate)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(image)
+                .append(userId)
+                .append(creationDate)
+                .toHashCode();
     }
 }

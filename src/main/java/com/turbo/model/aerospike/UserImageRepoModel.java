@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * For contentSavingOnly
  */
-public class UserImageContent implements Serializable, IdHolder {
+public class UserImageRepoModel implements Serializable, IdHolder {
 
     private Long id;
     private long imageId;
@@ -17,7 +17,7 @@ public class UserImageContent implements Serializable, IdHolder {
     private long userId;
     private LocalDateTime createDate;
 
-    public UserImageContent(UserImage userImage) {
+    public UserImageRepoModel(UserImage userImage) {
         this.id = userImage.getId();
         this.imageId = userImage.getImage().getId();
         this.description = userImage.getDescription();
@@ -25,7 +25,7 @@ public class UserImageContent implements Serializable, IdHolder {
         this.createDate = userImage.getCreationDate();
     }
 
-    public UserImageContent(Long id, long imageId, String description, long userId, LocalDateTime createDate) {
+    public UserImageRepoModel(Long id, long imageId, String description, long userId, LocalDateTime createDate) {
         this.id = id;
         this.imageId = imageId;
         this.description = description;
@@ -33,14 +33,14 @@ public class UserImageContent implements Serializable, IdHolder {
         this.createDate = createDate;
     }
 
-    public UserImageContent(long imageId, long userId, String description, LocalDateTime createDate) {
+    public UserImageRepoModel(long imageId, long userId, String description, LocalDateTime createDate) {
         this.imageId = imageId;
         this.description = description;
         this.userId = userId;
         this.createDate = createDate;
     }
 
-    protected UserImageContent() {
+    protected UserImageRepoModel() {
     }
 
     public Long getId() {

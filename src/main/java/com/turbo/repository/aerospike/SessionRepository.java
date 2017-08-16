@@ -1,12 +1,10 @@
 package com.turbo.repository.aerospike;
 
-import com.aerospike.client.AerospikeClient;
-import com.aerospike.client.Bin;
-import com.aerospike.client.Key;
-import com.aerospike.client.Record;
 import com.aerospike.client.policy.WritePolicy;
 import com.turbo.config.AerospikeConfig;
 import com.turbo.model.Session;
+import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -15,25 +13,22 @@ import org.springframework.stereotype.Repository;
  * Created by rakhmetov on 17.05.17.
  */
 @Repository
-public class SessionRepository {
-
-    private final String binName;
-    private final AerospikeClient client;
-    private final String databaseName;
-    private final String tableName;
+public class SessionRepository extends AbstractAerospikeRepo<Session> {
 
     @Autowired
     public SessionRepository(
             AerospikeConfig config,
             @Value("${aerospike.session.table.name}") String tableName
     ) {
-        this.client = config.aerospikeClient();
-        this.databaseName = config.getDatabaseName();
-        this.tableName = tableName;
-        this.binName = tableName + "_bin";
+        super(config, tableName);
     }
 
-    public void save(Session session, int expirationInSeconds) {
+    public Session save(Session entity, int expirationInSeconds) {
+        Long id = entity.getId() != null ?
+                entity.getId() :
+                generateId(entity.getUserId());
+        entity.setId(id);
+
         WritePolicy writePolicy = null;
         if (expirationInSeconds > 0) {
             writePolicy = new WritePolicy();
@@ -42,28 +37,20 @@ public class SessionRepository {
 
         client.put(
                 writePolicy,
-                generateKey(session.getUserId()),
-                generateBin(session)
+                generateKey(id),
+                generateBin(entity)
         );
+
+        return entity;
     }
 
-    public Session get(long userId) {
-        Record record = client.get(null, generateKey(userId));
-        return record != null ?
-                (Session) record.getValue(binName) :
-                null;
+    private Long generateId(long userId) {
+        int iterations = 0;
+        do {
+            Long id = IdGenerator.generateRandomId(userId);
+            if (get(id) == null) return id;
+            iterations++;
+        } while (ITERATIONS_TO_GENERATE_ID > iterations);
+        throw new InternalServerErrorHttpException("Can't save entity");
     }
-
-    public void delete(long userId) {
-        client.delete(null, generateKey(userId));
-    }
-
-    protected Key generateKey(long userId) {
-        return new Key(databaseName, tableName, userId);
-    }
-
-    protected Bin generateBin(Session session) {
-        return new Bin(binName, session);
-    }
-
 }

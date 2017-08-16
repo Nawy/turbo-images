@@ -5,10 +5,11 @@ import java.io.Serializable;
 /**
  * Implements serializable for Aerospike serialization
  */
-public class Session implements Serializable {
+public class Session implements Serializable,IdHolder {
 
     private final static long serialVersionUID = 42L;
 
+    private Long id;
     private Long userId;
     private DeviceType deviceType;
     private String ip;
@@ -16,8 +17,11 @@ public class Session implements Serializable {
     public Session() {
     }
 
-    public Session(long userId) {
+    public Session(Long id, Long userId, DeviceType deviceType, String ip) {
+        this.id = id;
         this.userId = userId;
+        this.deviceType = deviceType;
+        this.ip = ip;
     }
 
     public Session(long userId, DeviceType deviceType, String ip) {
@@ -36,5 +40,14 @@ public class Session implements Serializable {
 
     public String getIp() {
         return ip;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+
     }
 }
