@@ -11,42 +11,28 @@ import java.time.LocalDateTime;
  */
 public class ImageSearchEntity {
 
+    public final static String CREATION_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
     private Long id;
     private String description;
-    private String thumbnailPath;
-    private String sourcePath;
-    private LocalDateTime createDate;
+    private LocalDateTime creationDate;
     private long userId;
 
     public ImageSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("description") String description,
-            @JsonProperty("thumbnail") String thumbnailPath,
-            @JsonProperty("source") String sourcePath,
             @JsonProperty("user_id") long userId,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
+            @JsonProperty("creation_date") @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
     ) {
         this.id = id;
         this.userId = userId;
         this.description = description;
-        this.thumbnailPath = thumbnailPath;
-        this.sourcePath = sourcePath;
-        this.createDate = createDate;
+        this.creationDate = creationDate;
     }
 
     @JsonProperty("description")
     public String getDescription() {
         return description;
-    }
-
-    @JsonProperty("thumbnail")
-    public String getThumbnailPath() {
-        return thumbnailPath;
-    }
-
-    @JsonProperty("source")
-    public String getSourcePath() {
-        return sourcePath;
     }
 
     @JsonProperty("id")
@@ -55,9 +41,9 @@ public class ImageSearchEntity {
     }
 
     @JsonProperty("create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    @JsonFormat(pattern = CREATION_DATE_PATTERN)
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
     @JsonProperty("user_id")
@@ -69,8 +55,6 @@ public class ImageSearchEntity {
         return new ImageSearchEntity(
                 image.getId(),
                 image.getDescription(),
-                image.getImage().getThumbnail(),
-                image.getImage().getSource(),
                 image.getUserId(),
                 image.getCreationDate()
         );

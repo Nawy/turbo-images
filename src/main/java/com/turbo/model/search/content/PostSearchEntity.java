@@ -16,48 +16,54 @@ import java.util.stream.Collectors;
  */
 public class PostSearchEntity {
 
-    private Long id;
+    public final static String CREATION_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+    private long id;
     private String name;
-    private Long ups;
-    private Long downs;
-    private Long rating;
-    private Long views;
+    private long ups;
+    private long downs;
+    private long rating;
+    private long views;
     private DeviceType deviceType;
     private List<String> descriptions;
+    private List<Long> imageIds;
     private List<String> tags;
-    private LocalDateTime createDate;
-    private String username;
+    private LocalDateTime creationDate;
+    private long userId;
 
     public PostSearchEntity(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
             @JsonProperty("descriptions") List<String> descriptions,
             @JsonProperty("device_type") DeviceType deviceType,
+            @JsonProperty("image_ids") List<Long> imageIds,
             @JsonProperty("tags") List<String> tags,
-            @JsonProperty("username") String username,
+            @JsonProperty("user_id") long userId,
             @JsonProperty("ups") Long ups,
             @JsonProperty("downs") Long downs,
             @JsonProperty("rating") Long rating,
             @JsonProperty("views") Long views,
-            @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate
+            @JsonProperty("create_date") @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
     ) {
         this.id = id;
         this.name = name;
         this.descriptions = descriptions;
         this.deviceType = deviceType;
+        this.imageIds = imageIds;
         this.tags = tags;
-        this.username = username;
+        this.userId = userId;
         this.ups = ups;
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.createDate = createDate;
+        this.creationDate = creationDate;
     }
 
     public PostSearchEntity(final Post post) {
         this.id = post.getId();
         this.name = post.getName();
         this.descriptions = post.getImages()
+                .keySet()
                 .stream()
                 .map(UserImage::getDescription)
                 .collect(Collectors.toList());
@@ -65,12 +71,12 @@ public class PostSearchEntity {
 
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
-        this.username = post.getUser();
+        this.userId = post.getUser().getId();
         this.ups = post.getUps();
         this.downs = post.getDowns();
         this.rating = post.getRating();
         this.views = post.getViews();
-        this.createDate = post.getCreateDate();
+        this.creationDate = post.getCreateDate();
     }
 
     @JsonProperty("id")
@@ -98,9 +104,9 @@ public class PostSearchEntity {
         return tags;
     }
 
-    @JsonProperty("username")
-    public String getUsername() {
-        return username;
+    @JsonProperty("user_id")
+    public long getUserId() {
+        return userId;
     }
 
     @JsonProperty("ups")
@@ -124,8 +130,8 @@ public class PostSearchEntity {
     }
 
     @JsonProperty("create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    @JsonFormat(pattern = CREATION_DATE_PATTERN)
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 }

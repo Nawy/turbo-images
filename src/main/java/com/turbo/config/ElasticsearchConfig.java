@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.config.elastic.mapping.DefaultMappingPropertyBuilder;
 import com.turbo.config.elastic.mapping.MappingBuilder;
 import com.turbo.config.elastic.mapping.MappingPropertyType;
+import com.turbo.model.search.content.ImageSearchEntity;
 import org.apache.http.util.Asserts;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -138,7 +139,7 @@ public class ElasticsearchConfig {
                                                     "creation_date",
                                                     new DefaultMappingPropertyBuilder()
                                                             .setType(MappingPropertyType.DATE)
-                                                            .setFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                                                            .setFormat(ImageSearchEntity.CREATION_DATE_PATTERN)
                                                             .setDocValues(false)
                                                             .createMappingProperty()
                                             ).createMapping()
