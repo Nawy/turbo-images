@@ -2,7 +2,6 @@ package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
-import com.turbo.model.Post;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Page;
@@ -130,8 +129,8 @@ public class PostSearchRepository extends AbstractSearchRepository {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(
                         QueryBuilders.termQuery(
-                                PostField.AUTHOR.getFieldName(),
-                                username
+                                PostField.USER_ID.getFieldName(),
+                                userId
                         )
                 );
 

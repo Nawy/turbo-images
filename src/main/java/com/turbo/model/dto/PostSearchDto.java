@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -108,11 +109,14 @@ public class PostSearchDto {
 
     @JsonIgnore
     public static PostSearchDto from(Post post) {
-        final UserImage imageWithDescription= post.getImages().stream()
+        final UserImage imageWithDescription= post.getImages().keySet()
+                .stream()
                 .filter(
                         image -> StringUtils.isNotBlank(image.getDescription())
                 )
                 .findFirst().orElse(null);
+
+        Objects.requireNonNull(imageWithDescription);
 
         return new PostSearchDto(
                 EncryptionService.encodeHashId(post.getId()),
@@ -126,7 +130,7 @@ public class PostSearchDto {
                 post.getDowns(),
                 post.getRating(),
                 post.getViews(),
-                post.getImages().get(0).getImage().getThumbnail(),
+                post.getImages().keySet().stream().findFirst().get().getImage().getThumbnail(),
                 post.getDeviceType(),
                 post.getTags(),
                 post.getCreateDate()

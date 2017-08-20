@@ -9,7 +9,6 @@ import com.turbo.repository.aerospike.user.UserImageRepository;
 import com.turbo.repository.elasticsearch.content.UserImageSearchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -29,18 +28,20 @@ public class UserImageService {
     private final UserImageSearchRepository userImageSearchRepository;
     private final ImageService imageService;
     private final UserImageCollectionRepository userImageCollectionRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired
     public UserImageService(
             UserImageRepository userImageRepository,
             UserImageSearchRepository userImageSearchRepository,
             ImageService imageService,
-            UserImageCollectionRepository userImageCollectionRepository
-    ) {
+            UserImageCollectionRepository userImageCollectionRepository,
+            AuthorizationService authorizationService) {
         this.userImageRepository = userImageRepository;
         this.userImageSearchRepository = userImageSearchRepository;
         this.imageService = imageService;
         this.userImageCollectionRepository = userImageCollectionRepository;
+        this.authorizationService = authorizationService;
     }
 
 //    //TODO paged request?
@@ -99,6 +100,13 @@ public class UserImageService {
         return makeUserImage(
                 getUserImageContent(id)
         );
+    }
+
+    public List<UserImage> getCurrentUserImages(final LocalDateTime dateTime) {
+        final long userId = authorizationService.getCurrentUserId();
+
+        final List<Long> userImageIds = userImageSearchRepository.getUserImages(userId, dateTime, 50);
+        return getUserImages(userImageIds);
     }
 
     public List<UserImage> getUserImages(Collection<Long> userImageIds) {

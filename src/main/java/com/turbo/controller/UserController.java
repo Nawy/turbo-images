@@ -75,15 +75,15 @@ public class UserController {
             @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrder order
     ) {
-        User user = authorizationService.getCurrentUser();
+        final long userId = authorizationService.getCurrentUserId();
         return new Paginator<>(
                 page,
-                postService.getUserPosts(page, user.getName(), new SearchPattern(period, sort, order))
+                postService.getUserPosts(page, userId, new SearchPattern(period, sort, order))
         );
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping
+    @PostMapping("/update/user/password")
     public UserDto updateUserPassword(@RequestBody UserPasswordChangeDto userPasswordChangeDto) {
         String newPassword = userPasswordChangeDto.getNewPassword();
         String oldPassword = userPasswordChangeDto.getOldPassword();
@@ -96,7 +96,7 @@ public class UserController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping
+    @PostMapping("/update/user/name")
     public UserDto updateUserName(@RequestBody UserFieldUpdateDto userPasswordChangeDto) {
         String newName = userPasswordChangeDto.getNewField();
         validateField(newName, "new_name");

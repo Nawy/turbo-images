@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,7 @@ public class UserImageController {
     @GetMapping("/get/user/images")
     public List<UserImageDto> getUserImages(
             HttpServletRequest request) {
-        String session = request.getHeader("session");
-        List<UserImage> userImages = userImageService.getUserImages(EncryptionService.decodeHashId(session), null);
+        List<UserImage> userImages = userImageService.getCurrentUserImages(LocalDateTime.now());
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
 

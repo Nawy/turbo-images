@@ -48,6 +48,6 @@ public class Session implements Serializable,IdHolder {
 
     @Override
     public void setId(Long id) {
-
+        this.id = id;
     }
 }

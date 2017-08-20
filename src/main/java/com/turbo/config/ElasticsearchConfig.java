@@ -1,23 +1,19 @@
 package com.turbo.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.turbo.config.elastic.mapping.DefaultMappingPropertyBuilder;
-import com.turbo.config.elastic.mapping.MappingBuilder;
-import com.turbo.config.elastic.mapping.MappingPropertyType;
 import com.turbo.model.search.content.ImageSearchEntity;
+import com.turbo.model.search.field.UserField;
 import org.apache.http.util.Asserts;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,6 +30,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 @Configuration
 @ConfigurationProperties(prefix = "elasticsearch")
 public class ElasticsearchConfig {
+    private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchConfig.class);
     private static final int MAX_SIZE_OF_SELECT_LIST = 300;
 
     private String[] hosts;
@@ -55,12 +52,6 @@ public class ElasticsearchConfig {
     private int maxSizeUsersPerPage;
 
     private TransportClient elasticClient;
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    public ElasticsearchConfig(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     @PostConstruct
     public void init() {
@@ -102,6 +93,8 @@ public class ElasticsearchConfig {
     private void createContentIndicesIfNonExist() {
         Objects.requireNonNull(elasticClient);
 
+        final ObjectMapper objectMapper = new ObjectMapper();
+
         IndicesAdminClient indices = elasticClient.admin().indices();
         final boolean isPostExists = indices.exists(new IndicesExistsRequest(searchPostIndexName)).actionGet().isExists();
         final boolean isUserExists = indices.exists(new IndicesExistsRequest(searchUserIndexName)).actionGet().isExists();
@@ -117,37 +110,72 @@ public class ElasticsearchConfig {
             indices.create(new CreateIndexRequest(searchImageIndexName)).actionGet();
         }
 
-        try {
-            indices.preparePutMapping(searchImageIndexName)
-                    .setType(searchImageTypeName)
-                    .setSource(
-                            objectMapper.writeValueAsBytes(
-                                    new MappingBuilder()
-                                            .addProperty(
-                                                    "id",
-                                                    new DefaultMappingPropertyBuilder()
-                                                            .setType(MappingPropertyType.LONG)
-                                                            .createMappingProperty()
-                                            )
-                                            .addProperty(
-                                                    "user_id",
-                                                    new DefaultMappingPropertyBuilder()
-                                                            .setType(MappingPropertyType.LONG)
-                                                            .createMappingProperty()
-                                            )
-                                            .addProperty(
-                                                    "creation_date",
-                                                    new DefaultMappingPropertyBuilder()
-                                                            .setType(MappingPropertyType.DATE)
-                                                            .setFormat(ImageSearchEntity.CREATION_DATE_PATTERN)
-                                                            .setDocValues(false)
-                                                            .createMappingProperty()
-                                            ).createMapping()
-                            ),
-                            XContentType.JSON
-                    ).execute().actionGet();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        if(!isImageExists) {
+            try {
+                XContentBuilder mapping = jsonBuilder()
+                        .startObject()
+                            .startObject(searchImageTypeName)
+                                .startObject("properties")
+                                    .startObject("id")
+                                        .field("type", "long")
+                                    .endObject()
+                                    .startObject("user_id")
+                                        .field("type","long")
+                                    .endObject()
+                                    .startObject("creation_date")
+                                        .field("type","date")
+                                        .field("format",ImageSearchEntity.CREATION_DATE_PATTERN)
+                                        .field("doc_values", false)
+                                    .endObject()
+                                .endObject()
+                            .endObject()
+                        .endObject();
+
+                indices.preparePutMapping(searchImageIndexName)
+                        .setType(searchImageTypeName)
+                        .setSource(mapping)
+                        .execute().actionGet();
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(!isUserExists) {
+            try {
+                XContentBuilder mapping = jsonBuilder()
+                        .startObject()
+                            .startObject(searchUserTypeName)
+                                .startObject("properties")
+                                    .startObject(UserField.ID.getFieldName())
+                                        .field("type", "long")
+                                    .endObject()
+                                    .startObject(UserField.NAME.getFieldName())
+                                        .field("type", "text")
+                                    .endObject()
+                                    .startObject(UserField.EMAIL.getFieldName())
+                                        .field("type", "text")
+                                    .endObject()
+                                    .startObject(UserField.RATING.getFieldName())
+                                        .field("type", "long")
+                                    .endObject()
+                                    .startObject(UserField.CREATION_DATE.getFieldName())
+                                        .field("type", "date")
+                                        .field("format", ImageSearchEntity.CREATION_DATE_PATTERN)
+                                        .field("doc_values", false)
+                                    .endObject()
+                                .endObject()
+                            .endObject()
+                        .endObject();
+
+                indices.preparePutMapping(searchUserIndexName)
+                        .setType(searchUserTypeName)
+                        .setSource(mapping)
+                        .execute().actionGet();
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

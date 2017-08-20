@@ -43,7 +43,7 @@ public class PostDto {
 
     @JsonIgnore
     public static PostDto from(Post post) {
-        List<UserImageDto> userImageDtos = post.getImages().stream()
+        List<UserImageDto> userImageDtos = post.getImages().keySet().stream()
                 .map(UserImageDto::from)
                 .collect(Collectors.toList());
 

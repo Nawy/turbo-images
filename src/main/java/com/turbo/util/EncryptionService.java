@@ -34,10 +34,18 @@ public class EncryptionService {
 
     public static String encodeHashId(Long id) {
         if (id == null) return null;
+        if(id > 9007199254740992L) {
+            final long[] values = getTwoLongFromOne(id);
+            return hashids.encode(values[0], values[1]);
+        }
         return hashids.encode(id);
     }
 
     public static long decodeHashId(String id) {
+        final long[] results = hashids.decode(id);
+        if(results.length > 1) {
+            return Long.valueOf(String.valueOf(results[0]) + String.valueOf(results[1]));
+        }
         return hashids.decode(id)[0];
     }
 
@@ -77,5 +85,12 @@ public class EncryptionService {
             LOG.error("IOE exception occured during encryption", e);
         }
         throw new InternalServerErrorHttpException("can't encrypt/decrypt value");
+    }
+
+    private static long[] getTwoLongFromOne(final long value) {
+        final long divider = 100000000L;
+        final long val1 = (long)Math.floor((double)value / (double)divider);
+        final long val2 = value % divider;
+        return new long[]{val1, val2};
     }
 }

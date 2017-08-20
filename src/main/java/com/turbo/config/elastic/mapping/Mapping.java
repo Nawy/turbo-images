@@ -10,4 +10,8 @@ public class Mapping {
     public Mapping(Map<String, MappingProperty> properties) {
         this.properties = properties;
     }
+
+    public Map<String, MappingProperty> getProperties() {
+        return properties;
+    }
 }

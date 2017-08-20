@@ -5,10 +5,11 @@ package com.turbo.model.search.field;
  */
 public enum UserField {
 
-    NAME("name"),
-    EMAIL("email"),
-    RATING("rating"),
-    CREATE_DATE("create_date");
+    ID(UserFieldNames.ID),
+    NAME(UserFieldNames.NAME),
+    EMAIL(UserFieldNames.EMAIL),
+    RATING(UserFieldNames.RATING),
+    CREATION_DATE(UserFieldNames.CREATION_DATE);
 
     private String fieldName;
 

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.UserImage;
+import com.turbo.model.aerospike.PostRepoModel;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,24 +61,22 @@ public class PostSearchEntity {
         this.creationDate = creationDate;
     }
 
-    public PostSearchEntity(final Post post) {
+    public PostSearchEntity(final PostRepoModel post) {
         this.id = post.getId();
         this.name = post.getName();
-        this.descriptions = post.getImages()
-                .keySet()
-                .stream()
-                .map(UserImage::getDescription)
-                .collect(Collectors.toList());
+        this.descriptions = new ArrayList<>(post.getImages().values());
         this.descriptions.add(post.getDescription());
+
+        this.imageIds = new ArrayList<>(post.getImages().keySet());
 
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
-        this.userId = post.getUser().getId();
+        this.userId = post.getUserId();
         this.ups = post.getUps();
         this.downs = post.getDowns();
         this.rating = post.getRating();
         this.views = post.getViews();
-        this.creationDate = post.getCreateDate();
+        this.creationDate = post.getCreationDateTime();
     }
 
     @JsonProperty("id")
@@ -127,6 +127,11 @@ public class PostSearchEntity {
     @JsonProperty("views")
     public Long getViews() {
         return views;
+    }
+
+    @JsonProperty("image_ids")
+    public List<Long> getImageIds() {
+        return imageIds;
     }
 
     @JsonProperty("create_date")
