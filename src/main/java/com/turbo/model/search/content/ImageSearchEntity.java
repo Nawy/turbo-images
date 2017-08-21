@@ -3,6 +3,7 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.UserImage;
+import com.turbo.model.search.field.ImageFieldNames;
 
 import java.time.LocalDateTime;
 
@@ -19,10 +20,10 @@ public class ImageSearchEntity {
     private long userId;
 
     public ImageSearchEntity(
-            @JsonProperty("id") Long id,
-            @JsonProperty("description") String description,
-            @JsonProperty("user_id") long userId,
-            @JsonProperty("creation_date") @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
+            @JsonProperty(ImageFieldNames.ID) Long id,
+            @JsonProperty(ImageFieldNames.DESCRIPTION) String description,
+            @JsonProperty(ImageFieldNames.USER_ID) long userId,
+            @JsonProperty(ImageFieldNames.CREATION_DATE) @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
     ) {
         this.id = id;
         this.userId = userId;
@@ -30,23 +31,23 @@ public class ImageSearchEntity {
         this.creationDate = creationDate;
     }
 
-    @JsonProperty("description")
-    public String getDescription() {
-        return description;
-    }
-
-    @JsonProperty("id")
+    @JsonProperty(ImageFieldNames.ID)
     public Long getId() {
         return id;
     }
 
-    @JsonProperty("create_date")
+    @JsonProperty(ImageFieldNames.DESCRIPTION)
+    public String getDescription() {
+        return description;
+    }
+
+    @JsonProperty(ImageFieldNames.CREATION_DATE)
     @JsonFormat(pattern = CREATION_DATE_PATTERN)
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    @JsonProperty("user_id")
+    @JsonProperty(ImageFieldNames.USER_ID)
     public long getUserId() {
         return userId;
     }

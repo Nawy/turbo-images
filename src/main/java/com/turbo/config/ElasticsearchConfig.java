@@ -2,7 +2,8 @@ package com.turbo.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.search.content.ImageSearchEntity;
-import com.turbo.model.search.field.UserField;
+import com.turbo.model.search.field.ImageFieldNames;
+import com.turbo.model.search.field.UserFieldNames;
 import org.apache.http.util.Asserts;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -116,16 +117,19 @@ public class ElasticsearchConfig {
                         .startObject()
                             .startObject(searchImageTypeName)
                                 .startObject("properties")
-                                    .startObject("id")
+                                    .startObject(ImageFieldNames.ID)
                                         .field("type", "long")
                                     .endObject()
-                                    .startObject("user_id")
+                                    .startObject(ImageFieldNames.DESCRIPTION)
+                                        .field("type","text")
+                                    .endObject()
+                                    .startObject(ImageFieldNames.USER_ID)
                                         .field("type","long")
                                     .endObject()
-                                    .startObject("creation_date")
+                                    .startObject(ImageFieldNames.CREATION_DATE)
                                         .field("type","date")
                                         .field("format",ImageSearchEntity.CREATION_DATE_PATTERN)
-                                        .field("doc_values", false)
+                                        .field("doc_values", true)
                                     .endObject()
                                 .endObject()
                             .endObject()
@@ -147,22 +151,22 @@ public class ElasticsearchConfig {
                         .startObject()
                             .startObject(searchUserTypeName)
                                 .startObject("properties")
-                                    .startObject(UserField.ID.getFieldName())
+                                    .startObject(UserFieldNames.ID)
                                         .field("type", "long")
                                     .endObject()
-                                    .startObject(UserField.NAME.getFieldName())
+                                    .startObject(UserFieldNames.NAME)
                                         .field("type", "text")
                                     .endObject()
-                                    .startObject(UserField.EMAIL.getFieldName())
+                                    .startObject(UserFieldNames.EMAIL)
                                         .field("type", "text")
                                     .endObject()
-                                    .startObject(UserField.RATING.getFieldName())
+                                    .startObject(UserFieldNames.RATING)
                                         .field("type", "long")
                                     .endObject()
-                                    .startObject(UserField.CREATION_DATE.getFieldName())
+                                    .startObject(UserFieldNames.CREATION_DATE)
                                         .field("type", "date")
                                         .field("format", ImageSearchEntity.CREATION_DATE_PATTERN)
-                                        .field("doc_values", false)
+                                        .field("doc_values", true)
                                     .endObject()
                                 .endObject()
                             .endObject()

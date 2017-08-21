@@ -2,26 +2,20 @@ package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.UserImage;
-import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.model.search.field.ImageField;
-import com.turbo.model.search.field.UserField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +25,7 @@ import java.util.stream.Collectors;
 @Repository
 public class UserImageSearchRepository extends AbstractSearchRepository {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ImageSearchEntity.CREATION_DATE_PATTERN);
 
     @Autowired
     public UserImageSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
@@ -89,14 +83,14 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
         SearchResponse response = elasticClient
                 .prepareSearch(config.getSearchImageIndexName())
                 .setTypes(config.getSearchImageTypeName())
-                .addSort(ImageField.CREATE_DATE.getFieldName(), SortOrder.DESC)
+                .addSort(ImageField.CREATION_DATE.getFieldName(), SortOrder.DESC)
                 .setQuery(
                         QueryBuilders.boolQuery()
                             .must(
                                     QueryBuilders.termQuery(ImageField.USER_ID.getFieldName(), userId)
                             )
                             .must(
-                                    QueryBuilders.rangeQuery(ImageField.CREATE_DATE.getFieldName()).lte(formatter.format(lastDate))
+                                    QueryBuilders.rangeQuery(ImageField.CREATION_DATE.getFieldName()).lte(formatter.format(lastDate))
                             )
                 )
                 .setSize(pageSize)
