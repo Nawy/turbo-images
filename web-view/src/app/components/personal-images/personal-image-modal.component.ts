@@ -8,6 +8,7 @@ import {PersonalHolderService} from "../../service/personal-holder.service";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {Router} from "@angular/router";
 
+
 @Component({
   selector: "ngbd-modal-personal-image",
   templateUrl: './../../templates/personal-images/personal-image-modal.template.html',

@@ -3,14 +3,12 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
-import com.turbo.model.Post;
-import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.PostRepoModel;
+import com.turbo.model.search.field.PostFieldNames;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by ermolaev on 5/27/17.
@@ -34,18 +32,18 @@ public class PostSearchEntity {
     private long userId;
 
     public PostSearchEntity(
-            @JsonProperty("id") Long id,
-            @JsonProperty("name") String name,
-            @JsonProperty("descriptions") List<String> descriptions,
-            @JsonProperty("device_type") DeviceType deviceType,
-            @JsonProperty("image_ids") List<Long> imageIds,
-            @JsonProperty("tags") List<String> tags,
-            @JsonProperty("user_id") long userId,
-            @JsonProperty("ups") Long ups,
-            @JsonProperty("downs") Long downs,
-            @JsonProperty("rating") Long rating,
-            @JsonProperty("views") Long views,
-            @JsonProperty("create_date") @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
+            @JsonProperty(PostFieldNames.ID) Long id,
+            @JsonProperty(PostFieldNames.NAME) String name,
+            @JsonProperty(PostFieldNames.DESCRIPTIONS) List<String> descriptions,
+            @JsonProperty(PostFieldNames.DEVICE_TYPE) DeviceType deviceType,
+            @JsonProperty(PostFieldNames.IMAGE_IDS) List<Long> imageIds,
+            @JsonProperty(PostFieldNames.TAGS) List<String> tags,
+            @JsonProperty(PostFieldNames.USER_ID) long userId,
+            @JsonProperty(PostFieldNames.UPS) Long ups,
+            @JsonProperty(PostFieldNames.DOWNS) Long downs,
+            @JsonProperty(PostFieldNames.RATING) Long rating,
+            @JsonProperty(PostFieldNames.VIEWS) Long views,
+            @JsonProperty(PostFieldNames.CREATION_DATE) @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
     ) {
         this.id = id;
         this.name = name;
@@ -79,62 +77,62 @@ public class PostSearchEntity {
         this.creationDate = post.getCreationDateTime();
     }
 
-    @JsonProperty("id")
+    @JsonProperty(PostFieldNames.ID)
     public Long getId() {
         return id;
     }
 
-    @JsonProperty("name")
+    @JsonProperty(PostFieldNames.NAME)
     public String getName() {
         return name;
     }
 
-    @JsonProperty("descriptions")
+    @JsonProperty(PostFieldNames.DESCRIPTIONS)
     public List<String> getDescriptions() {
         return descriptions;
     }
 
-    @JsonProperty("device_type")
+    @JsonProperty(PostFieldNames.DEVICE_TYPE)
     public DeviceType getDeviceType() {
         return deviceType;
     }
 
-    @JsonProperty("tags")
+    @JsonProperty(PostFieldNames.NAME)
     public List<String> getTags() {
         return tags;
     }
 
-    @JsonProperty("user_id")
+    @JsonProperty(PostFieldNames.USER_ID)
     public long getUserId() {
         return userId;
     }
 
-    @JsonProperty("ups")
+    @JsonProperty(PostFieldNames.UPS)
     public Long getUps() {
         return ups;
     }
 
-    @JsonProperty("downs")
+    @JsonProperty(PostFieldNames.DOWNS)
     public Long getDowns() {
         return downs;
     }
 
-    @JsonProperty("rating")
+    @JsonProperty(PostFieldNames.RATING)
     public Long getRating() {
         return rating;
     }
 
-    @JsonProperty("views")
+    @JsonProperty(PostFieldNames.VIEWS)
     public Long getViews() {
         return views;
     }
 
-    @JsonProperty("image_ids")
+    @JsonProperty(PostFieldNames.IMAGE_IDS)
     public List<Long> getImageIds() {
         return imageIds;
     }
 
-    @JsonProperty("create_date")
+    @JsonProperty(PostFieldNames.CREATION_DATE)
     @JsonFormat(pattern = CREATION_DATE_PATTERN)
     public LocalDateTime getCreationDate() {
         return creationDate;

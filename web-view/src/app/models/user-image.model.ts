@@ -12,5 +12,5 @@ export class UserImage {
   id : string;
   image : Image;
   description : string;
-  create_date : string;
+  creation_date : string;
 }

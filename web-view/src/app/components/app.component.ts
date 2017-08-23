@@ -1,6 +1,6 @@
-import {Component} from "@angular/core";
+import {Component, HostListener} from "@angular/core";
 import {UserInfo} from "../models/user-info.model";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-root',
@@ -9,6 +9,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class AppComponent {
   userInfo : UserInfo;
+  modalWindow : NgbModalRef = null;
 
   constructor(private modalService: NgbModal) {}
 
@@ -18,10 +19,13 @@ export class AppComponent {
     console.info("UPLOOOOOAAAD~!");
   }
 
-  dragoverImage(event : any, content : any) {
-    event.preventDefault();
-    console.info(content);
-    this.modalService.open(content);
-    console.info("DRAGG OVER");
-  }
+  // @HostListener('window:dragenter', ['$event'])
+  // public dragoverImage(event : any, content : any) {
+  //   event.preventDefault();
+  //   console.info(content);
+  //   if (this.modalWindow == null) {
+  //     this.modalWindow = this.modalService.open(content);
+  //     console.info("DRAGG OVER");
+  //   }
+  // }
 }

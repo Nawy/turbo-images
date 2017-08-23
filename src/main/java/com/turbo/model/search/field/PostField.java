@@ -12,7 +12,7 @@ public enum PostField {
     VIEWS("views"),
     USER_ID("user_id"),
     TAGS("tags"),
-    CREATION_DATE("create_date");
+    CREATION_DATE("creation_date");
 
     private String fieldName;
 

@@ -6,12 +6,15 @@
 </div>
 <div class="modal-body">
 
-  <div class="card" (drop)="dropImage($event)" (dragover)="dragoverImage($event)">
+  <div class="card"
+       (drop)="dropImage($event)"
+       (dragover)="dragoverImage($event)">
+
     <div class="card-block">
       <div class="container">
-        <div class="row justify-content-md-center" *ngIf="!isDragover">
+        <div class="row justify-content-md-center">
           <div class="col-12 col-md-auto">
-            Drag here your images...<br>
+            <p>Drag here your images...<br></p>
             <label class="btn btn-outline-success">
               Browse image path ... <input type="file" #fileUploader hidden>
             </label>
