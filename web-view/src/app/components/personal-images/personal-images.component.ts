@@ -17,6 +17,13 @@ class UserImagesMap {
     this.creationDate = creationDate;
     this.images = images;
   }
+
+  getCreationDate() : string {
+    if(this.creationDate.getDate() == new Date().getDate()) {
+      return "Today";
+    }
+    return moment(this.creationDate).format("D MMMM");
+  }
 }
 
 @Component({
