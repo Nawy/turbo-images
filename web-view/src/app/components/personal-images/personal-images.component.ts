@@ -19,8 +19,12 @@ class UserImagesMap {
   }
 
   getCreationDate() : string {
-    if(this.creationDate.getDate() == new Date().getDate()) {
+    let currentDate = new Date().getDate();
+    if(this.creationDate.getDate() == currentDate) {
       return "Today";
+    }
+    if(moment(this.creationDate).add(1, 'd').toDate().getDate() == currentDate) {
+      return "Yesterday";
     }
     return moment(this.creationDate).format("D MMMM");
   }
@@ -38,16 +42,15 @@ export class PersonalImagesComponent {
     imageService.getUserImages().then(images => {
       Rx.Observable.from(images)
         .groupBy(
-          x => moment(x.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDay()
+          image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
         )
         .flatMap(group => {
-          console.info(group);
           return group.reduce((acc, curr) => [...acc, curr], []);
         })
         .map(values => {
           return new UserImagesMap(moment(values[0].creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), values);
-        }).forEach(value => this.imagesMap.push(value));
-
+        })
+        .forEach(value => this.imagesMap.push(value));
     });
   }
 }

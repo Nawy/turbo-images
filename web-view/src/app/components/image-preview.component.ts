@@ -8,6 +8,7 @@ import {environment} from "../../environments/environment";
 import {PersonalImageModalComponent} from "./personal-images/personal-image-modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PersonalHolderService} from "../service/personal-holder.service";
+import * as moment from 'moment';
 
 @Component({
   selector: "s-image-preview",
@@ -39,7 +40,7 @@ export class ImagePreviewComponent {
   }
 
   getHeaderString(): string {
-    return "Rating " + this.userImage.create_date;
+    return "Uploaded at " + moment(this.userImage.creation_date).format("HH:mm");
   }
 
   onMouseOver(): void {
