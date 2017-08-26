@@ -2,6 +2,7 @@ import {Headers, Http} from "@angular/http";
 import {Injectable} from "@angular/core";
 import {environment} from "environments/environment";
 import {UserImage} from "../models/user-image.model";
+import * as moment from 'moment';
 /**
  * Created by ermolaev on 7/10/17.
  */
@@ -28,7 +29,7 @@ export class ImageService {
       });
   }
 
-  getUserImages() : Promise<Array<UserImage>> {
+  getUserImages(startDate: Date) : Promise<Array<UserImage>> {
     return new Promise((resolve, reject) => {
       let sessionID: string = localStorage.getItem(environment.tokenName);
       if(sessionID == null) {
@@ -40,7 +41,10 @@ export class ImageService {
       const url = `${environment.host}${environment.requests.getUserImageUrl}`;
       return this.http.get(
         url,
-        {headers: new Headers({"session": sessionID})}
+        {
+          headers: new Headers({"session": sessionID}),
+          params: { "date": moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS")}
+        }
       ).toPromise()
         .then(res => {
           let images = res.json() as Array<UserImage>;

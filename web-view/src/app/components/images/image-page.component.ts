@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {PersonalHolderService} from "../../service/personal-holder.service";
 import {UserImage} from "../../models/user-image.model";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {ImageService} from "../../service/image.service";
 import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";

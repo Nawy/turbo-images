@@ -22,5 +22,8 @@ export const environment = {
     // "/get/user/image/{id}"
     getUserImageByIdUrl: "/get/user/image/"
   },
-  tokenName: "SESSIONID"
+  tokenName: "SESSIONID",
+  uploadPersonImage: {
+    pageSize: 30
+  }
 };

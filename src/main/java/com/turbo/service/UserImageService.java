@@ -105,7 +105,7 @@ public class UserImageService {
     public List<UserImage> getCurrentUserImages(final LocalDateTime dateTime) {
         final long userId = authorizationService.getCurrentUserId();
 
-        final List<Long> userImageIds = userImageSearchRepository.getUserImages(userId, dateTime, 50);
+        final List<Long> userImageIds = userImageSearchRepository.getUserImages(userId, dateTime, 30);
         return getUserImages(userImageIds);
     }
 
