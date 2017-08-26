@@ -45,6 +45,7 @@ export class PersonalImagesComponent {
   }
 
   private uploadImagesByDate(startDate : Date) {
+    this.isLoaderVisible = true;
     this.imageService.getUserImages(startDate).then(images => {
 
       if(images.length < environment.uploadPersonImage.pageSize) {
@@ -62,19 +63,18 @@ export class PersonalImagesComponent {
           return new UserImagesMap(moment(values[0].creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), values);
         })
         .forEach(value => this.imagesMap.push(value));
-    });
-    this.isLoaderVisible = false;
+        this.isLoaderVisible = false
+    })
   }
 
   @HostListener('window:scroll', ['$event'])
   public onScroll(event: Event) {
 
-    if(this.isAllImageUploaded) {
+    if(this.isAllImageUploaded || this.isLoaderVisible) {
       return;
     }
 
     if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
-      this.isLoaderVisible = true;
       this.uploadImagesByDate(this.getLastImageDate());
       console.debug('scroll at bottom');
     }
