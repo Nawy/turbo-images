@@ -141,7 +141,7 @@ public class UserImageService {
                 )
         );
 
-        userImageSearchRepository.editUserImage(
+        userImageSearchRepository.updateUserImage(
                 makeUserImage(updatedUserImage)
         );
         return makeUserImage(updatedUserImage);

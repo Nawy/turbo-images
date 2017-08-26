@@ -69,7 +69,6 @@ export class PersonalImagesComponent {
 
   @HostListener('window:scroll', ['$event'])
   public onScroll(event: Event) {
-
     if(this.isAllImageUploaded || this.isLoaderVisible) {
       return;
     }

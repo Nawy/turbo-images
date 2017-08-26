@@ -44,9 +44,9 @@ public class UserSearchRepository extends AbstractSearchRepository {
     }
 
     public void updateUser(final User user) {
-        Objects.requireNonNull(user.getName(), "for update user you need have name");
+        Objects.requireNonNull(user.getId(), "for update user you need have id");
 
-        final String elasticId = getUserElasticId(user.getName());
+        final String elasticId = getUserElasticIdById(user.getId());
         elasticClient.prepareUpdate(
                 config.getSearchUserIndexName(),
                 config.getSearchUserTypeName(),
@@ -57,15 +57,15 @@ public class UserSearchRepository extends AbstractSearchRepository {
         ).setRetryOnConflict(5).get();
     }
 
-    public String getUserElasticId(final String name) {
+    public String getUserElasticIdById(final long userId) {
         final SearchResponse response = searchUniqueByField(
                 config.getSearchUserIndexName(),
                 config.getSearchUserTypeName(),
-                UserField.NAME.getFieldName(),
-                name
+                UserField.ID.getFieldName(),
+                userId
         );
         if(response.getHits().getTotalHits() <= 0) {
-            throw new InternalServerErrorHttpException("Not found user by name=" + name);
+            throw new InternalServerErrorHttpException("Not found user by id=" + userId);
         }
         return elasticUtils.parseElasticIdSearchResponse(response);
     }

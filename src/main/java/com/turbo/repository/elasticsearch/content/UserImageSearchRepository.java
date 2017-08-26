@@ -61,7 +61,7 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
         );
     }
 
-    public void editUserImage(UserImage image){
+    public void updateUserImage(UserImage image){
         ImageSearchEntity searchImage = ImageSearchEntity.from(image);
 
         final SearchResponse response = searchUniqueByField(
