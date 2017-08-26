@@ -15,6 +15,9 @@ export const environment = {
     // user service
     getUserInfoUrl: "/get/user/info",
     isUserExistsUrl: "/is/user/exists",
+    updateUserEmail: "/update/user/email",
+    updateUserName: "/update/user/name",
+    updateUserPassword: "/update/user/password",
 
     // image service
     addUserImageUrl: "/add/user/image",

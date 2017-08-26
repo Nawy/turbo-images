@@ -1,8 +1,10 @@
-import {Injectable, OnInit} from "@angular/core";
-import {Headers, Http, Response} from "@angular/http";
+import {Injectable} from "@angular/core";
+import {Headers, Http} from "@angular/http";
 import {UserInfo} from "../models/user-info.model";
 import {environment} from "../../environments/environment";
 import {Subject} from "rxjs/Subject";
+import {UserChangeField, UserChangePassword} from "../models/user-change-setting.model";
+
 /**
  * Created by ermolaev on 7/4/17.
  */
@@ -13,12 +15,13 @@ export class UserService {
 
   private _userInfoSource = new Subject<UserInfo>();
 
-  constructor(private http: Http) {}
+  constructor(private http: Http) {
+  }
 
-  public updateUserInfo() : Promise<UserInfo> {
+  public updateUserInfo(): Promise<UserInfo> {
     return new Promise((resolve, reject) => {
       let sessionID: string = localStorage.getItem(environment.tokenName);
-      if(sessionID == null) {
+      if (sessionID == null) {
         return reject(null)
       }
       return resolve(sessionID)
@@ -29,15 +32,88 @@ export class UserService {
         url,
         {headers: new Headers({"session": sessionID})}
       ).toPromise()
-      .then(res => {
-        let userInfo = res.json() as UserInfo;
-        this._userInfoSource.next(userInfo);
-        return userInfo
-      })
+        .then(res => {
+          let userInfo = res.json() as UserInfo;
+          this._userInfoSource.next(userInfo);
+          return userInfo
+        })
     }).catch(res => {
       this.clearUserSession();
     });
   }
+
+  public changePassword(userChangePassword: UserChangePassword): Promise<UserInfo> {
+    return new Promise((resolve, reject) => {
+      let sessionID: string = localStorage.getItem(environment.tokenName);
+      if (sessionID == null) {
+        return reject(null)
+      }
+      return resolve(sessionID)
+    }).then(sessionID => {
+      let url = `${environment.host}${environment.requests.updateUserPassword}`;
+      return this.http.post(
+        url,
+        userChangePassword,
+        {headers: new Headers({"session": sessionID})}
+      ).toPromise()
+        .then(res => {
+          let userInfo = res.json() as UserInfo;
+          this._userInfoSource.next(userInfo);
+          return userInfo
+        })
+    }).catch(res => {
+      this.clearUserSession();
+    });
+  }
+
+  public changeName(userChangeName: UserChangeField): Promise<UserInfo> {
+    return new Promise((resolve, reject) => {
+      let sessionID: string = localStorage.getItem(environment.tokenName);
+      if (sessionID == null) {
+        return reject(null)
+      }
+      return resolve(sessionID)
+    }).then(sessionID => {
+      let url = `${environment.host}${environment.requests.updateUserName}`;
+      return this.http.post(
+        url,
+        userChangeName,
+        {headers: new Headers({"session": sessionID})}
+      ).toPromise()
+        .then(res => {
+          let userInfo = res.json() as UserInfo;
+          this._userInfoSource.next(userInfo);
+          return userInfo
+        })
+    }).catch(res => {
+      this.clearUserSession();
+    });
+  }
+
+  public changeEmail(userChangeEmail: UserChangeField): Promise<UserInfo> {
+    return new Promise((resolve, reject) => {
+      let sessionID: string = localStorage.getItem(environment.tokenName);
+      if (sessionID == null) {
+        return reject(null)
+      }
+      return resolve(sessionID)
+    }).then(sessionID => {
+      let url = `${environment.host}${environment.requests.updateUserEmail}`;
+      return this.http.post(
+        url,
+        userChangeEmail,
+        {headers: new Headers({"session": sessionID})}
+      ).toPromise()
+        .then(res => {
+          let userInfo = res.json() as UserInfo;
+          this._userInfoSource.next(userInfo);
+          return userInfo
+        })
+    }).catch(res => {
+      this.clearUserSession();
+    });
+  }
+
 
 
   get userInfoSource(): Subject<UserInfo> {
@@ -50,7 +126,7 @@ export class UserService {
     this._userInfoSource.next(null);
   }
 
-  public isLoggedIn() : boolean {
+  public isLoggedIn(): boolean {
     let token = localStorage.getItem(environment.tokenName);
     return token != null;
   }

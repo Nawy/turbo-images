@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping
+    @PostMapping("/update/user/email")
     public UserDto updateUserEmail(@RequestBody UserFieldUpdateDto userPasswordChangeDto) {
         String newEmail = userPasswordChangeDto.getNewField();
         validateEmail(newEmail);

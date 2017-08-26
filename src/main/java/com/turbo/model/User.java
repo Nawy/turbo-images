@@ -53,10 +53,10 @@ public class User implements Serializable, IdHolder {
             User newUser
     ) {
         this.id = oldUser.id;
-        this.name = firstNonNull(oldUser.name, newUser.name);
-        this.avatarPath = firstNonNull(oldUser.avatarPath, newUser.avatarPath);
-        this.email = firstNonNull(oldUser.email, newUser.email);
-        this.password = firstNonNull(oldUser.password, newUser.password);
+        this.name = firstNonNull(newUser.name, oldUser.name);
+        this.avatarPath = firstNonNull(newUser.avatarPath, oldUser.avatarPath);
+        this.email = firstNonNull(newUser.email, oldUser.email);
+        this.password = firstNonNull(newUser.password, oldUser.password);
         this.createDate = oldUser.createDate;
     }
 

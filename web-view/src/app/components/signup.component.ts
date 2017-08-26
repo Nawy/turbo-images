@@ -29,10 +29,10 @@ export class SignupComponent {
   emailRegExp : RegExp = new RegExp('^([a-zA-Z0-9]+\.?[a-zA-Z0-9]+)*\@{1,1}([a-zA-Z0-9]+\.?[a-zA-Z0-9]+)*$');
   emailRegExp2 : RegExp = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
 
-  nameForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
-  emailForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
-  passwordForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
-  repeatPasswordForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
+   nameForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
+   emailForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
+   passwordForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
+   repeatPasswordForm : InputTextForm = new InputTextForm(EMPTY_INPUT, "");
 
   constructor(private authorizedService : AuthorizationService, private router: Router) {}
 
