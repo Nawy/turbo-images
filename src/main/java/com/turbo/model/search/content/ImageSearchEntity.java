@@ -15,17 +15,20 @@ public class ImageSearchEntity {
     public final static String CREATION_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     private Long id;
+    private String name;
     private String description;
     private LocalDateTime creationDate;
     private long userId;
 
     public ImageSearchEntity(
             @JsonProperty(ImageFieldNames.ID) Long id,
+            @JsonProperty(ImageFieldNames.NAME) String name,
             @JsonProperty(ImageFieldNames.DESCRIPTION) String description,
             @JsonProperty(ImageFieldNames.USER_ID) long userId,
             @JsonProperty(ImageFieldNames.CREATION_DATE) @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
     ) {
         this.id = id;
+        this.name = name;
         this.userId = userId;
         this.description = description;
         this.creationDate = creationDate;
@@ -34,6 +37,11 @@ public class ImageSearchEntity {
     @JsonProperty(ImageFieldNames.ID)
     public Long getId() {
         return id;
+    }
+
+    @JsonProperty(ImageFieldNames.NAME)
+    public String getName() {
+        return name;
     }
 
     @JsonProperty(ImageFieldNames.DESCRIPTION)
@@ -55,6 +63,7 @@ public class ImageSearchEntity {
     public static ImageSearchEntity from(final UserImage image) {
         return new ImageSearchEntity(
                 image.getId(),
+                image.getName(),
                 image.getDescription(),
                 image.getUserId(),
                 image.getCreationDate()

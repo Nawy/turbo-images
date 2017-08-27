@@ -5,6 +5,7 @@ package com.turbo.model.search.field;
  */
 public enum ImageField {
     ID(ImageFieldNames.ID),
+    NAME(ImageFieldNames.NAME),
     DESCRIPTION(ImageFieldNames.DESCRIPTION),
     USER_ID(ImageFieldNames.USER_ID),
     CREATION_DATE(ImageFieldNames.CREATION_DATE);

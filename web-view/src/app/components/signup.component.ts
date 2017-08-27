@@ -42,28 +42,28 @@ export class SignupComponent {
       //check correct name
       if (!this.nameRegExp.test(this.signupData.name)) {
         this.nameForm.setValue(DANGER_INPUT, "Name is wrong!")
-        reject(false)
+        return reject();
       }
       //correct email
       if(this.signupData.email != "") {
         if (!this.emailRegExp.test(this.signupData.email)) {
           this.emailForm.setValue(DANGER_INPUT, "Email is wrong!")
-          reject(false)
+          return reject();
         }
       }
       //correct password
       if(!this.passwordRegExp.test(this.signupData.password)) {
         this.passwordForm.setValue(DANGER_INPUT, "Password is wrong!")
-        reject(false)
+        return reject();
       }
 
       //check similarity of passwords
       if(this.signupData.password != this.signupData.passwordRepeat) {
         this.repeatPasswordForm.setValue(DANGER_INPUT, "Password doesn't match!")
-        reject(false)
+        return reject();
       }
-      resolve(true)
-    }).then(res => {
+      return resolve()
+    }).then(() => {
         return this.authorizedService.isExistsNameOrEmail(this.signupData.name);
     }).then(res => {
       if(res != false) {

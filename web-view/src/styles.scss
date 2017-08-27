@@ -42,6 +42,16 @@
   width: $imagepreview-medium-size;
 }
 
+.image-placeholder {
+  background: white;
+  width: inherit;
+  text-align: center;
+}
+
+.img-fluid-flex {
+  max-width: 100%;
+  height: auto;
+}
 
 // SCROLLBAR SETTINGS
 

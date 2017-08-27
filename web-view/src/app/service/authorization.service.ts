@@ -76,13 +76,10 @@ export class AuthorizationService {
         return response.exists;
       })
       .catch(res => {
-        return false
+        return Promise.resolve(false);
       })
   }
 
-  successHandler(response : Response) : string {
-    return null;
-  }
 
   errorHandler(response : Response) {
     return Promise.reject(response.json().message);

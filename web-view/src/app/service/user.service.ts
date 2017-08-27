@@ -117,7 +117,6 @@ export class UserService {
 
 
   get userInfoSource(): Subject<UserInfo> {
-
     return this._userInfoSource;
   }
 
