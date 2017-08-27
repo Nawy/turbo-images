@@ -7,7 +7,6 @@
             <ngb-alert *ngIf="alert" [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
             <div class="form-group {{nameForm.groupClass}}">
               <input
-                type="text"
                 class="form-control {{nameForm.formControlClass}}"
                 placeholder="name"
                 (blur)="checkFormName()"
@@ -17,7 +16,6 @@
             </div>
             <div class="form-group {{emailForm.groupClass}}">
               <input
-                type="text"
                 class="form-control {{emailForm.formControlClass}}"
                 placeholder="vasya@example.com"
                 (blur)="checkFormEmail()"

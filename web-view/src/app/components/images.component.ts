@@ -21,7 +21,7 @@ export class ImagesComponent {
 
     const count: number = 100;
     this.postPreviews = new Array<PostPreview>(count);
-    var pathes: string[] = [`http://${environment.imageHost}/t/N/d1TnKviN.jpg`, `http://${environment.imageHost}/t/N/6hv7tkzMsEb.jpg`];
+    var pathes: string[] = [`http://${environment.imageHost}/t/v/YhY8hA1Nc9.jpg`, `http://${environment.imageHost}/t/z/YhRVhPe6I8d.jpg`];
 
     for (var i = 0; i < count;) {
       var path: string;

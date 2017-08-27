@@ -1,4 +1,4 @@
-import {Component, HostListener} from "@angular/core";
+import {Component, HostListener, OnInit} from "@angular/core";
 import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
 import * as moment from 'moment';
@@ -35,12 +35,14 @@ class UserImagesMap {
   templateUrl: './../../templates/personal-images/personal-images.template.html',
   styleUrls: ['./../../css/personal-images.style.css']
 })
-export class PersonalImagesComponent {
+export class PersonalImagesComponent implements OnInit {
   imagesMap: Array<UserImagesMap> = [];
   isLoaderVisible: boolean = false;
   isAllImageUploaded: boolean = false;
 
-  constructor(private imageService: ImageService) {
+  constructor(private imageService: ImageService) {}
+
+  ngOnInit(): void {
     this.uploadImagesByDate(new Date(Date.now()));
   }
 

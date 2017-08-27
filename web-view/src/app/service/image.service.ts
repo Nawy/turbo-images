@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {environment} from "environments/environment";
 import {UserImage} from "../models/user-image.model";
 import * as moment from 'moment';
+import {Subject} from "rxjs/Subject";
 /**
  * Created by ermolaev on 7/10/17.
  */
@@ -11,6 +12,7 @@ import * as moment from 'moment';
 export class ImageService {
 
   uploadFiles : Array<File>;
+  eventNewFilesIsReady = new Subject<boolean>();
 
   constructor(private http: Http) {
   }

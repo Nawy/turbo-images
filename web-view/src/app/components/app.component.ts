@@ -18,14 +18,4 @@ export class AppComponent {
     content.close();
     console.info("UPLOOOOOAAAD~!");
   }
-
-  // @HostListener('window:dragenter', ['$event'])
-  // public dragoverImage(event : any, content : any) {
-  //   event.preventDefault();
-  //   console.info(content);
-  //   if (this.modalWindow == null) {
-  //     this.modalWindow = this.modalService.open(content);
-  //     console.info("DRAGG OVER");
-  //   }
-  // }
 }

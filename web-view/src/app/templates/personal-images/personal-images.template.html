@@ -2,6 +2,7 @@
   <div class="card">
     <div class="card-block">
       <h3 class="card-title">My Images</h3>
+
       <div *ngFor="let imageMap of imagesMap">
         <div class="row justify-content-md-center">
           <h2><span class="badge badge-pill badge-default">{{imageMap.getCreationDate()}}</span></h2>
@@ -18,7 +19,7 @@
 
       <!-- loader -->
       <div class="row justify-content-md-center" *ngIf="isLoaderVisible">
-       <img src="/assets/loader.gif">
+       <img src="/assets/loader.svg">
       </div>
 
     </div>

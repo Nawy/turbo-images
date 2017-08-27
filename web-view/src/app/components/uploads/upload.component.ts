@@ -1,7 +1,8 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
 import {Subject} from "rxjs/Subject";
+import {Router} from "@angular/router";
 /**
  * Created by ermolaev on 7/9/17.
  */
@@ -12,18 +13,41 @@ import {Subject} from "rxjs/Subject";
   templateUrl: './../../templates/uploads/upload.template.html',
   styleUrls: ['./../../css/upload.style.css'],
 })
-export class UploadComponent {
-
+export class UploadComponent implements OnInit {
   images : Array<UserImage>;
-  private uploadedImage = new Subject<UserImage>();
+  uploadedImagesCount: number;
+  uploadedProgress: number;
+  totalImageCount: number;
 
-  constructor(private imageService : ImageService) {
-    this.images = [];
-    this.uploadedImage.subscribe(userImage => this.images.push(userImage));
-
-    for (let file of imageService.uploadFiles) {
-      this.imageService.uploadImage(file).then(userImage => this.uploadedImage.next(userImage));
+  constructor(private imageService : ImageService, private router: Router) {
+    if(this.imageService.uploadFiles == null) {
+      this.router.navigateByUrl("/my-images");
     }
+  }
+
+  ngOnInit(): void {
+    this.imageService.eventNewFilesIsReady.subscribe(value => {
+      this.uploadImages();
+    });
+    this.uploadImages();
+  }
+
+  private uploadImages() {
+    this.images = [];
+    this.uploadedImagesCount = 0;
+    this.uploadedProgress = 0;
+    this.totalImageCount = this.imageService.uploadFiles.length;
+
+    let oneImageInPercents = 100 / this.totalImageCount;
+    for (let file of this.imageService.uploadFiles) {
+      this.imageService.uploadImage(file)
+        .then(userImage => {
+          this.images.push(userImage);
+          this.uploadedImagesCount++;
+          this.uploadedProgress += oneImageInPercents;
+        });
+    }
+    this.imageService.uploadFiles = null;
   }
 
 }
