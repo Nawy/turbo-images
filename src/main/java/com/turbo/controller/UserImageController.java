@@ -5,9 +5,10 @@ import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
 import com.turbo.model.UserImage;
 import com.turbo.model.dto.UserImageDto;
+import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.service.AuthorizationService;
-import com.turbo.util.EncryptionService;
 import com.turbo.service.UserImageService;
+import com.turbo.util.EncryptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,12 +54,15 @@ public class UserImageController {
     ) {
         User user = authorizationService.getCurrentUser();
         LOG.info("File uploaded with name='{}'", file.getOriginalFilename());
+        byte[] bytes;
         try {
-            UserImage userImage = userImageService.addUserImage(user.getId(), file.getBytes());
-            return UserImageDto.from(userImage);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            bytes = file.getBytes();
+        } catch (IOException e) {
+            LOG.error("Can't parse multipart file", e);
+            throw new InternalServerErrorHttpException("Can't parse multipart file");
         }
+        UserImage userImage = userImageService.addUserImage(user.getId(), bytes);
+        return UserImageDto.from(userImage);
     }
 
     @Secured(SecurityRole.USER)

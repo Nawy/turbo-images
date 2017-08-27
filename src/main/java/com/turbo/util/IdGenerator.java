@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class IdGenerator {
 
-    //ATTENTION!!! DON"T CHANGE THAT OR EVERYTHING WILL CRASH!!! When try to id generate
+    //ATTENTION!!! DON'T CHANGE THAT OR EVERYTHING WILL CRASH!!! When try to id generate
     private final static long CREATION_YEAR = 2017;
     private final static int MAX_LONG_LENGTH = String.valueOf(Long.MAX_VALUE).length();
 
@@ -19,7 +19,7 @@ public class IdGenerator {
         // if year == 0 then return empty string
         String year = String.valueOf(now.getYear() == 0 ? "" : now.getYear());
         String day = String.valueOf(now.getDayOfYear());
-        String nanos = String.valueOf((1000 + now.getNano()) % 10000);
+        String nanos = String.valueOf(now.getNano() / 1_000_000);
         // nextInt with bound is always positive and have positive upper bound
         String randomNum = String.valueOf(random.nextInt(99));
         return Long.valueOf(year + day + nanos + randomNum);

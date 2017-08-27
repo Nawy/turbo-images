@@ -9,6 +9,8 @@ import com.turbo.config.AerospikeConfig;
 import com.turbo.model.IdHolder;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.util.IdGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -23,10 +25,10 @@ import java.util.stream.Collectors;
  */
 public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
-    protected static final int ITERATIONS_TO_GENERATE_ID = 3;
-
-    private final String binName;
+    protected static final int ITERATIONS_TO_GENERATE_ID = 10;
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractAerospikeRepo.class);
     protected final AerospikeClient client;
+    private final String binName;
     private final String databaseName;
     private final String tableName;
 
@@ -118,6 +120,7 @@ public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
             Long id = IdGenerator.generateRandomId();
             if (get(id) == null) return id;
             iterations++;
+            if (iterations > 5) LOG.warn("More than 5 iterations is needed, iteration count:{}", iterations);
         } while (ITERATIONS_TO_GENERATE_ID > iterations);
         throw new InternalServerErrorHttpException("Can't save entity");
     }
