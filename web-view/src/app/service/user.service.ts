@@ -62,7 +62,7 @@ export class UserService {
           return userInfo
         })
     }).catch(res => {
-      this.clearUserSession();
+      return Promise.reject(res.status)
     });
   }
 
@@ -86,7 +86,7 @@ export class UserService {
           return userInfo
         })
     }).catch(res => {
-      this.clearUserSession();
+      return Promise.reject(res.status)
     });
   }
 
@@ -110,7 +110,7 @@ export class UserService {
           return userInfo
         })
     }).catch(res => {
-      this.clearUserSession();
+      return Promise.reject(res.status)
     });
   }
 

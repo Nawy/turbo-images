@@ -14,7 +14,7 @@ import {
 import {UserChangeField, UserChangePassword} from "../models/user-change-setting.model";
 import {DANGER_INPUT, EMPTY_INPUT, InputTextForm, SUCCESS_INPUT} from "../models/input-text.model";
 import {AuthorizationService} from "../service/authorization.service";
-import {Router} from "@angular/router";
+import {isUndefined} from "util";
 
 
 @Component({
@@ -52,11 +52,11 @@ export class SettingsComponent {
 
   userInfo: UserInfo = null;
 
-  constructor(private userService: UserService, private authorizedService: AuthorizationService, private router: Router) {
+  constructor(private userService: UserService, private authorizedService: AuthorizationService) {
     userService.userInfoSource.subscribe(userInfo => {
-      this.userInfo = userInfo
-      this.changeEmail.email = this.userInfo.email
-      this.changeName.name = this.userInfo.name
+      this.userInfo = userInfo;
+      this.changeEmail.email = this.userInfo.email;
+      this.changeName.name = this.userInfo.name;
     });
     if (this.userInfo == null) {
       this.userService.updateUserInfo();
@@ -68,44 +68,50 @@ export class SettingsComponent {
 
       //old password
       if (this.changePassword.oldPassword == null || this.changePassword.oldPassword == '') {
-        this.oldPasswordSettingForm.setValue(DANGER_INPUT, "Password is empty!")
+        this.oldPasswordSettingForm.setValue(DANGER_INPUT, "Password is empty!");
         return reject()
       }
-      this.oldPasswordSettingForm.setValue(EMPTY_INPUT, "")
+      this.oldPasswordSettingForm.setValue(EMPTY_INPUT, "");
 
       //new password
       if (!this.passwordRegExp.test(this.changePassword.newPassword)) {
-        this.passwordSettingForm.setValue(DANGER_INPUT, "Password must have min 6 symbols!")
+        this.passwordSettingForm.setValue(DANGER_INPUT, "Password must have min 6 symbols!");
         return reject()
       }
-      this.passwordSettingForm.setValue(EMPTY_INPUT, "")
+      this.passwordSettingForm.setValue(EMPTY_INPUT, "");
 
       //check similarity of passwords
       if (this.changePassword.newPassword != this.changePassword.newPasswordRepeat) {
-        this.repeatPasswordSettingForm.setValue(DANGER_INPUT, "Password doesn't match!")
+        this.repeatPasswordSettingForm.setValue(DANGER_INPUT, "Password doesn't match!");
         return reject()
       }
-      this.repeatPasswordSettingForm.setValue(EMPTY_INPUT, "")
+      this.repeatPasswordSettingForm.setValue(EMPTY_INPUT, "");
 
       return resolve()
     }).then(() => {
-      //TODO somehow check old password and return INCORRECT oldPassword message
       return this.userService.changePassword(
         new UserChangePassword(this.changePassword.oldPassword, this.changePassword.newPassword)
       )
-    })
-      //TODO somehow return SUCCESS message
-      .catch(res => this.alert = new Alert(AlertType.DANGER, res))
+    }).then(() => this.alert = new Alert(AlertType.SUCCESS, "SUCCESS"))
+      .catch(res => {
+        if (res == "403") {
+          this.alert = new Alert(AlertType.DANGER, "Incorrect old password");
+          return
+        }
+        if (!isUndefined(res)) {
+          this.alert = new Alert(AlertType.DANGER, res);
+        }
+      })
   }
 
   onChangeName() {
-    let name = this.changeName.name
+    let name = this.changeName.name;
 
     new Promise((resolve, reject) => {
 
       //check correct name
       if (!this.nameRegExp.test(name)) {
-        this.nameSettingForm.setValue(DANGER_INPUT, "Name is wrong!")
+        this.nameSettingForm.setValue(DANGER_INPUT, "Name is wrong!");
         return reject()
       }
 
@@ -117,14 +123,14 @@ export class SettingsComponent {
           this.nameSettingForm.setValue(DANGER_INPUT, `${name} already exists!`);
           return Promise.reject(null)
         }
-        this.nameSettingForm.setValue(EMPTY_INPUT, "")
+        this.nameSettingForm.setValue(EMPTY_INPUT, "");
 
         return this.userService.changeName(
           new UserChangeField(name)
         )
       })
       .then(() => this.nameSettingForm.setValue(SUCCESS_INPUT, "Name changed"))
-      .catch(res => this.alert = new Alert(AlertType.DANGER, res));
+      .catch(() => this.nameSettingForm.setValue(DANGER_INPUT, "Internal error"));
   }
 
   onChangeEmail() {
@@ -134,7 +140,7 @@ export class SettingsComponent {
 
 
       //correct email
-      if (email == null || email == "" ){
+      if (email == null || email == "") {
         this.emailSettingForm.setValue(DANGER_INPUT, "Email is empty!");
         return reject()
       }
@@ -157,7 +163,7 @@ export class SettingsComponent {
         )
       })
       .then(() => this.emailSettingForm.setValue(SUCCESS_INPUT, "Email changed"))
-      .catch(res => this.alert = new Alert(AlertType.DANGER, res));
+      .catch(() => this.emailSettingForm.setValue(DANGER_INPUT, "Internal error"));
   }
 
 }
