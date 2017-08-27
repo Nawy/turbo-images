@@ -44,33 +44,6 @@ public class UserImageService {
         this.authorizationService = authorizationService;
     }
 
-//    //TODO paged request?
-//    public List<UserImage> getUserImages(long userId) {
-//        List<Long> userImageIds = userImageSearchRepository.getUserImages(userId);
-//        if (CollectionUtils.isEmpty(userImageIds)) {
-//            userImageIds = userImageCollectionRepository.get(userId);
-//        }
-//        return getUserImages(userImageIds);
-//    }
-
-//    //TODO paged request?
-//    public List<UserImage> getUserImages(long userId) {
-//        List<ImageSearchEntity> userImages = userImageSearchRepository.getUserImages(userId);
-//        return userImages.stream().map(
-//                tone -> new UserImage(
-//                        tone.getId(),
-//                        new Image(
-//                                11L,
-//                                tone.getSourcePath(),
-//                                tone.getThumbnailPath()
-//                        ),
-//                        tone.getUserId(),
-//                        tone.getDescription(),
-//                        tone.getCreationDateTime()
-//                )
-//        ).collect(Collectors.toList());
-//    }
-
     public void removeUserImage(long userId, long userImageId) {
         userImageCollectionRepository.remove(userId, Collections.singletonList(userImageId));
         userImageRepository.delete(userImageId);
@@ -85,6 +58,7 @@ public class UserImageService {
                 new UserImage(
                         image,
                         userId,
+                        null,
                         null,
                         LocalDateTime.now()
                 )
@@ -136,6 +110,7 @@ public class UserImageService {
                 new UserImageRepoModel(
                         userImageRepoModel.getId(),
                         userImageRepoModel.getUserId(),
+                        userImageRepoModel.getName(),
                         description,
                         userImageRepoModel.getCreateDate()
                 )
@@ -172,6 +147,7 @@ public class UserImageService {
                 userImageRepoModel.getId(),
                 image,
                 userImageRepoModel.getUserId(),
+                userImageRepoModel.getName(),
                 userImageRepoModel.getDescription(),
                 userImageRepoModel.getCreateDate()
         );

@@ -3,14 +3,15 @@
  */
 
 export class Image {
-  id : string;
-  source : string;
-  thumbnail : string;
+  id: string;
+  source: string;
+  thumbnail: string;
 }
 
 export class UserImage {
-  id : string;
-  image : Image;
-  description : string;
-  creation_date : string;
+  id: string;
+  image: Image;
+  name: string;
+  description: string;
+  creation_date: string;
 }

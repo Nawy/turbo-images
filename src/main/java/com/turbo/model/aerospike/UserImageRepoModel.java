@@ -13,6 +13,7 @@ public class UserImageRepoModel implements Serializable, IdHolder {
 
     private Long id;
     private long imageId;
+    private String name;
     private String description;
     private long userId;
     private LocalDateTime createDate;
@@ -20,6 +21,7 @@ public class UserImageRepoModel implements Serializable, IdHolder {
     public UserImageRepoModel(UserImage userImage) {
         this.id = userImage.getId();
         this.imageId = userImage.getImage().getId();
+        this.name = userImage.getName();
         this.description = userImage.getDescription();
         this.userId = userImage.getUserId();
         this.createDate = userImage.getCreationDate();
@@ -33,8 +35,9 @@ public class UserImageRepoModel implements Serializable, IdHolder {
         this.createDate = createDate;
     }
 
-    public UserImageRepoModel(long imageId, long userId, String description, LocalDateTime createDate) {
+    public UserImageRepoModel(long imageId, long userId, String name, String description, LocalDateTime createDate) {
         this.imageId = imageId;
+        this.name = name;
         this.description = description;
         this.userId = userId;
         this.createDate = createDate;
@@ -66,5 +69,9 @@ public class UserImageRepoModel implements Serializable, IdHolder {
 
     public LocalDateTime getCreateDate() {
         return createDate;
+    }
+
+    public String getName() {
+        return name;
     }
 }

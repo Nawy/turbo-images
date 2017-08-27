@@ -14,6 +14,7 @@ public class UserImage {
 
     private Long id;
     private Image image;
+    private String name;
     private String description;
     private long userId;
     private LocalDateTime creationDate;
@@ -25,18 +26,21 @@ public class UserImage {
             Long id,
             Image image,
             long userId,
+            String name,
             String description,
             LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
+        this.name = name;
         this.description = description;
         this.userId = userId;
         this.creationDate = creationDate;
     }
 
-    public UserImage(Image image, long userId, String description, LocalDateTime creationDate) {
+    public UserImage(Image image, long userId, String name, String description, LocalDateTime creationDate) {
         this.image = image;
+        this.name = name;
         this.description = description;
         this.userId = userId;
         this.creationDate = creationDate;
@@ -63,6 +67,11 @@ public class UserImage {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
 
     @Override
