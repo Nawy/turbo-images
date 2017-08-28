@@ -1,6 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">Image</h4>
-  <button type="button" class="btn btn-success" (click)="goToImagePage()">Go To Page</button>
+  <div class="row">
+    <div class="col-12">
+      <button type="button" class="btn btn-primary" (click)="goToImagePage()">Go To Page</button>
+      <button type="button" class="btn btn-success" (click)="goToImagePage()">Edit</button>
+    </div>
+  </div>
   <button type="button" class="btn btn-warning" (click)="close()">Close</button>
 </div>
 <div class="modal-body no-border">

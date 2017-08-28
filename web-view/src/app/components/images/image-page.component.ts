@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {ImageService} from "../../service/image.service";
 import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";
+import * as moment from 'moment';
 
 /**
  * Created by ermolaev on 7/23/17.
@@ -50,7 +51,12 @@ export class ImagePageComponent implements OnInit {
     this.location.back();
   }
 
+  getCreationDate() : string {
+    return moment(this.userImage.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").format("[Published] D MMMM [at] HH:mm")
+  }
+
   private createImageSource() {
     this.imageSource = `http://${environment.imageHost}${this.userImage.image.source}`;
   }
+
 }

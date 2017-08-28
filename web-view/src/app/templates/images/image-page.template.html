@@ -1,22 +1,45 @@
 <div class="container space-top">
 
   <div class="card">
-
-    <div class="card-block no-border">
-
+    <!-- IMAGE NAME -->
+    <div class="card-block">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12 col-right">
+          <div class="col-10">
+            <h2>{{userImage.name}}</h2>
+          </div>
+          <div class="col-2 col-right">
             <button type="button" class="btn btn-warning" (click)="goBack()">Go Back</button>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <img src="{{imageSource}}" class="img-fluid">
+      </div>
+    </div>
+
+    <!-- IMAGE SOURCE -->
+    <div class="card-block no-border">
+      <div class="container-fluid">
+        <div class="row justify-content-md-center">
+          <div class="image-placeholder">
+            <img src="{{imageSource}}" class="img-fluid-flex">
           </div>
         </div>
       </div>
-
     </div>
+
+    <!-- IMAGE Description -->
+    <div class="card">
+      <div class="card-block">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <p>{{userImage.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+      <div class="card-footer text-muted">
+        {{getCreationDate()}}
+      </div>
   </div>
 </div>
