@@ -28,6 +28,7 @@ import {UploadModalComponent} from "./components/uploads/upload-modal.component"
 import {PersonalImageModalComponent} from "./components/personal-images/personal-image-modal.component";
 import {PersonalHolderService} from "./service/personal-holder.service";
 import {ImagePageComponent} from "./components/images/image-page.component";
+import {ImageEditPageComponent} from "./components/images/image-edit-page.component";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {ImagePageComponent} from "./components/images/image-page.component";
     UploadComponent,
     UploadModalComponent,
     PersonalImageModalComponent,
-    ImagePageComponent
+    ImagePageComponent,
+    ImageEditPageComponent
   ],
   imports: [
     BrowserModule,
@@ -92,6 +94,10 @@ import {ImagePageComponent} from "./components/images/image-page.component";
       {
         path: 'img/:id',
         component: ImagePageComponent
+      },
+      {
+        path: 'edit/img/:id',
+        component: ImageEditPageComponent
       },
       {
         path: 'uploads',

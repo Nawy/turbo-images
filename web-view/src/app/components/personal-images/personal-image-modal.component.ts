@@ -40,4 +40,9 @@ export class PersonalImageModalComponent {
     this.route.navigate(["/img", this.userImage.id]);
   }
 
+  goToEditImagePage() {
+    this.activeModal.close();
+    this.route.navigate(["/edit/img", this.userImage.id]);
+  }
+
 }
