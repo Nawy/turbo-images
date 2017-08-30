@@ -17,6 +17,7 @@ import * as moment from 'moment';
 export class ImagePageComponent implements OnInit {
   userImage: UserImage;
   imageSource: string;
+  isEditMode : boolean = false;
 
   constructor(private route: ActivatedRoute,
               private imageService: ImageService,
@@ -59,4 +60,9 @@ export class ImagePageComponent implements OnInit {
     this.imageSource = `http://${environment.imageHost}${this.userImage.image.source}`;
   }
 
+  copyToClipBoard(object : any) {
+    console.info(object);
+    object.select();
+    document.execCommand("copy");
+  }
 }
