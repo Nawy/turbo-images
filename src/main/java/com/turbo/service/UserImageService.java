@@ -122,6 +122,24 @@ public class UserImageService {
         return makeUserImage(updatedUserImage);
     }
 
+    public UserImage editUserImageName(long userImageId, String name) {
+        UserImageRepoModel userImageRepoModel = getUserImageContent(userImageId);
+        UserImageRepoModel updatedUserImage = userImageRepository.save(
+                new UserImageRepoModel(
+                        userImageRepoModel.getId(),
+                        userImageRepoModel.getUserId(),
+                        name,
+                        userImageRepoModel.getDescription(),
+                        userImageRepoModel.getCreateDate()
+                )
+        );
+
+        userImageSearchRepository.updateUserImage(
+                makeUserImage(updatedUserImage)
+        );
+        return makeUserImage(updatedUserImage);
+    }
+
     /**
      * get Repo userImage entity
      */

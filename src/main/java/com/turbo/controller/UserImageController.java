@@ -67,10 +67,20 @@ public class UserImageController {
 
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/user/image/description")
-    public UserImageDto saveUserImage(@RequestBody UserImageDescriptionDto descriptionDto) {
+    public UserImageDto saveUserImage(@RequestBody UserImageEditDto descriptionDto) {
         UserImage userImage = userImageService.editUserImageDescription(
                 descriptionDto.getUserImageId(),
-                descriptionDto.getDescription()
+                descriptionDto.getField() //description
+        );
+        return UserImageDto.from(userImage);
+    }
+
+    @Secured(SecurityRole.USER)
+    @PostMapping("/edit/user/image.name")
+    public UserImageDto editUserImageName(@RequestBody UserImageEditDto descriptionDto){
+        UserImage userImage = userImageService.editUserImageName(
+                descriptionDto.getUserImageId(),
+                descriptionDto.getField() // userImage name
         );
         return UserImageDto.from(userImage);
     }
@@ -82,13 +92,6 @@ public class UserImageController {
         List<UserImage> userImages = userImageService.getCurrentUserImages(startDate);
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
-
-//    // TODO strange! you should define user id by session id. And bulk get doesn't work
-//    @GetMapping("/get/user/images")
-//    public List<UserImageDto> getUserImages(@RequestParam("user_id") long userId) {
-//        List<UserImage> userImages = userImageService.getUserImages(userId);
-//        return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
-//    }
 
     @DeleteMapping("/remove/user/image")
     public void removeUserImage(@RequestBody UserImageRemoveDto userImageRemoveDto) {
@@ -117,24 +120,24 @@ public class UserImageController {
     }
 
 
-    private static class UserImageDescriptionDto {
+    private static class UserImageEditDto {
         private long userImageId;
-        private String description;
+        private String field;
 
-        public UserImageDescriptionDto(
+        public UserImageEditDto(
                 @JsonProperty(value = "user_image_id", required = true) long userImageId,
-                @JsonProperty(value = "description", required = true) String description
+                @JsonProperty(value = "field", required = true) String field
         ) {
             this.userImageId = userImageId;
-            this.description = description;
+            this.field = field;
         }
 
         public long getUserImageId() {
             return userImageId;
         }
 
-        public String getDescription() {
-            return description;
+        public String getField() {
+            return field;
         }
     }
 
