@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -28,7 +28,7 @@ public class Post {
     private long views;
     private Map<UserImage, String> images; // value is description
     private DeviceType deviceType;
-    private List<String> tags;
+    private Set<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
     private User user;
@@ -43,7 +43,7 @@ public class Post {
             @JsonProperty(value = "views", required = true) long views,
             @JsonProperty(value = "images", required = true) Map<UserImage, String> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
-            @JsonProperty(value = "tags", required = true) List<String> tags,
+            @JsonProperty(value = "tags") Set<String> tags,
             @JsonProperty(value = "user", required = true) User user,
             @JsonProperty("create_date") @JsonFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime createDate,
             @JsonProperty(value = "visible", defaultValue = "false") boolean visible,
@@ -55,9 +55,9 @@ public class Post {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.images = Collections.unmodifiableMap(images);
+        this.images = images == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(images);
         this.deviceType = deviceType;
-        this.tags = Collections.unmodifiableList(tags);
+        this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
         this.user = user;
         this.visible = visible;
         this.description = description;
@@ -109,7 +109,7 @@ public class Post {
     }
 
     @JsonProperty("tags")
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 

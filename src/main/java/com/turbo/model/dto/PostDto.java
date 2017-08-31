@@ -8,6 +8,7 @@ import com.turbo.util.EncryptionService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,11 +24,11 @@ public class PostDto {
     private long views;
     private List<UserImageDto> images;
     private DeviceType deviceType;
-    private List<String> tags;
+    private Set<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
 
-    public PostDto(String id, String name, long ups, long downs, long rating, long views, List<UserImageDto> images, DeviceType deviceType, List<String> tags, LocalDateTime createDate, boolean visible) {
+    public PostDto(String id, String name, long ups, long downs, long rating, long views, List<UserImageDto> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
         this.id = id;
         this.name = name;
         this.ups = ups;
@@ -95,7 +96,7 @@ public class PostDto {
         return deviceType;
     }
 
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 

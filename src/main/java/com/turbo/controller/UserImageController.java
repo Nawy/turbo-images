@@ -119,7 +119,6 @@ public class UserImageController {
         }
     }
 
-
     private static class UserImageEditDto {
         private long userImageId;
         private String field;

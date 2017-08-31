@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
@@ -30,11 +31,14 @@ public class PostRepoModel implements Serializable, IdHolder {
     private long views;
     private Map<Long, String> images; // key is UserImage_ID, value is description
     private DeviceType deviceType;
-    private List<String> tags;
+    private Set<String> tags;
     private LocalDateTime creationDateTime;
     private boolean visible;
     private long userId;
     private String description;
+
+    public PostRepoModel() {
+    }
 
     public PostRepoModel(
             Long id,
@@ -45,7 +49,7 @@ public class PostRepoModel implements Serializable, IdHolder {
             long views,
             Map<Long, String> images,
             DeviceType deviceType,
-            List<String> tags,
+            Set<String> tags,
             long userId,
             LocalDateTime creationDateTime,
             boolean visible,
@@ -57,9 +61,9 @@ public class PostRepoModel implements Serializable, IdHolder {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.images = Collections.unmodifiableMap(images);
+        this.images = images == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(images);
         this.deviceType = deviceType;
-        this.tags = Collections.unmodifiableList(tags);
+        this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
         this.userId = userId;
         this.visible = visible;
         this.description = description;
@@ -77,7 +81,7 @@ public class PostRepoModel implements Serializable, IdHolder {
                 .collect(Collectors.toMap(entry -> entry.getKey().getId(), Map.Entry::getValue));
         this.images = Collections.unmodifiableMap(convertedImages);
         this.deviceType = post.getDeviceType();
-        this.tags = Collections.unmodifiableList(post.getTags());
+        this.tags = Collections.unmodifiableSet(post.getTags());
         this.userId = post.getUser().getId();
         this.visible = post.isVisible();
         this.description = post.getDescription();
@@ -121,7 +125,7 @@ public class PostRepoModel implements Serializable, IdHolder {
         return deviceType;
     }
 
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 

@@ -19,9 +19,7 @@ import com.turbo.repository.elasticsearch.stat.PostStatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,13 +57,109 @@ public class PostService {
     }
 
     private Post update(Post post) {
-        PostRepoModel updatedPost = postRepository.save(new PostRepoModel(post));
-        postSearchRepository.updatePost(updatedPost);
+        update(new PostRepoModel(post));
         return post;
+    }
+
+    private void update(PostRepoModel post) {
+        PostRepoModel updatedPost = postRepository.save(post);
+        postSearchRepository.updatePost(updatedPost); //FIXME may be long update what to do with that?
+    }
+
+    public Post updatePostName(long postId, String name) {
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        PostRepoModel updatedRepoModel = new PostRepoModel(
+                postRepoModel.getId(),
+                name,
+                postRepoModel.getUps(),
+                postRepoModel.getDowns(),
+                postRepoModel.getRating(),
+                postRepoModel.getViews(),
+                postRepoModel.getImages(),
+                postRepoModel.getDeviceType(),
+                postRepoModel.getTags(),
+                postRepoModel.getUserId(),
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                postRepoModel.getDescription()
+        );
+        update(updatedRepoModel);
+        return makePost(updatedRepoModel);
+    }
+
+    public Post updatePostDescription(long postId, String description) {
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        PostRepoModel updatedRepoModel = new PostRepoModel(
+                postRepoModel.getId(),
+                postRepoModel.getName(),
+                postRepoModel.getUps(),
+                postRepoModel.getDowns(),
+                postRepoModel.getRating(),
+                postRepoModel.getViews(),
+                postRepoModel.getImages(),
+                postRepoModel.getDeviceType(),
+                postRepoModel.getTags(),
+                postRepoModel.getUserId(),
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                description
+        );
+        update(updatedRepoModel);
+        return makePost(updatedRepoModel);
+    }
+
+    public Post addPostTag(long postId, String tag) {
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        Set<String> updatedTags = new HashSet<>(postRepoModel.getTags());
+        updatedTags.add(tag);
+        PostRepoModel updatedRepoModel = new PostRepoModel(
+                postRepoModel.getId(),
+                postRepoModel.getName(),
+                postRepoModel.getUps(),
+                postRepoModel.getDowns(),
+                postRepoModel.getRating(),
+                postRepoModel.getViews(),
+                postRepoModel.getImages(),
+                postRepoModel.getDeviceType(),
+                updatedTags,
+                postRepoModel.getUserId(),
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                postRepoModel.getDescription()
+        );
+        update(updatedRepoModel);
+        return makePost(updatedRepoModel);
+    }
+
+    public Post removePostTag(long postId, String tag) {
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        Set<String> updatedTags = new HashSet<>(postRepoModel.getTags());
+        updatedTags.remove(tag);
+        PostRepoModel updatedRepoModel = new PostRepoModel(
+                postRepoModel.getId(),
+                postRepoModel.getName(),
+                postRepoModel.getUps(),
+                postRepoModel.getDowns(),
+                postRepoModel.getRating(),
+                postRepoModel.getViews(),
+                postRepoModel.getImages(),
+                postRepoModel.getDeviceType(),
+                updatedTags,
+                postRepoModel.getUserId(),
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                postRepoModel.getDescription()
+        );
+        update(updatedRepoModel);
+        return makePost(updatedRepoModel);
     }
 
     public Post getPostById(final long id) {
         PostRepoModel postRepoModel = postRepository.get(id);
+        return makePost(postRepoModel);
+    }
+
+    private Post makePost(PostRepoModel postRepoModel) {
         User user = userService.get(postRepoModel.getUserId());
         Map<Long, String> repoPostImageMap = postRepoModel.getImages();
         List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages().keySet());
