@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
  */
 public class UserImageRepoModel implements Serializable, IdHolder {
 
+    private final static long serialVersionUID = -4314122769916292935L;
+
     private Long id;
     private long imageId;
     private String name;
@@ -27,15 +29,8 @@ public class UserImageRepoModel implements Serializable, IdHolder {
         this.createDate = userImage.getCreationDate();
     }
 
-    public UserImageRepoModel(Long id, long imageId, String description, long userId, LocalDateTime createDate) {
+    public UserImageRepoModel(Long id, long imageId, long userId, String name, String description, LocalDateTime createDate) {
         this.id = id;
-        this.imageId = imageId;
-        this.description = description;
-        this.userId = userId;
-        this.createDate = createDate;
-    }
-
-    public UserImageRepoModel(long imageId, long userId, String name, String description, LocalDateTime createDate) {
         this.imageId = imageId;
         this.name = name;
         this.description = description;

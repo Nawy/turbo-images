@@ -62,7 +62,8 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
     }
 
     public void updateUserImage(UserImage image){
-        ImageSearchEntity searchImage = ImageSearchEntity.from(image);
+        //FIXME I'm not working!!
+        /*ImageSearchEntity searchImage = ImageSearchEntity.from(image);
 
         final SearchResponse response = searchUniqueByField(
                 config.getSearchImageIndexName(),
@@ -76,7 +77,7 @@ public class UserImageSearchRepository extends AbstractSearchRepository {
                 config.getSearchImageIndexName(),
                 config.getSearchImageTypeName(),
                 elasticId
-        ).setDoc(searchImage).get();
+        ).setDoc(searchImage).get();*/
     }
 
     public List<Long> getUserImages(final Long userId, final LocalDateTime lastDate, final int pageSize){

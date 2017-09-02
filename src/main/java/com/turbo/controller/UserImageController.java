@@ -124,10 +124,10 @@ public class UserImageController {
         private String field;
 
         public UserImageEditDto(
-                @JsonProperty(value = "user_image_id", required = true) long userImageId,
+                @JsonProperty(value = "user_image_id", required = true) String userImageId,
                 @JsonProperty(value = "field", required = true) String field
         ) {
-            this.userImageId = userImageId;
+            this.userImageId = EncryptionService.decodeHashId(userImageId);
             this.field = field;
         }
 

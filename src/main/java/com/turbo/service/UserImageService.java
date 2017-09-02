@@ -109,6 +109,7 @@ public class UserImageService {
         UserImageRepoModel updatedUserImage = userImageRepository.save(
                 new UserImageRepoModel(
                         userImageRepoModel.getId(),
+                        userImageRepoModel.getImageId(),
                         userImageRepoModel.getUserId(),
                         userImageRepoModel.getName(),
                         description,
@@ -116,10 +117,9 @@ public class UserImageService {
                 )
         );
 
-        userImageSearchRepository.updateUserImage(
-                makeUserImage(updatedUserImage)
-        );
-        return makeUserImage(updatedUserImage);
+        UserImage userImage = makeUserImage(updatedUserImage);
+        userImageSearchRepository.updateUserImage(userImage);
+        return userImage;
     }
 
     public UserImage editUserImageName(long userImageId, String name) {
@@ -127,6 +127,7 @@ public class UserImageService {
         UserImageRepoModel updatedUserImage = userImageRepository.save(
                 new UserImageRepoModel(
                         userImageRepoModel.getId(),
+                        userImageRepoModel.getImageId(),
                         userImageRepoModel.getUserId(),
                         name,
                         userImageRepoModel.getDescription(),
@@ -134,10 +135,9 @@ public class UserImageService {
                 )
         );
 
-        userImageSearchRepository.updateUserImage(
-                makeUserImage(updatedUserImage)
-        );
-        return makeUserImage(updatedUserImage);
+        UserImage userImage = makeUserImage(updatedUserImage);
+        userImageSearchRepository.updateUserImage(userImage);
+        return userImage;
     }
 
     /**

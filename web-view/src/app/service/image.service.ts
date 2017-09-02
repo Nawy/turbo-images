@@ -53,7 +53,7 @@ export class ImageService {
       });
   }
 
-  editUserImageName(userImageId: number, name: string): Promise<UserImage> {
+  editUserImageName(userImageId: string, name: string): Promise<UserImage> {
     return this.sessionService.getUserSession()
       .then(sessionID => {
         const url = `${environment.host}${environment.requests.editUserImageName}`;
@@ -70,7 +70,7 @@ export class ImageService {
       });
   }
 
-  editUserImageDescription(userImageId: number, description: string): Promise<UserImage> {
+  editUserImageDescription(userImageId: string, description: string): Promise<UserImage> {
     return this.sessionService.getUserSession()
       .then(sessionID => {
         const url = `${environment.host}${environment.requests.editUserImageDescription}`;
