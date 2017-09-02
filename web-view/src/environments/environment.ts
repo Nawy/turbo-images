@@ -8,10 +8,12 @@ export const environment = {
   host: "http://localhost:8030/api",
   imageHost: "192.168.200.1", // should be port 80
   requests: {
+
     // authorization
     signinUrl: "/signin",
     signupUrl: "/signup",
     logoutUrl: "/logout",
+
     // user service
     getUserInfoUrl: "/get/user/info",
     isUserExistsUrl: "/is/user/exists",
@@ -22,8 +24,15 @@ export const environment = {
     // image service
     addUserImageUrl: "/add/user/image",
     getUserImageUrl: "/get/user/images",
-    // "/get/user/image/{id}"
-    getUserImageByIdUrl: "/get/user/image/"
+    editUserImageDescription: "/edit/user/image/description",
+    editUserImageName: "/edit/user/image/name",
+    getUserImageByIdUrl: "/get/user/image/",
+
+    //posts
+    editPostName: "/edit/post/name",
+    editPostDescription: "/edit/post/description",
+    addPostTag: "/add/post/tag",
+    removePostTag: "/remove/post/tag"
   },
   tokenName: "SESSIONID",
   uploadPersonImage: {

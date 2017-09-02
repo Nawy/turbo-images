@@ -9,6 +9,7 @@ import com.turbo.model.search.field.PostFieldNames;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ermolaev on 5/27/17.
@@ -27,7 +28,7 @@ public class PostSearchEntity {
     private DeviceType deviceType;
     private List<String> descriptions;
     private List<Long> imageIds;
-    private List<String> tags;
+    private Set<String> tags;
     private LocalDateTime creationDate;
     private long userId;
 
@@ -37,7 +38,7 @@ public class PostSearchEntity {
             @JsonProperty(PostFieldNames.DESCRIPTIONS) List<String> descriptions,
             @JsonProperty(PostFieldNames.DEVICE_TYPE) DeviceType deviceType,
             @JsonProperty(PostFieldNames.IMAGE_IDS) List<Long> imageIds,
-            @JsonProperty(PostFieldNames.TAGS) List<String> tags,
+            @JsonProperty(PostFieldNames.TAGS) Set<String> tags,
             @JsonProperty(PostFieldNames.USER_ID) long userId,
             @JsonProperty(PostFieldNames.UPS) Long ups,
             @JsonProperty(PostFieldNames.DOWNS) Long downs,
@@ -98,7 +99,7 @@ public class PostSearchEntity {
     }
 
     @JsonProperty(PostFieldNames.NAME)
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 

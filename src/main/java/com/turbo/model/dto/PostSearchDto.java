@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
@@ -30,7 +31,7 @@ public class PostSearchDto {
     private long views;
     private String previewImage;
     private DeviceType deviceType;
-    private List<String> tags;
+    private Set<String> tags;
     private LocalDateTime createDate;
 
     public PostSearchDto(
@@ -43,7 +44,7 @@ public class PostSearchDto {
             long views,
             String previewImage,
             DeviceType deviceType,
-            List<String> tags,
+            Set<String> tags,
             LocalDateTime createDate
     ) {
         this.id = id;
@@ -97,7 +98,7 @@ public class PostSearchDto {
         return deviceType;
     }
 
-    public List<String> getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 

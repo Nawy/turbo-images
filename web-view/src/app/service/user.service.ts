@@ -4,6 +4,7 @@ import {UserInfo} from "../models/user-info.model";
 import {environment} from "../../environments/environment";
 import {Subject} from "rxjs/Subject";
 import {UserChangeField, UserChangePassword} from "../models/user-change-setting.model";
+import {SessionService} from "./session.service";
 
 /**
  * Created by ermolaev on 7/4/17.
@@ -15,7 +16,7 @@ export class UserService {
 
   private _userInfoSource = new Subject<UserInfo>();
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private sessionService: SessionService) {
   }
 
   public updateUserInfo(): Promise<UserInfo> {
@@ -43,13 +44,8 @@ export class UserService {
   }
 
   public changePassword(userChangePassword: UserChangePassword): Promise<UserInfo> {
-    return new Promise((resolve, reject) => {
-      let sessionID: string = localStorage.getItem(environment.tokenName);
-      if (sessionID == null) {
-        return reject(null)
-      }
-      return resolve(sessionID)
-    }).then(sessionID => {
+    return this.sessionService.getUserSession()
+      .then(sessionID => {
       let url = `${environment.host}${environment.requests.updateUserPassword}`;
       return this.http.post(
         url,
@@ -67,13 +63,8 @@ export class UserService {
   }
 
   public changeName(userChangeName: UserChangeField): Promise<UserInfo> {
-    return new Promise((resolve, reject) => {
-      let sessionID: string = localStorage.getItem(environment.tokenName);
-      if (sessionID == null) {
-        return reject(null)
-      }
-      return resolve(sessionID)
-    }).then(sessionID => {
+    return this.sessionService.getUserSession()
+      .then(sessionID => {
       let url = `${environment.host}${environment.requests.updateUserName}`;
       return this.http.post(
         url,
@@ -91,13 +82,8 @@ export class UserService {
   }
 
   public changeEmail(userChangeEmail: UserChangeField): Promise<UserInfo> {
-    return new Promise((resolve, reject) => {
-      let sessionID: string = localStorage.getItem(environment.tokenName);
-      if (sessionID == null) {
-        return reject(null)
-      }
-      return resolve(sessionID)
-    }).then(sessionID => {
+    return this.sessionService.getUserSession()
+      .then(sessionID => {
       let url = `${environment.host}${environment.requests.updateUserEmail}`;
       return this.http.post(
         url,
@@ -113,8 +99,6 @@ export class UserService {
       return Promise.reject(res.status)
     });
   }
-
-
 
   get userInfoSource(): Subject<UserInfo> {
     return this._userInfoSource;

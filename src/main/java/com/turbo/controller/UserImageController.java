@@ -76,7 +76,7 @@ public class UserImageController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping("/edit/user/image.name")
+    @PostMapping("/edit/user/image/name")
     public UserImageDto editUserImageName(@RequestBody UserImageEditDto descriptionDto){
         UserImage userImage = userImageService.editUserImageName(
                 descriptionDto.getUserImageId(),

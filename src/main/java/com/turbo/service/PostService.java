@@ -63,7 +63,9 @@ public class PostService {
 
     private void update(PostRepoModel post) {
         PostRepoModel updatedPost = postRepository.save(post);
-        postSearchRepository.updatePost(updatedPost); //FIXME may be long update what to do with that?
+        //FIXME add to search tags?
+        //FIXME may be long update what to do with that?
+        postSearchRepository.updatePost(updatedPost);
     }
 
     public Post updatePostName(long postId, String name) {
