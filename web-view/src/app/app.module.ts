@@ -103,11 +103,11 @@ import {SessionService} from "./service/session.service";
   providers: [
     AuthorizationService,
     UserService,
-    SessionService,
     ImageService,
     PersonalHolderService,
     LoggedGuard,
-    NotLoggedGuard
+    NotLoggedGuard,
+    SessionService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

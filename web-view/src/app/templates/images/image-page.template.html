@@ -7,7 +7,7 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-9">
-                <input class="form-control input-group-lg" [(ngModel)]="changeName.field"
+                <input class="form-control input-group-lg" placeholder="Title..." [(ngModel)]="userImage.name"
                   [ngModelOptions]="{standalone: true}">
             </div>
             <div class="col-3 col-right">
@@ -35,8 +35,13 @@
       <div class="card">
         <div class="card-block">
           <div class="container-fluid">
-            <input class="form-control" [(ngModel)]="changeDescription.field"
-                   [ngModelOptions]="{standalone: true}">
+            <textarea
+              rows="10"
+              class="form-control"
+              placeholder="Your description"
+              [(ngModel)]="userImage.description"
+              [ngModelOptions]="{standalone: true}">
+            </textarea>
           </div>
         </div>
 

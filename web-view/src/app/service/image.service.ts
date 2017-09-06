@@ -105,4 +105,8 @@ export class ImageService {
           })
       })
   }
+
+  // updateUserImage() : Promise<boolean> {
+  //
+  // }
 }
