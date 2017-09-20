@@ -15,6 +15,7 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
+import com.turbo.util.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -125,7 +126,7 @@ public class UserController {
         userService.emailValidation(field);
     }
 
-    private static class UserFieldUpdateDto{
+    private static class UserFieldUpdateDto {
         private String newField;
 
         public UserFieldUpdateDto(@JsonProperty("new_user_field") String newField) {
@@ -160,13 +161,15 @@ public class UserController {
 
     private final class UserDto {
 
-        private String name; // should be unique!
+        private String id;
+        private String name;
         private String avatarPath;
-        private String email; // should be unique!
+        private String email;
         private String password;
         private LocalDateTime createDate;
 
         public UserDto(User user) {
+            this.id = EncryptionService.encodeHashId(user.getId());
             this.name = user.getName();
             this.avatarPath = user.getAvatarPath();
             this.password = user.getPassword();
@@ -175,12 +178,14 @@ public class UserController {
         }
 
         public UserDto(
+                @JsonProperty("id") String id,
                 @JsonProperty("name") String name,
                 @JsonProperty("avatar_path") String avatarPath,
                 @JsonProperty("email") String email,
                 @JsonProperty("password") String password,
                 @JsonProperty("create_date") LocalDateTime createDate
         ) {
+            this.id = id;
             this.name = name;
             this.avatarPath = avatarPath;
             this.password = password;
@@ -191,13 +196,17 @@ public class UserController {
         @JsonIgnore
         public User toUser() {
             return new User(
-                    null,
+                    EncryptionService.decodeHashId(id),
                     name,
                     avatarPath,
                     email,
                     password,
                     createDate
             );
+        }
+
+        public String getId() {
+            return id;
         }
 
         public String getName() {

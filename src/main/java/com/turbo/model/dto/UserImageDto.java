@@ -19,6 +19,7 @@ public class UserImageDto {
     private ImageDto image;
     private String name;
     private String description;
+    private String userId;
     private LocalDateTime creationDate;
 
     public UserImageDto(
@@ -26,12 +27,14 @@ public class UserImageDto {
             ImageDto image,
             String name,
             String description,
+            String userId,
             LocalDateTime creationDate
     ) {
         this.id = id;
         this.image = image;
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.creationDate = creationDate;
     }
 
@@ -42,6 +45,7 @@ public class UserImageDto {
                 ImageDto.from(userImage.getImage()),
                 firstNonNull(userImage.getName(), ""),
                 firstNonNull(userImage.getDescription(), ""),
+                EncryptionService.encodeHashId(userImage.getUserId()),
                 userImage.getCreationDate()
         );
     }
@@ -60,6 +64,11 @@ public class UserImageDto {
 
     public String getDescription() {
         return description;
+    }
+
+    @JsonProperty("user_id")
+    public String getUserId() {
+        return userId;
     }
 
     @JsonProperty("creation_date")

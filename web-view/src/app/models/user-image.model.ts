@@ -14,4 +14,5 @@ export class UserImage {
   name: string;
   description: string;
   creation_date: string;
+  user_id: string;
 }

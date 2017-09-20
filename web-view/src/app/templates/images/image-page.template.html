@@ -7,8 +7,12 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-9">
-                <input class="form-control input-group-lg" placeholder="Title..." [(ngModel)]="userImage.name"
-                  [ngModelOptions]="{standalone: true}">
+              <input class="form-control input-group-lg input-header"
+                     placeholder="Title..."
+                     *ngIf="userImage"
+                     [(ngModel)]="userImage.name"
+                     maxlength="100"
+                     [ngModelOptions]="{standalone: true}">
             </div>
             <div class="col-3 col-right">
               <div class="btn-group">
@@ -36,8 +40,11 @@
         <div class="card-block">
           <div class="container-fluid">
             <textarea
-              rows="10"
-              class="form-control"
+              id="desc"
+              class="form-control description"
+              maxlength="3000"
+              *ngIf="userImage"
+              (input)="autoGrow()"
               placeholder="Your description"
               [(ngModel)]="userImage.description"
               [ngModelOptions]="{standalone: true}">
@@ -52,7 +59,7 @@
               <form>
                 <div class="row">
 
-                  <div class="col-3">
+                  <div class="col-auto">
                     <div class="form-group">
                       <label>Direct Link</label>
                       <div class="input-group">
@@ -65,7 +72,7 @@
                     </div>
                   </div>
 
-                  <div class="col-3">
+                  <div class="col-auto">
                     <div class="form-group">
                       <label>HTML Code</label>
                       <div class="input-group">
@@ -78,7 +85,7 @@
                     </div>
                   </div>
 
-                  <div class="col-3">
+                  <div class="col-auto">
                     <div class="form-group">
                       <label>
                         Markdown Link
@@ -94,7 +101,7 @@
                     </div>
                   </div>
 
-                  <div class="col-3">
+                  <div class="col-auto">
                     <div class="form-group">
                       <label>
                         BBCode
