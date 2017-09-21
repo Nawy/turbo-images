@@ -8,8 +8,6 @@ import {environment} from "../../../environments/environment";
 import {UserInfo} from "../../models/user-info.model";
 import {UserService} from "app/service/user.service";
 import {Subject} from "rxjs/Subject";
-import {Observable} from "rxjs/Observable";
-import {Scheduler} from "rxjs/Scheduler";
 
 /**
  * Created by ermolaev on 7/23/17.
@@ -71,17 +69,20 @@ export class ImagePageComponent implements OnInit {
   }
 
   saveDescription() {
-    if (this.userImage.user_id != this.userInfo.id) return;
     this.imageService
       .editUserImageDescription(this.userImage.id, this.userImage.description)
       .then(userImage => this.userImage = userImage);
   }
 
   saveTitle() {
-    if (this.userImage.user_id != this.userInfo.id) return;
     this.imageService
       .editUserImageName(this.userImage.id, this.userImage.name)
       .then(userImage => this.userImage = userImage);
+  }
+
+  isReadonly(){
+    return true;
+    //return this.userImage.user_id != this.userInfo.id;
   }
 
   private fillFields() {
