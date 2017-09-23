@@ -1,10 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">Image</h4>
-  <div class="row">
-    <div class="col-12">
-      <button type="button" class="btn btn-primary" (click)="goToImagePage()">View and Edit Image</button>
-    </div>
-  </div>
+  <button type="button" class="btn btn-primary" (click)="goToImagePage()">View and Edit Image</button>
   <button type="button" class="btn btn-warning" (click)="close()">Close</button>
 </div>
 <div class="modal-body no-border">
@@ -46,7 +42,7 @@
               </label>
               <input #markdownLinkInput class="form-control" value="[turbo-images]({{imageSource}})" readonly>
               <span class="input-group-btn">
-                <button class="btn btn-primary" (click)="copyToClipBoard(markdownLinkInput)"  type="button">Copy</button>
+                <button class="btn btn-primary" (click)="copyToClipBoard(markdownLinkInput)" type="button">Copy</button>
               </span>
             </div>
           </div>
@@ -57,7 +53,7 @@
                 BBCode
                 <small class="text-muted">(forums, blogs)</small>
               </label>
-              <input #bbCodeInput class="form-control" value="[img]{{imageSource}}[/img]"  readonly>
+              <input #bbCodeInput class="form-control" value="[img]{{imageSource}}[/img]" readonly>
               <span class="input-group-btn">
                 <button class="btn btn-primary" (click)="copyToClipBoard(bbCodeInput)" type="button">Copy</button>
               </span>

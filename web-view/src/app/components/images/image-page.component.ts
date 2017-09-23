@@ -7,7 +7,6 @@ import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";
 import {UserInfo} from "../../models/user-info.model";
 import {UserService} from "app/service/user.service";
-import {Subject} from "rxjs/Subject";
 
 /**
  * Created by ermolaev on 7/23/17.
@@ -19,8 +18,8 @@ import {Subject} from "rxjs/Subject";
 })
 export class ImagePageComponent implements OnInit {
 
-  private titleObserver = new Subject<string>();
-  private descriptionObserver = new Subject<string>();
+  private autoUpdateInterval: number = environment.autoUpdateInterval;
+  private updateTimer;
   userInfo: UserInfo = null;
 
   userImage: UserImage;
@@ -60,6 +59,24 @@ export class ImagePageComponent implements OnInit {
 
   }
 
+  deferredTitleUpdate() {
+    clearTimeout(this.updateTimer);
+    this.updateTimer = setTimeout(
+      () => this.saveTitle(),
+      this.autoUpdateInterval
+    );
+  }
+
+  deferredDescriptionUpdate() {
+    clearTimeout(this.updateTimer);
+    this.updateTimer = setTimeout(
+      () => this.saveDescription(),
+      this.autoUpdateInterval
+    );
+  }
+
+
+
   goBack() {
     this.location.back();
   }
@@ -80,13 +97,14 @@ export class ImagePageComponent implements OnInit {
       .then(userImage => this.userImage = userImage);
   }
 
-  isReadonly(){
-    return true;
-    //return this.userImage.user_id != this.userInfo.id;
+  isReadonly() {
+    //return true;
+    return this.userImage.user_id != this.userInfo.id;
   }
 
   private fillFields() {
     this.imageSource = `http://${environment.imageHost}${this.userImage.image.source}`;
+    this.creationDate = this.userImage.creation_date;
   }
 
   copyToClipBoard(object: any) {

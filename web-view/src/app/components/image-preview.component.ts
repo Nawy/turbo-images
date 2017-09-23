@@ -50,4 +50,8 @@ export class ImagePreviewComponent {
   onMouseOut(): void {
     this.useClass = this.defaultClass;
   }
+
+  getTitle() {
+    return this.userImage.name
+  }
 }

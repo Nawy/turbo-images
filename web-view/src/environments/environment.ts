@@ -37,5 +37,6 @@ export const environment = {
   tokenName: "SESSIONID",
   uploadPersonImage: {
     pageSize: 30
-  }
+  },
+  autoUpdateInterval: 2000, //autoupdate in milliseconds
 };
