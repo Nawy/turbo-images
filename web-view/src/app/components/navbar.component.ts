@@ -34,7 +34,7 @@ export class NavbarComponent {
   }
 
   addImage() {
-    this.uploadModal = this.modalService.open(UploadModalComponent);
+    this.uploadModal = this.modalService.open(UploadModalComponent, { size: "lg" });
   }
 
   logout() {

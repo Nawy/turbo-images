@@ -1,6 +1,8 @@
 <div class="card card-without-border">
 
-  <img src="{{imageSource}}" class="img-fluid-flex" alt="Responsive image">
+  <div class="image-placeholder">
+    <img src="{{imageSource}}" class="img-fluid-flex" alt="Responsive image">
+  </div>
   <div class="card-block">
     <form>
       <div class="form-group">
@@ -15,7 +17,7 @@
         <button type="button" class="btn btn-primary btn-sm">save</button>
       </div>
     </form>
-    <p class="card-text"><small class="text-muted">Uploaded {{userImage.create_date}}</small></p>
+    <p class="card-text"><small class="text-muted">Uploaded {{userImage.creation_date}}</small></p>
   </div>
 </div>
 

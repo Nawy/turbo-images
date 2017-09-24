@@ -1,24 +1,36 @@
 <div class="container space-top">
 
-  <div class="card">
-    <div class="card-block">
-      <h3 class="card-title">Uploaded Images</h3>
+  <div class="container">
+    <div class="row justify-content-md-center">
 
-      <div class="progress" *ngIf="uploadedImagesCount != totalImageCount">
-        <div class="progress-bar" role="progressbar" [style.width]="uploadedProgress + '%'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-          {{uploadedImagesCount}} from {{totalImageCount}} images uploaded
+      <div class="col-9">
+        <div class="card">
+          <div class="card-block">
+            <h3 class="card-title">Uploaded Images</h3>
+
+            <div class="progress" *ngIf="uploadedImagesCount != totalImageCount">
+              <div class="progress-bar" role="progressbar" [style.width]="uploadedProgress + '%'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                {{uploadedImagesCount}} from {{totalImageCount}} images uploaded
+              </div>
+            </div>
+
+            <!-- loader -->
+            <div class="row justify-content-md-center" *ngIf="uploadedImagesCount != totalImageCount">
+              <img src="/assets/loader.svg">
+            </div>
+          </div>
+
+          <div class="card-block without-side-space">
+            <s-upload-preview *ngFor="let image of images" [user_image]="image"></s-upload-preview>
+          </div>
         </div>
       </div>
 
-      <!-- loader -->
-      <div class="row justify-content-md-center" *ngIf="uploadedImagesCount != totalImageCount">
-        <img src="/assets/loader.svg">
+      <div class="col-3">
+        <button type="button" class="btn btn-success btn-block">Share with Community</button>
       </div>
     </div>
-
-    <div class="card-block without-side-space">
-      <s-upload-preview *ngFor="let image of images" [user_image]="image"></s-upload-preview>
-    </div>
   </div>
+
 </div>
 
