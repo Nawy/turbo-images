@@ -53,10 +53,11 @@ export class ImagePageComponent implements OnInit {
           .then(image => {
             this.userImage = image;
             this.fillFields();
+            // this required because autogrow work only if window component is loaded and filled with data
+            setTimeout(() => this.autoGrow(),20)
           });
       }
     );
-
   }
 
   deferredTitleUpdate() {

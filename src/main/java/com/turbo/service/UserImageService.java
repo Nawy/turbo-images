@@ -24,24 +24,24 @@ import java.util.stream.Collectors;
 @Service
 public class UserImageService {
 
+    private static final int PAGE_SIZE = 30;
+
     private final UserImageRepository userImageRepository;
     private final UserImageSearchRepository userImageSearchRepository;
     private final ImageService imageService;
     private final UserImageCollectionRepository userImageCollectionRepository;
-    private final AuthorizationService authorizationService;
 
     @Autowired
     public UserImageService(
             UserImageRepository userImageRepository,
             UserImageSearchRepository userImageSearchRepository,
             ImageService imageService,
-            UserImageCollectionRepository userImageCollectionRepository,
-            AuthorizationService authorizationService) {
+            UserImageCollectionRepository userImageCollectionRepository
+    ) {
         this.userImageRepository = userImageRepository;
         this.userImageSearchRepository = userImageSearchRepository;
         this.imageService = imageService;
         this.userImageCollectionRepository = userImageCollectionRepository;
-        this.authorizationService = authorizationService;
     }
 
     public void removeUserImage(long userId, long userImageId) {
@@ -76,10 +76,8 @@ public class UserImageService {
         );
     }
 
-    public List<UserImage> getCurrentUserImages(final LocalDateTime dateTime) {
-        final long userId = authorizationService.getCurrentUserId();
-
-        final List<Long> userImageIds = userImageSearchRepository.getUserImages(userId, dateTime, 30);
+    public List<UserImage> getCurrentUserImages(final long userId, final LocalDateTime dateTime) {
+        final List<Long> userImageIds = userImageSearchRepository.getUserImages(userId, dateTime, PAGE_SIZE);
         return getUserImages(userImageIds);
     }
 

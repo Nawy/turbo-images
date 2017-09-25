@@ -13,7 +13,7 @@ import {NavbarComponent} from "./components/navbar.component";
 import {ImagesComponent} from "./components/images.component";
 import {CommentComponent} from "./components/comment.component";
 import {SettingsComponent} from "./components/settings.component";
-import {PersonalPostsComponent} from "./components/personal-posts.component";
+import {PersonalPostsComponent} from "./components/personal-posts/personal-posts.component";
 import {PostPreviewComponent} from "./components/postpreview.component";
 import {AuthorizationService} from "./service/authorization.service";
 import {UserService} from "./service/user.service";
@@ -59,7 +59,7 @@ import {SessionService} from "./service/session.service";
     RouterModule.forRoot([
       {
         path: "",
-        component: ImagesComponent
+        component: ImagesComponent //FIXME is it needed?
       },
       {
         path: "signup",

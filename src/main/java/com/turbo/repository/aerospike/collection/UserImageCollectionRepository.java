@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
  * Created by rakhmetov on 26.06.17.
  */
 @Repository
+//FIXME I'm not needed?
 public class UserImageCollectionRepository extends AbstractAerospikeCollectionRepository {
 
     public UserImageCollectionRepository(

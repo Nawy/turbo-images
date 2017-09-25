@@ -54,7 +54,8 @@ public class PostSearchRepository extends AbstractSearchRepository {
     }
 
     public void updatePost(final PostRepoModel post) {
-        Objects.requireNonNull(post.getId(), "for update post you need have id for update");
+        //FIXME commited while think how update fast
+       /* Objects.requireNonNull(post.getId(), "for update post you need have id for update");
         final String elasticId = getPostElasticId(post.getId());
         elasticClient.prepareUpdate(
                 config.getSearchPostIndexName(),
@@ -63,7 +64,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         ).setDoc(
                 elasticUtils.writeAsJsonBytes(new PostSearchEntity(post)),
                 XContentType.JSON
-        ).setRetryOnConflict(5).get();
+        ).setRetryOnConflict(5).get();*/
     }
 
     public String getPostElasticId(final Long id) {

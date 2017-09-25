@@ -38,5 +38,6 @@ export const environment = {
   uploadPersonImage: {
     pageSize: 30
   },
+  pageSize:30,
   autoUpdateInterval: 2000, //autoupdate in milliseconds
 };

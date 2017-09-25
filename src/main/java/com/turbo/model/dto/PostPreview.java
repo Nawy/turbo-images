@@ -10,7 +10,6 @@ import com.turbo.util.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,12 +18,11 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 /**
  * Created by ermolaev on 6/12/17.
  */
-public class PostSearchDto {
-
+public class PostPreview {
 
     private String id;
     private String name;
-    private String desciption;
+    private String description;
     private long ups;
     private long downs;
     private long rating;
@@ -34,10 +32,10 @@ public class PostSearchDto {
     private Set<String> tags;
     private LocalDateTime createDate;
 
-    public PostSearchDto(
+    public PostPreview(
             String id,
             String name,
-            String desciption,
+            String description,
             long ups,
             long downs,
             long rating,
@@ -49,7 +47,7 @@ public class PostSearchDto {
     ) {
         this.id = id;
         this.name = name;
-        this.desciption = desciption;
+        this.description = description;
         this.ups = ups;
         this.downs = downs;
         this.rating = rating;
@@ -68,8 +66,8 @@ public class PostSearchDto {
         return name;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
     public long getUps() {
@@ -109,7 +107,7 @@ public class PostSearchDto {
     }
 
     @JsonIgnore
-    public static PostSearchDto from(Post post) {
+    public static PostPreview from(Post post) {
         final UserImage imageWithDescription= post.getImages().keySet()
                 .stream()
                 .filter(
@@ -119,7 +117,7 @@ public class PostSearchDto {
 
         Objects.requireNonNull(imageWithDescription);
 
-        return new PostSearchDto(
+        return new PostPreview(
                 EncryptionService.encodeHashId(post.getId()),
                 post.getName(),
                 firstNonNull(

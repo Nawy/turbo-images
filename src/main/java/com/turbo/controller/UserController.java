@@ -69,21 +69,6 @@ public class UserController {
     }
 
     @Secured(SecurityRole.USER)
-    @GetMapping("/get/user/posts")
-    public Paginator<Post> getUserPosts(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "RATING") SearchSort sort,
-            @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
-            @RequestParam(value = "order", defaultValue = "DESC") SearchOrder order
-    ) {
-        final long userId = authorizationService.getCurrentUserId();
-        return new Paginator<>(
-                page,
-                postService.getUserPosts(page, userId, new SearchPattern(period, sort, order))
-        );
-    }
-
-    @Secured(SecurityRole.USER)
     @PostMapping("/update/user/password")
     public UserDto updateUserPassword(@RequestBody UserPasswordChangeDto userPasswordChangeDto) {
         String newPassword = userPasswordChangeDto.getNewPassword();

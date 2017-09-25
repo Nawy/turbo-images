@@ -63,7 +63,7 @@
                     <div class="form-group">
                       <label>Direct Link</label>
                       <div class="input-group">
-                        <input #directLinkInput class="form-control view-only-input" value="{{imageSource}}" readonly>
+                        <input #directLinkInput class="form-control" value="{{imageSource}}" readonly>
                         <span class="input-group-btn">
                         <button class="btn btn-primary" (click)="copyToClipBoard(directLinkInput)"
                                 type="button">Copy</button>
@@ -76,7 +76,7 @@
                     <div class="form-group">
                       <label>HTML Code</label>
                       <div class="input-group">
-                        <input #htmlCodeInput class="form-control view-only-input" value='<img src="{{imageSource}}">' readonly>
+                        <input #htmlCodeInput class="form-control" value='<img src="{{imageSource}}">' readonly>
                         <span class="input-group-btn">
                         <button class="btn btn-primary" (click)="copyToClipBoard(htmlCodeInput)"
                                 type="button">Copy</button>
@@ -92,7 +92,7 @@
                         <small class="text-muted">(Raddit comments)</small>
                       </label>
                       <div class="input-group">
-                        <input #markdownLinkInput class="form-control view-only-input" value="[turbo-images]({{imageSource}})" readonly>
+                        <input #markdownLinkInput class="form-control" value="[turbo-images]({{imageSource}})" readonly>
                         <span class="input-group-btn">
                         <button class="btn btn-primary" (click)="copyToClipBoard(markdownLinkInput)"
                                 type="button">Copy</button>
@@ -108,7 +108,7 @@
                         <small class="text-muted">(forums, blogs)</small>
                       </label>
                       <div class="input-group">
-                        <input #bbCodeInput class="form-control view-only-input" value="[img]{{imageSource}}[/img]" readonly>
+                        <input #bbCodeInput class="form-control" value="[img]{{imageSource}}[/img]" readonly>
                         <span class="input-group-btn">
                         <button class="btn btn-primary" (click)="copyToClipBoard(bbCodeInput)"
                                 type="button">Copy</button>

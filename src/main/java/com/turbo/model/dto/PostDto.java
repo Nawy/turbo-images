@@ -8,7 +8,9 @@ import com.turbo.util.EncryptionService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -22,13 +24,13 @@ public class PostDto {
     private long downs;
     private long rating;
     private long views;
-    private List<UserImageDto> images;
+    private Map<UserImageDto,String> images;
     private DeviceType deviceType;
     private Set<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
 
-    public PostDto(String id, String name, long ups, long downs, long rating, long views, List<UserImageDto> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
+    public PostDto(String id, String name, long ups, long downs, long rating, long views, Map<UserImageDto,String> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
         this.id = id;
         this.name = name;
         this.ups = ups;
@@ -44,9 +46,8 @@ public class PostDto {
 
     @JsonIgnore
     public static PostDto from(Post post) {
-        List<UserImageDto> userImageDtos = post.getImages().keySet().stream()
-                .map(UserImageDto::from)
-                .collect(Collectors.toList());
+        Map<UserImageDto,String> userImageDtos = post.getImages().entrySet().stream()
+                .collect(Collectors.toMap(entry -> UserImageDto.from(entry.getKey()), Map.Entry::getValue));
 
         return new PostDto(
                 EncryptionService.encodeHashId(post.getId()),
@@ -87,7 +88,7 @@ public class PostDto {
         return views;
     }
 
-    public List<UserImageDto> getImages() {
+    public Map<UserImageDto,String> getImages() {
         return images;
     }
 

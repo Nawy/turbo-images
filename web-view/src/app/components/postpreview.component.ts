@@ -3,12 +3,13 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {PostPreview} from "../models/postpreview.model";
+import {PostPreview} from "../models/post-preview.model";
 
 @Component({
   selector: "s-postpreview",
   templateUrl: './../templates/postpreview.template.html'
 })
+//FIXME is component needed?
 export class PostPreviewComponent {
   @Input("postdata") postdata: PostPreview;
 

@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.PostDto;
-import com.turbo.model.dto.PostSearchDto;
-import com.turbo.model.page.Paginator;
+import com.turbo.model.dto.PostPreview;
+import com.turbo.model.search.SearchOrder;
+import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.SearchSort;
+import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,25 +26,42 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+    private final AuthorizationService authorizationService;
 
-    @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, AuthorizationService authorizationService) {
         this.postService = postService;
+        this.authorizationService = authorizationService;
     }
 
     @GetMapping("/get/viral/post")
-    public Paginator<PostSearchDto> getMostViral(
+    public List<PostPreview> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort,
             @RequestParam(value = "period", defaultValue = "DAY") SearchPeriod searchPeriod
     ) {
-        return new Paginator<>(
-                page,
+        return toPostSearchDtos(
                 postService.getMostViral(page, searchPeriod, searchSort)
-                        .stream()
-                        .map(PostSearchDto::from)
-                        .collect(Collectors.toList())
         );
+    }
+
+    @Secured(SecurityRole.USER)
+    @GetMapping("/get/user/posts")
+    public List<PostPreview> getUserPosts(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "sort", defaultValue = "NEWEST") SearchSort sort,
+            @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
+            @RequestParam(value = "order", defaultValue = "DESC") SearchOrder order
+    ) {
+        final long userId = authorizationService.getCurrentUserId();
+        return toPostSearchDtos(
+                postService.getUserPosts(page, userId, new SearchPattern(period, sort, order))
+        );
+    }
+
+    private List<PostPreview> toPostSearchDtos(List<Post> posts) {
+        return posts.stream()
+                .map(PostPreview::from)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/get/post/{id}")
@@ -63,11 +82,11 @@ public class PostController {
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/post/name")
     public PostDto editPostName(@RequestBody PostEditDto postEditDto) {
-       Post updatePost = postService.updatePostName(
+        Post updatePost = postService.updatePostName(
                 postEditDto.getPostId(),
                 postEditDto.getField()
         );
-       return PostDto.from(updatePost);
+        return PostDto.from(updatePost);
     }
 
     @Secured(SecurityRole.USER)

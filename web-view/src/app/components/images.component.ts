@@ -2,7 +2,7 @@
  * Created by ermolaev on 5/9/17.
  */
 import {Component} from "@angular/core";
-import {PostPreview} from "../models/postpreview.model";
+import {PostPreview} from "../models/post-preview.model";
 import {environment} from "../../environments/environment";
 
 @Component({
@@ -10,6 +10,7 @@ import {environment} from "../../environments/environment";
   templateUrl: './../templates/images.template.html',
   styleUrls: ['./../css/images.style.css']
 })
+//FIXME Component deprecated???
 export class ImagesComponent {
 
   postPreviews: PostPreview[];
@@ -26,7 +27,7 @@ export class ImagesComponent {
     for (var i = 0; i < count;) {
       var path: string;
       for (path in pathes) {
-        this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random() * 100));
+        //this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random() * 100));
         i++;
         if (i >= count) break;
       }

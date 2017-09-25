@@ -77,7 +77,7 @@ public class UserImageController {
 
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/user/image/name")
-    public UserImageDto editUserImageName(@RequestBody UserImageEditDto descriptionDto){
+    public UserImageDto editUserImageName(@RequestBody UserImageEditDto descriptionDto) {
         UserImage userImage = userImageService.editUserImageName(
                 descriptionDto.getUserImageId(),
                 descriptionDto.getField() // userImage name
@@ -89,7 +89,8 @@ public class UserImageController {
     @GetMapping("/get/user/images")
     public List<UserImageDto> getUserImages(
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate) {
-        List<UserImage> userImages = userImageService.getCurrentUserImages(startDate);
+        long userId = authorizationService.getCurrentUserId();
+        List<UserImage> userImages = userImageService.getCurrentUserImages(userId, startDate);
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());
     }
 
