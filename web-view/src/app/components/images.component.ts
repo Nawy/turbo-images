@@ -6,7 +6,6 @@ import {PostPreview} from "../models/post-preview.model";
 import {environment} from "../../environments/environment";
 
 @Component({
-  selector: "s-images",
   templateUrl: './../templates/images.template.html',
   styleUrls: ['./../css/images.style.css']
 })

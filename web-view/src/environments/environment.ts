@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   host: "http://localhost:8030/api",
-  imageHost: "192.168.200.1", // should be port 80
+  imageHost: "192.168.1.64", // should be port 80
   requests: {
 
     // authorization
@@ -39,5 +39,5 @@ export const environment = {
     pageSize: 30
   },
   pageSize:30,
-  autoUpdateInterval: 2000, //autoupdate in milliseconds
+  autoUpdateInterval: 2000 //autoupdate in milliseconds
 };

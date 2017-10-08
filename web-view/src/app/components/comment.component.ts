@@ -5,7 +5,7 @@
 import {Component} from '@angular/core'
 
 @Component({
-  selector: "comment",
+  selector: "s-comment",
   templateUrl: './../templates/comment.template.html',
   styleUrls: ['./../css/comment.style.css']
 })
