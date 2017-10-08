@@ -27,7 +27,13 @@ export class ImagesComponent {
     for (var i = 0; i < count;) {
       var path: string;
       for (path in pathes) {
-        //this.postPreviews[i] = new PostPreview(i, pathes[path], Math.floor(Math.random() * 100));
+        var rawPostPreview = new PostPreview();
+        rawPostPreview.id = String(i);
+        rawPostPreview.preview_image = pathes[path];
+        rawPostPreview.rating = Math.floor(Math.random() * 100);
+        this.postPreviews[i] = rawPostPreview;
+
+          //new PostPreview(i, pathes[path], Math.floor(Math.random() * 100));
         i++;
         if (i >= count) break;
       }

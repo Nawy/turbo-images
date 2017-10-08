@@ -1,7 +1,7 @@
 <a [routerLink]="['/post', postdata.id]">
   <img
-    src="{{postdata.path}}"
-    alt="{{postdata.path}}"
+    src="{{postdata.preview_image}}"
+    alt="{{postdata.preview_image}}"
     class="rounded postpreview-margin postpreview-medium-size {{useClass}}"
     (mouseover)="onMouseOver()"
     (mouseout)="onMouseOut()"
