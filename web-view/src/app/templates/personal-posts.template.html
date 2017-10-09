@@ -1,6 +1,6 @@
 <div class="container space-top">
   <div class="card">
-    <div class="card-block">
+    <div class="card-body">
       <h3 class="card-title">My Images</h3>
 
       <div *ngFor="let imageMap of imagesMap">
@@ -8,7 +8,7 @@
           <h2><span class="badge badge-pill badge-default">{{imageMap.getCreationDate()}}</span></h2>
         </div>
 
-        <div class="card-block medium-margin">
+        <div class="card-body medium-margin">
           <div class="row justify-content-center">
             <div class="col-auto" *ngFor="let image of imageMap.images">
               <s-image-preview [user_image]="image"></s-image-preview>

@@ -13,11 +13,11 @@
             <ng-template let-c="close" let-d="dismiss"></ng-template>
             <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
 
-            <div ngbDropdown *ngIf="userInfo" class="btn-group" role="group">
-              <button type="button" class="btn btn-primary" id="userMenu" ngbDropdownToggle>
+            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" class="btn-group" role="group">
+              <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
                 @{{userInfo.name}} <span class="caret"></span>
               </button>
-              <div class="dropdown-menu" aria-labelledby="userMenu">
+              <div ngbDropdownMenu aria-labelledby="dropdownManual">
                 <a class="dropdown-item" routerLink="/my-images">My Images</a>
                 <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
                 <a class="dropdown-item" routerLink="/settings">Settings</a>

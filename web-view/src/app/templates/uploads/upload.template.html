@@ -5,7 +5,7 @@
 
       <div class="col-9">
         <div class="card">
-          <div class="card-block">
+          <div class="card-body">
             <h3 class="card-title">Uploaded Images</h3>
 
             <div class="progress" *ngIf="uploadedImagesCount != totalImageCount">
@@ -20,7 +20,7 @@
             </div>
           </div>
 
-          <div class="card-block without-side-space">
+          <div class="card-body without-side-space">
             <s-upload-preview *ngFor="let image of images" [user_image]="image"></s-upload-preview>
           </div>
         </div>

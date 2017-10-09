@@ -2,19 +2,14 @@
  * Created by ermolaev on 7/3/17.
  */
 
-export const SUCCESS_INPUT : InputTextFormClass = {
+export const VALID_INPUT : InputTextFormClass = {
   groupClass: "has-success",
-  formControlClass: "form-control-success"
+  formControlClass: "is-valid"
 };
 
-export const WARNING_INPUT : InputTextFormClass = {
-  groupClass: "has-warning",
-  formControlClass: "form-control-warning"
-};
-
-export const DANGER_INPUT : InputTextFormClass = {
+export const INVALID_INPUT : InputTextFormClass = {
   groupClass: "has-danger",
-  formControlClass: "form-control-danger"
+  formControlClass: "is-invalid"
 };
 
 export const EMPTY_INPUT : InputTextFormClass = {

@@ -12,7 +12,7 @@ import {
   UserChangePasswordForm
 } from "../models/forms/user-change-settings.model";
 import {UserChangeField, UserChangePassword} from "../models/user-change-setting.model";
-import {DANGER_INPUT, EMPTY_INPUT, InputTextForm, SUCCESS_INPUT} from "../models/input-text.model";
+import {INVALID_INPUT, EMPTY_INPUT, InputTextForm, VALID_INPUT} from "../models/input-text.model";
 import {AuthorizationService} from "../service/authorization.service";
 import {isUndefined} from "util";
 
@@ -68,21 +68,21 @@ export class SettingsComponent {
 
       //old password
       if (this.changePassword.oldPassword == null || this.changePassword.oldPassword == '') {
-        this.oldPasswordSettingForm.setValue(DANGER_INPUT, "Password is empty!");
+        this.oldPasswordSettingForm.setValue(INVALID_INPUT, "Password is empty!");
         return reject()
       }
       this.oldPasswordSettingForm.setValue(EMPTY_INPUT, "");
 
       //new password
       if (!this.passwordRegExp.test(this.changePassword.newPassword)) {
-        this.passwordSettingForm.setValue(DANGER_INPUT, "Password must have min 6 symbols!");
+        this.passwordSettingForm.setValue(INVALID_INPUT, "Password must have min 6 symbols!");
         return reject()
       }
       this.passwordSettingForm.setValue(EMPTY_INPUT, "");
 
       //check similarity of passwords
       if (this.changePassword.newPassword != this.changePassword.newPasswordRepeat) {
-        this.repeatPasswordSettingForm.setValue(DANGER_INPUT, "Password doesn't match!");
+        this.repeatPasswordSettingForm.setValue(INVALID_INPUT, "Password doesn't match!");
         return reject()
       }
       this.repeatPasswordSettingForm.setValue(EMPTY_INPUT, "");
@@ -111,7 +111,7 @@ export class SettingsComponent {
 
       //check correct name
       if (!this.nameRegExp.test(name)) {
-        this.nameSettingForm.setValue(DANGER_INPUT, "Name is wrong!");
+        this.nameSettingForm.setValue(INVALID_INPUT, "Name is wrong!");
         return reject()
       }
 
@@ -120,7 +120,7 @@ export class SettingsComponent {
       .then(() => this.authorizedService.isExistsNameOrEmail(name))
       .then(nameExists => {
         if (nameExists == true) {
-          this.nameSettingForm.setValue(DANGER_INPUT, `${name} already exists!`);
+          this.nameSettingForm.setValue(INVALID_INPUT, `${name} already exists!`);
           return Promise.reject(null)
         }
         this.nameSettingForm.setValue(EMPTY_INPUT, "");
@@ -129,8 +129,8 @@ export class SettingsComponent {
           new UserChangeField(name)
         )
       })
-      .then(() => this.nameSettingForm.setValue(SUCCESS_INPUT, "Name changed"))
-      .catch(() => this.nameSettingForm.setValue(DANGER_INPUT, "Internal error"));
+      .then(() => this.nameSettingForm.setValue(VALID_INPUT, "Name changed"))
+      .catch(() => this.nameSettingForm.setValue(INVALID_INPUT, "Internal error"));
   }
 
   onChangeEmail() {
@@ -141,11 +141,11 @@ export class SettingsComponent {
 
       //correct email
       if (email == null || email == "") {
-        this.emailSettingForm.setValue(DANGER_INPUT, "Email is empty!");
+        this.emailSettingForm.setValue(INVALID_INPUT, "Email is empty!");
         return reject()
       }
       if (!this.emailRegExp.test(email)) {
-        this.emailSettingForm.setValue(DANGER_INPUT, "Incorrect email!");
+        this.emailSettingForm.setValue(INVALID_INPUT, "Incorrect email!");
         return reject()
       }
 
@@ -154,7 +154,7 @@ export class SettingsComponent {
       .then(() => this.authorizedService.isExistsNameOrEmail(email))
       .then(res => {
         if (res != false) {
-          this.emailSettingForm.setValue(DANGER_INPUT, `${email} already exists!`);
+          this.emailSettingForm.setValue(INVALID_INPUT, `${email} already exists!`);
           return Promise.reject(null)
         }
 
@@ -162,8 +162,8 @@ export class SettingsComponent {
           new UserChangeField(email)
         )
       })
-      .then(() => this.emailSettingForm.setValue(SUCCESS_INPUT, "Email changed"))
-      .catch(() => this.emailSettingForm.setValue(DANGER_INPUT, "Internal error"));
+      .then(() => this.emailSettingForm.setValue(VALID_INPUT, "Email changed"))
+      .catch(() => this.emailSettingForm.setValue(INVALID_INPUT, "Internal error"));
   }
 
 }
