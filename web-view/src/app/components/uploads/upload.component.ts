@@ -19,6 +19,10 @@ export class UploadComponent implements OnInit {
   uploadedProgress: number;
   totalImageCount: number;
 
+  tagsModel : string;
+
+  tags : Array<string> = [];
+
   constructor(private imageService : ImageService, private router: Router) {
     if(this.imageService.uploadFiles == null) {
       this.router.navigateByUrl("/my-images");
@@ -50,4 +54,13 @@ export class UploadComponent implements OnInit {
     this.imageService.uploadFiles = null;
   }
 
+
+  public updateTags() {
+    this.tags = [];
+    this.tagsModel.trim()
+      .split(",")
+      .forEach(value => {
+        this.tags.push(value.trim());
+      });
+  }
 }
