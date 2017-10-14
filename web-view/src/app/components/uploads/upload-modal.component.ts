@@ -25,7 +25,19 @@ export class UploadModalComponent {
     console.debug("DROP");
     event.preventDefault();
     event.stopPropagation();
-    this.imageService.uploadFiles = event.dataTransfer.files;
+    this.uploadImage(
+      event.dataTransfer.files
+    );
+  }
+
+  changeImageInput(event:any){
+    this.uploadImage(
+      event.target.files
+    );
+  }
+
+  uploadImage(images:Array<File>){
+    this.imageService.uploadFiles = images;
     this.activeModal.close();
     console.info("Current: "  + this.router.url);
     if(this.router.url == "/uploads") {
@@ -35,6 +47,8 @@ export class UploadModalComponent {
       this.router.navigateByUrl("uploads");
     }
   }
+
+
 
   dragoverImage(event : any) {
     event.preventDefault();

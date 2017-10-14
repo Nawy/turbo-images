@@ -16,7 +16,7 @@
           <div class="col-12 col-md-auto">
             <p>Drag here your images...<br></p>
             <label class="btn btn-outline-success">
-              Browse image path ... <input type="file" #fileUploader hidden>
+              Browse image path ... <input type="file" accept="image/*" #fileUploader hidden (change)="changeImageInput($event)">
             </label>
           </div>
         </div>
