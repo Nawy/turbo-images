@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
 
-  <div class="collapse navbar-collapse">
+  <div class=" navbar-collapse">
     <div class="container">
       <div class="row">
         <div class="col-6">
@@ -9,11 +9,9 @@
         <div class="col-6 col-right">
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
-
-            <ng-template let-c="close" let-d="dismiss"></ng-template>
             <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
 
-            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" class="btn-group" role="group">
+            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" role="group">
               <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
                 @{{userInfo.name}} <span class="caret"></span>
               </button>
