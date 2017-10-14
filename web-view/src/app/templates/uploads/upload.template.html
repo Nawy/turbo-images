@@ -4,9 +4,8 @@
     <div class="row justify-content-md-center">
 
       <div class="col-9">
-        <div class="card">
+
           <div class="card-body">
-            <h3 class="card-title">Uploaded Images</h3>
 
             <div class="progress" *ngIf="uploadedImagesCount != totalImageCount">
               <div class="progress-bar" role="progressbar" [style.width]="uploadedProgress + '%'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -23,7 +22,7 @@
           <div class="card-body without-side-space">
             <s-upload-preview *ngFor="let image of images" [user_image]="image"></s-upload-preview>
           </div>
-        </div>
+
       </div>
 
       <div class="col-3">

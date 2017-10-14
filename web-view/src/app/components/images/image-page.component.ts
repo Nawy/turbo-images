@@ -22,7 +22,7 @@ export class ImagePageComponent implements OnInit {
   private updateTimer;
   userInfo: UserInfo = null;
 
-  userImage: UserImage;
+  userImage: UserImage = null;
   imageSource: string;
   creationDate: string;
 
@@ -76,16 +76,6 @@ export class ImagePageComponent implements OnInit {
     );
   }
 
-
-
-  goBack() {
-    this.location.back();
-  }
-
-  getCreationDate(): string {
-    return this.creationDate
-  }
-
   saveDescription() {
     this.imageService
       .editUserImageDescription(this.userImage.id, this.userImage.description)
@@ -98,9 +88,17 @@ export class ImagePageComponent implements OnInit {
       .then(userImage => this.userImage = userImage);
   }
 
+  goBack() {
+    this.location.back();
+  }
+
+  getCreationDate(): string {
+    return this.creationDate
+  }
+
   isReadonly() {
-    //return true;
-    return this.userImage.user_id != this.userInfo.id;
+    return this.userImage != null && this.userInfo != null
+      && this.userImage.user_id != this.userInfo.id;
   }
 
   private fillFields() {
@@ -109,7 +107,6 @@ export class ImagePageComponent implements OnInit {
   }
 
   copyToClipBoard(object: any) {
-    console.info(object);
     object.select();
     document.execCommand("copy");
   }

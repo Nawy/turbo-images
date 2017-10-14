@@ -1,20 +1,20 @@
 <div class="container space-top card-small-padding">
 
-  <div class="row small-padding">
     <div class="card">
       <!-- IMAGE NAME -->
       <div class="card-body">
         <div class="container-fluid">
           <div class="row">
             <div class="col-7">
-              <input class="form-control input-group-lg input-header"
-                     placeholder="Title..."
-                     *ngIf="userImage"
-                     [readonly] = "isReadonly()"
-                     [(ngModel)]="userImage.name"
-                     maxlength="100"
-                     [ngModelOptions]="{standalone: true}"
-              (input)="deferredTitleUpdate()">
+              <input
+                class="form-control input-group-lg input-header"
+                placeholder="Title..."
+                *ngIf="userImage"
+                [readonly]="isReadonly()"
+                [(ngModel)]="userImage.name"
+                maxlength="100"
+                [ngModelOptions]="{standalone: true}"
+                (input)="deferredTitleUpdate()">
             </div>
             <div class="col-5 col-right">
               <button type="button" class="btn-with-margin btn btn-success">Share to community</button>
@@ -44,7 +44,7 @@
               class="form-control description"
               maxlength="3000"
               *ngIf="userImage"
-              [readonly] = "isReadonly()"
+              [readonly]="isReadonly()"
               (input)="autoGrow();deferredDescriptionUpdate()"
               placeholder="Your description"
               [(ngModel)]="userImage.description"
@@ -124,81 +124,5 @@
         </div>
       </div>
     </div>
-
-    <!--<div class="row small-padding">
-      <div class="card">
-        <div class="card-body small-padding">
-          <div class="container-fluid">
-            <div class="row justify-content-center">
-
-              <form>
-                <div class="row">
-
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label>Direct Link</label>
-                      <div class="input-group">
-                        <input #directLinkInput class="form-control" value="{{imageSource}}" readonly>
-                        <span class="input-group-btn">
-                        <button class="btn btn-primary" (click)="copyToClipBoard(directLinkInput)"
-                                type="button">Copy</button>
-                      </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label>HTML Code</label>
-                      <div class="input-group">
-                        <input #htmlCodeInput class="form-control" value='<img src="{{imageSource}}">' readonly>
-                        <span class="input-group-btn">
-                        <button class="btn btn-primary" (click)="copyToClipBoard(htmlCodeInput)"
-                                type="button">Copy</button>
-                      </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label>
-                        Markdown Link
-                        <small class="text-muted">(Raddit comments)</small>
-                      </label>
-                      <div class="input-group">
-                        <input #markdownLinkInput class="form-control" value="[turbo-images]({{imageSource}})" readonly>
-                        <span class="input-group-btn">
-                        <button class="btn btn-primary" (click)="copyToClipBoard(markdownLinkInput)"
-                                type="button">Copy</button>
-                      </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-3">
-                    <div class="form-group">
-                      <label>
-                        BBCode
-                        <small class="text-muted">(forums, blogs)</small>
-                      </label>
-                      <div class="input-group">
-                        <input #bbCodeInput class="form-control" value="[img]{{imageSource}}[/img]" readonly>
-                        <span class="input-group-btn">
-                        <button class="btn btn-primary" (click)="copyToClipBoard(bbCodeInput)"
-                                type="button">Copy</button>
-                      </span>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>-->
-  </div>
 
 </div>
