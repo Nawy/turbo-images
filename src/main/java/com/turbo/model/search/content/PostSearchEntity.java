@@ -98,7 +98,7 @@ public class PostSearchEntity {
         return deviceType;
     }
 
-    @JsonProperty(PostFieldNames.NAME)
+    @JsonProperty(PostFieldNames.TAGS)
     public Set<String> getTags() {
         return tags;
     }

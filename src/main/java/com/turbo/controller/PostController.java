@@ -1,8 +1,11 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
+import com.turbo.model.User;
+import com.turbo.model.dto.TransferPost;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.dto.PostPreview;
 import com.turbo.model.search.SearchOrder;
@@ -16,6 +19,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -73,9 +77,10 @@ public class PostController {
 
     @Secured(SecurityRole.USER)
     @PostMapping("/save/post")
-    public PostDto save(@RequestBody Post post) {
+    public PostDto save(@RequestBody PostAddDto post) {
+        final User user = authorizationService.getCurrentUser();
         return PostDto.from(
-                postService.save(post)
+                postService.addNewPost(post.toTransferPost(), user)
         );
     }
 
@@ -145,6 +150,43 @@ public class PostController {
 
         public String getField() {
             return field;
+        }
+    }
+
+    private static class PostAddDto {
+        private String name;
+        private List<String> imageIds; // value is description
+        private DeviceType deviceType;
+        private Set<String> tags;
+        private boolean visible;
+        private String description;
+
+        public PostAddDto(
+                @JsonProperty("name") String name,
+                @JsonProperty("image_ids") List<String> imageIds,
+                @JsonProperty("device_type") DeviceType deviceType,
+                @JsonProperty("tags") Set<String> tags,
+                @JsonProperty("visible") boolean visible,
+                @JsonProperty("description") String description) {
+            this.name = name;
+            this.imageIds = imageIds;
+            this.deviceType = deviceType;
+            this.tags = tags;
+            this.visible = visible;
+            this.description = description;
+        }
+
+        public TransferPost toTransferPost() {
+            return new TransferPost(
+                    name,
+                    imageIds.stream()
+                            .map(EncryptionService::decodeHashId)
+                            .collect(Collectors.toList()),
+                    deviceType,
+                    tags,
+                    visible,
+                    description
+            );
         }
     }
 

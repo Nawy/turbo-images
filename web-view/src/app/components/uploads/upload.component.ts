@@ -3,6 +3,8 @@ import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
 import {Subject} from "rxjs/Subject";
 import {Router} from "@angular/router";
+import {Post} from "../../models/post.model";
+import {PostService} from "../../service/post.service";
 /**
  * Created by ermolaev on 7/9/17.
  */
@@ -19,11 +21,16 @@ export class UploadComponent implements OnInit {
   uploadedProgress: number;
   totalImageCount: number;
 
+  newPost : Post = new Post();
   tagsModel : string;
 
   tags : Array<string> = [];
 
-  constructor(private imageService : ImageService, private router: Router) {
+  constructor(
+    private imageService : ImageService,
+    private postService : PostService,
+    private router: Router
+  ) {
     if(this.imageService.uploadFiles == null) {
       this.router.navigateByUrl("/my-images");
     }
@@ -54,13 +61,19 @@ export class UploadComponent implements OnInit {
     this.imageService.uploadFiles = null;
   }
 
-
   public updateTags() {
     this.tags = [];
     this.tagsModel.trim()
       .split(",")
       .forEach(value => {
         this.tags.push(value.trim());
+        this.newPost.tags = this.tags;
       });
+  }
+
+  public shareWithCommunity() {
+    console.info("Pressed!");
+    this.newPost.images = this.images;
+    this.postService.addPost(this.newPost);
   }
 }

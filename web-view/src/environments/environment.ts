@@ -7,6 +7,7 @@ export const environment = {
   production: false,
   host: "http://localhost:8030/api",
   imageHost: "192.168.200.1", // should be port 80
+  clientType: "BROWSER",
   requests: {
 
     // authorization
@@ -29,6 +30,7 @@ export const environment = {
     getUserImageByIdUrl: "/get/user/image/",
 
     //posts
+    addPost: "/save/post",
     editPostName: "/edit/post/name",
     editPostDescription: "/edit/post/description",
     addPostTag: "/add/post/tag",

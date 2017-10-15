@@ -29,6 +29,7 @@ import {PersonalImageModalComponent} from "./components/personal-images/personal
 import {PersonalHolderService} from "./service/personal-holder.service";
 import {ImagePageComponent} from "./components/images/image-page.component";
 import {SessionService} from "./service/session.service";
+import {PostService} from "./service/post.service";
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import {SessionService} from "./service/session.service";
     PersonalHolderService,
     LoggedGuard,
     NotLoggedGuard,
-    SessionService
+    SessionService,
+    PostService,
   ],
   bootstrap: [AppComponent],
   entryComponents: [

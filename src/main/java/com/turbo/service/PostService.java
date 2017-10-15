@@ -4,6 +4,7 @@ import com.turbo.model.Post;
 import com.turbo.model.User;
 import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.PostRepoModel;
+import com.turbo.model.dto.TransferPost;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.search.SearchOrder;
@@ -35,7 +36,13 @@ public class PostService {
     private final UserService userService;
     private final UserImageService userImageService;
 
-    public PostService(PostSearchRepository postSearchRepository, PostStatRepository postStatRepository, PostRepository postRepository, UserService userService, UserImageService userImageService) {
+    public PostService(
+            PostSearchRepository postSearchRepository,
+            PostStatRepository postStatRepository,
+            PostRepository postRepository,
+            UserService userService,
+            UserImageService userImageService
+    ) {
         this.postSearchRepository = postSearchRepository;
         this.postStatRepository = postStatRepository;
         this.postRepository = postRepository;
@@ -43,8 +50,13 @@ public class PostService {
         this.userImageService = userImageService;
     }
 
-    public Post save(Post post) {
-        return post.getId() == null ?
+    public Post addNewPost(final TransferPost postDto, final User user) {
+        final List<UserImage> userImages = userImageService.getUserImages(postDto.getImageIds());
+        return save(postDto.toFullPost(userImages, user));
+    }
+
+    public Post save(final Post post) {
+        return post.getId() != null ?
                 update(post) :
                 addPost(post);
     }

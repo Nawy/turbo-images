@@ -1,6 +1,3 @@
-/**
- * Created by ermolaev on 7/21/17.
- */
 import {Injectable} from "@angular/core";
 import {UserImage} from "../models/user-image.model";
 /**

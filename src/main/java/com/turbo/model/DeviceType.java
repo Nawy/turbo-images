@@ -14,6 +14,7 @@ public enum DeviceType {
     PC, // WINDOWS OS
     MAC,
     LINUX,
+    BROWSER,
     UNKNOWN;
 
     public static DeviceType getDeviceType(String value) {
