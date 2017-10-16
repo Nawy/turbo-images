@@ -7,6 +7,8 @@ import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";
 import {UserInfo} from "../../models/user-info.model";
 import {UserService} from "app/service/user.service";
+import {Post} from "../../models/post.model";
+import {PostService} from "../../service/post.service";
 
 /**
  * Created by ermolaev on 7/23/17.
@@ -30,7 +32,8 @@ export class ImagePageComponent implements OnInit {
               private imageService: ImageService,
               private location: Location,
               private personalHolderService: PersonalHolderService,
-              private userService: UserService) {
+              private userService: UserService,
+              private postService: PostService) {
   }
 
   ngOnInit(): void {
@@ -54,7 +57,7 @@ export class ImagePageComponent implements OnInit {
             this.userImage = image;
             this.fillFields();
             // this required because autogrow work only if window component is loaded and filled with data
-            setTimeout(() => this.autoGrow(),20)
+            setTimeout(() => this.autoGrow(), 20)
           });
       }
     );
@@ -115,5 +118,15 @@ export class ImagePageComponent implements OnInit {
     let element: HTMLElement = document.getElementById("desc");
     element.style.height = "5px";
     element.style.height = (element.scrollHeight) + "px";
+  }
+
+  public shareWithCommunity() {
+    if (this.isReadonly()) return;
+    const newPost: Post = new Post();
+    newPost.images = new Map<UserImage, string>([[this.userImage, null]]);
+    this.postService.addPost(newPost)
+      .then(post => {
+        // TODO router route to post
+      });
   }
 }

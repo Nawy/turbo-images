@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
-import {Subject} from "rxjs/Subject";
 import {Router} from "@angular/router";
 import {Post} from "../../models/post.model";
 import {PostService} from "../../service/post.service";
+
 /**
  * Created by ermolaev on 7/9/17.
  */
@@ -16,22 +16,20 @@ import {PostService} from "../../service/post.service";
   styleUrls: ['./../../css/upload.style.css'],
 })
 export class UploadComponent implements OnInit {
-  images : Array<UserImage>;
+  images: Array<UserImage>;
   uploadedImagesCount: number;
   uploadedProgress: number;
   totalImageCount: number;
 
-  newPost : Post = new Post();
-  tagsModel : string;
+  newPost: Post = new Post();
+  tagsModel: string;
 
-  tags : Array<string> = [];
+  tags: Array<string> = [];
 
-  constructor(
-    private imageService : ImageService,
-    private postService : PostService,
-    private router: Router
-  ) {
-    if(this.imageService.uploadFiles == null) {
+  constructor(private imageService: ImageService,
+              private postService: PostService,
+              private router: Router) {
+    if (this.imageService.uploadFiles == null) {
       this.router.navigateByUrl("/my-images");
     }
   }
@@ -73,7 +71,9 @@ export class UploadComponent implements OnInit {
 
   public shareWithCommunity() {
     console.info("Pressed!");
-    this.newPost.images = this.images;
+    this.newPost.images = new Map<UserImage, string>(
+      this.images.map(image => [image, null] as [UserImage, string])
+    );
     this.postService.addPost(this.newPost);
   }
 }
