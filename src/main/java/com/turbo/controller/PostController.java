@@ -5,6 +5,7 @@ import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
+import com.turbo.model.dto.PostViewDto;
 import com.turbo.model.dto.TransferPost;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.dto.PostPreview;
@@ -69,8 +70,8 @@ public class PostController {
     }
 
     @GetMapping("/get/post/{id}")
-    public PostDto get(@PathVariable("id") String id) {
-        return PostDto.from(
+    public PostViewDto get(@PathVariable("id") String id) {
+        return PostViewDto.from(
                 postService.getPostById(EncryptionService.decodeHashId(id))
         );
     }
