@@ -4,7 +4,8 @@ export class Post {
 
   name : string;
   description : string;
-  images : Map<UserImage,string>;
+  images : Array<UserImage>;
   deviceType : string;
   tags : Array<string>;
+
 }

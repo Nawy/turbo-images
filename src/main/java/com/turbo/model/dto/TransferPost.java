@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TransferPost {
     private String name;
-    private List<Long> imageIds; // value is description
+    private Set<Long> imageIds; // value is description
     private DeviceType deviceType;
     private Set<String> tags;
     private boolean visible;
@@ -23,11 +23,12 @@ public class TransferPost {
 
     public TransferPost(
             @JsonProperty("name") String name,
-            @JsonProperty("image_ids") List<Long> imageIds,
+            @JsonProperty("image_ids") Set<Long> imageIds,
             @JsonProperty("device_type") DeviceType deviceType,
             @JsonProperty("tags") Set<String> tags,
             @JsonProperty("visible") boolean visible,
-            @JsonProperty("description") String description) {
+            @JsonProperty("description") String description
+    ) {
         this.name = name;
         this.imageIds = imageIds;
         this.deviceType = deviceType;
@@ -42,7 +43,7 @@ public class TransferPost {
     }
 
     @JsonProperty("image_ids")
-    public List<Long> getImageIds() {
+    public Set<Long> getImageIds() {
         return imageIds;
     }
 
@@ -65,23 +66,5 @@ public class TransferPost {
     @JsonProperty("description")
     public String getDescription() {
         return description;
-    }
-
-    public Post toFullPost(final List<UserImage> userImages, final User user) {
-        return new Post(
-                null,
-                this.name,
-                0,
-                0,
-                0,
-                0,
-                userImages.stream().collect(Collectors.toMap(Function.identity(), UserImage::getDescription)),
-                this.deviceType,
-                tags,
-                user,
-                LocalDateTime.now(),
-                true,
-                this.description
-        );
     }
 }

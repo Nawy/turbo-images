@@ -15,15 +15,11 @@ class PostDto {
   constructor(that: Post) {
     this.name = that.name;
     this.description = that.description;
+    this.image_ids = that.images.map(image => image.id);
     this.device_type = environment.clientType;
     this.tags = that.tags;
     this.visible = true;
-
-    this.image_ids = Array.from(
-      that.images.keys()
-    ).map(image => image.id);
   }
-
 }
 
 /**

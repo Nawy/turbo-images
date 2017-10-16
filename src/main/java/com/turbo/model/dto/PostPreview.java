@@ -108,11 +108,9 @@ public class PostPreview {
 
     @JsonIgnore
     public static PostPreview from(Post post) {
-        final UserImage imageWithDescription= post.getImages().keySet()
+        final UserImage imageWithDescription= post.getImages()
                 .stream()
-                .filter(
-                        image -> StringUtils.isNotBlank(image.getDescription())
-                )
+                .filter(image -> StringUtils.isNotBlank(image.getDescription()))
                 .findFirst().orElse(null);
 
         Objects.requireNonNull(imageWithDescription);
@@ -129,7 +127,7 @@ public class PostPreview {
                 post.getDowns(),
                 post.getRating(),
                 post.getViews(),
-                post.getImages().keySet().stream().findFirst().get().getImage().getThumbnail(),
+                post.getImages().stream().findFirst().get().getImage().getThumbnail(),
                 post.getDeviceType(),
                 post.getTags(),
                 post.getCreateDate()

@@ -26,7 +26,7 @@ public class Post {
     private long downs;
     private long rating;
     private long views;
-    private Map<UserImage, String> images; // value is description
+    private Set<UserImage> images; // value is description
     private DeviceType deviceType;
     private Set<String> tags;
     private LocalDateTime createDate;
@@ -36,12 +36,12 @@ public class Post {
 
     public Post(
             @JsonProperty(value = "id") Long id,
-            @JsonProperty(value = "name", required = true) String name,
-            @JsonProperty(value = "ups", required = true) long ups,
-            @JsonProperty(value = "downs", required = true) long downs,
-            @JsonProperty(value = "rating", required = true) long rating,
-            @JsonProperty(value = "views", required = true) long views,
-            @JsonProperty(value = "images", required = true) Map<UserImage, String> images,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "ups") long ups,
+            @JsonProperty(value = "downs") long downs,
+            @JsonProperty(value = "rating") long rating,
+            @JsonProperty(value = "views") long views,
+            @JsonProperty(value = "images", required = true) Set<UserImage> images,
             @JsonProperty(value = "client_type", required = true) DeviceType deviceType,
             @JsonProperty(value = "tags") Set<String> tags,
             @JsonProperty(value = "user", required = true) User user,
@@ -55,7 +55,7 @@ public class Post {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.images = images == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(images);
+        this.images = images == null ? Collections.emptySet() : Collections.unmodifiableSet(images);
         this.deviceType = deviceType;
         this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
         this.user = user;
@@ -99,7 +99,7 @@ public class Post {
     }
 
     @JsonProperty("images")
-    public Map<UserImage, String> getImages() {
+    public Set<UserImage> getImages() {
         return images;
     }
 

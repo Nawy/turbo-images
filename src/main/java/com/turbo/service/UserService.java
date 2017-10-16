@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by rakhmetov on 25.05.17.
  */
@@ -114,6 +118,11 @@ public class UserService {
         User user = userRepository.get(userId);
         if (user == null) throw new NotFoundHttpException("No user found for id:" + userId);
         return user;
+    }
+
+    public List<User> bulkGet(Set<Long> userIds){
+        if (userIds.isEmpty()) throw new NotFoundHttpException(" No user_ids was present");
+        return userRepository.bulkGet(userIds);
     }
 
     private void updateNameEmailKey(User oldUser, User newUser) {

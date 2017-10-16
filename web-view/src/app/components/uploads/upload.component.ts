@@ -71,9 +71,7 @@ export class UploadComponent implements OnInit {
 
   public shareWithCommunity() {
     console.info("Pressed!");
-    this.newPost.images = new Map<UserImage, string>(
-      this.images.map(image => [image, null] as [UserImage, string])
-    );
+    this.newPost.images = this.images;
     this.postService.addPost(this.newPost);
   }
 }

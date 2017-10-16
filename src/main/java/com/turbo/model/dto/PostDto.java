@@ -24,13 +24,13 @@ public class PostDto {
     private long downs;
     private long rating;
     private long views;
-    private Map<UserImageDto,String> images;
+    private Set<UserImageDto> images;
     private DeviceType deviceType;
     private Set<String> tags;
     private LocalDateTime createDate;
     private boolean visible;
 
-    public PostDto(String id, String name, long ups, long downs, long rating, long views, Map<UserImageDto,String> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
+    public PostDto(String id, String name, long ups, long downs, long rating, long views, Set<UserImageDto> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
         this.id = id;
         this.name = name;
         this.ups = ups;
@@ -46,8 +46,9 @@ public class PostDto {
 
     @JsonIgnore
     public static PostDto from(Post post) {
-        Map<UserImageDto,String> userImageDtos = post.getImages().entrySet().stream()
-                .collect(Collectors.toMap(entry -> UserImageDto.from(entry.getKey()), Map.Entry::getValue));
+        Set<UserImageDto> userImageDtos = post.getImages().stream()
+                .map(UserImageDto::from)
+                .collect(Collectors.toSet());
 
         return new PostDto(
                 EncryptionService.encodeHashId(post.getId()),
@@ -88,7 +89,7 @@ public class PostDto {
         return views;
     }
 
-    public Map<UserImageDto,String> getImages() {
+    public Set<UserImageDto> getImages() {
         return images;
     }
 

@@ -3,14 +3,14 @@ package com.turbo.model.aerospike;
 import com.turbo.model.DeviceType;
 import com.turbo.model.IdHolder;
 import com.turbo.model.Post;
+import com.turbo.model.UserImage;
+import com.turbo.model.dto.TransferPost;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +29,7 @@ public class PostRepoModel implements Serializable, IdHolder {
     private long downs;
     private long rating;
     private long views;
-    private Map<Long, String> images; // key is UserImage_ID, value is description
+    private Set<Long> images; // key is UserImage_ID, value is description
     private DeviceType deviceType;
     private Set<String> tags;
     private LocalDateTime creationDateTime;
@@ -47,7 +47,7 @@ public class PostRepoModel implements Serializable, IdHolder {
             long downs,
             long rating,
             long views,
-            Map<Long, String> images,
+            Set<Long> images,
             DeviceType deviceType,
             Set<String> tags,
             long userId,
@@ -61,7 +61,7 @@ public class PostRepoModel implements Serializable, IdHolder {
         this.downs = downs;
         this.rating = rating;
         this.views = views;
-        this.images = images == null ? Collections.EMPTY_MAP : Collections.unmodifiableMap(images);
+        this.images = images == null ? Collections.emptySet() : Collections.unmodifiableSet(images);
         this.deviceType = deviceType;
         this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
         this.userId = userId;
@@ -77,15 +77,31 @@ public class PostRepoModel implements Serializable, IdHolder {
         this.downs = post.getDowns();
         this.rating = post.getRating();
         this.views = post.getViews();
-        Map<Long, String> convertedImages = post.getImages().entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().getId(), Map.Entry::getValue));
-        this.images = Collections.unmodifiableMap(convertedImages);
+        this.images = post.getImages().stream().map(UserImage::getId).collect(Collectors.toSet());
         this.deviceType = post.getDeviceType();
         this.tags = Collections.unmodifiableSet(post.getTags());
         this.userId = post.getUser().getId();
         this.visible = post.isVisible();
         this.description = post.getDescription();
         this.creationDateTime = firstNonNull(post.getCreateDate(), LocalDateTime.now());
+    }
+
+    public PostRepoModel(TransferPost transferPost, long userId) {
+        this(
+                null,
+                transferPost.getName(),
+                0,
+                0,
+                0,
+                0,
+                transferPost.getImageIds(),
+                transferPost.getDeviceType(),
+                transferPost.getTags(),
+                userId,
+                LocalDateTime.now(),
+                true,
+                transferPost.getDescription()
+        );
     }
 
     public Long getId() {
@@ -117,7 +133,7 @@ public class PostRepoModel implements Serializable, IdHolder {
         return views;
     }
 
-    public Map<Long, String> getImages() {
+    public Set<Long> getImages() {
         return images;
     }
 

@@ -3,6 +3,9 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
+import com.turbo.model.Image;
+import com.turbo.model.Post;
+import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.search.field.PostFieldNames;
 
@@ -10,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by ermolaev on 5/27/17.
@@ -60,22 +64,20 @@ public class PostSearchEntity {
         this.creationDate = creationDate;
     }
 
-    public PostSearchEntity(final PostRepoModel post) {
+    public PostSearchEntity(final Post post) {
         this.id = post.getId();
         this.name = post.getName();
-        this.descriptions = new ArrayList<>(post.getImages().values());
+        this.descriptions = post.getImages().stream().map(UserImage::getDescription).collect(Collectors.toList());
         this.descriptions.add(post.getDescription());
-
-        this.imageIds = new ArrayList<>(post.getImages().keySet());
-
+        this.imageIds = post.getImages().stream().map(UserImage::getId).collect(Collectors.toList());
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
-        this.userId = post.getUserId();
+        this.userId = post.getUser().getId();
         this.ups = post.getUps();
         this.downs = post.getDowns();
         this.rating = post.getRating();
         this.views = post.getViews();
-        this.creationDate = post.getCreationDateTime();
+        this.creationDate = post.getCreateDate();
     }
 
     @JsonProperty(PostFieldNames.ID)

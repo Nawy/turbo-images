@@ -2,6 +2,7 @@ package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
+import com.turbo.model.Post;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.page.Page;
@@ -43,7 +44,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
      * @param post
      * @return
      */
-    public void addPost(final PostRepoModel post) {
+    public void addPost(final Post post) {
         elasticClient
                 .prepareIndex(
                         config.getSearchPostIndexName(),

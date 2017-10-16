@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
-import com.turbo.model.User;
-import com.turbo.model.dto.PostViewDto;
 import com.turbo.model.dto.TransferPost;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.dto.PostPreview;
@@ -70,8 +68,8 @@ public class PostController {
     }
 
     @GetMapping("/get/post/{id}")
-    public PostViewDto get(@PathVariable("id") String id) {
-        return PostViewDto.from(
+    public PostDto get(@PathVariable("id") String id) {
+        return PostDto.from(
                 postService.getPostById(EncryptionService.decodeHashId(id))
         );
     }
@@ -79,9 +77,9 @@ public class PostController {
     @Secured(SecurityRole.USER)
     @PostMapping("/save/post")
     public PostDto save(@RequestBody PostAddDto post) {
-        final User user = authorizationService.getCurrentUser();
+        final long currentUserId = authorizationService.getCurrentUserId();
         return PostDto.from(
-                postService.addNewPost(post.toTransferPost(), user)
+                postService.save(post.toTransferPost(), currentUserId)
         );
     }
 
@@ -180,9 +178,7 @@ public class PostController {
         public TransferPost toTransferPost() {
             return new TransferPost(
                     name,
-                    imageIds.stream()
-                            .map(EncryptionService::decodeHashId)
-                            .collect(Collectors.toList()),
+                    imageIds.stream().map(EncryptionService::decodeHashId).collect(Collectors.toSet()),
                     deviceType,
                     tags,
                     visible,

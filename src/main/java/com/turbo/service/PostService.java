@@ -50,34 +50,31 @@ public class PostService {
         this.userImageService = userImageService;
     }
 
-    public Post addNewPost(final TransferPost postDto, final User user) {
-        final List<UserImage> userImages = userImageService.getUserImages(postDto.getImageIds());
-        return save(postDto.toFullPost(userImages, user));
+    public Post save(final TransferPost postDto, final long userId) {
+        return save(
+                new PostRepoModel(postDto, userId)
+        );
     }
 
-    public Post save(final Post post) {
+    public Post save(final PostRepoModel post) {
         return post.getId() != null ?
                 update(post) :
                 addPost(post);
     }
 
-    private Post addPost(Post post) {
-        PostRepoModel postWithId = postRepository.save(new PostRepoModel(post));
-        postSearchRepository.addPost(postWithId);
-        post.setId(postWithId.getId());
+    private Post addPost(PostRepoModel postRepoModel) {
+        PostRepoModel postWithId = postRepository.save(postRepoModel);
+        Post post = getPostById(postWithId.getId());
+        postSearchRepository.addPost(post);
         return post;
     }
 
-    private Post update(Post post) {
-        update(new PostRepoModel(post));
-        return post;
-    }
-
-    private void update(PostRepoModel post) {
+    private Post update(PostRepoModel post) {
         PostRepoModel updatedPost = postRepository.save(post);
         //FIXME add to search tags?
         //FIXME may be long update what to do with that?
         postSearchRepository.updatePost(updatedPost);
+        return getPostById(post.getId());
     }
 
     public Post updatePostName(long postId, String name) {
@@ -175,10 +172,8 @@ public class PostService {
 
     private Post makePost(PostRepoModel postRepoModel) {
         User user = userService.get(postRepoModel.getUserId());
-        Map<Long, String> repoPostImageMap = postRepoModel.getImages();
-        List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages().keySet());
-        Map<UserImage, String> postUserImages = userImages.stream().collect(Collectors.toMap(Function.identity(), userImage -> repoPostImageMap.get(userImage.getId())));
-        return makePost(postRepoModel, user, postUserImages);
+        List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages());
+        return makePost(postRepoModel, user, new HashSet<>(userImages));
     }
 
     public List<Post> getMostViral(int page, SearchPeriod searchPeriod, SearchSort searchSort) {
@@ -272,7 +267,7 @@ public class PostService {
             );
         }
 
-        return bulkGetPosts(resultIds, userId);
+        return bulkGetPosts(resultIds);
     }
 
     public void delete(long id) {
@@ -301,42 +296,31 @@ public class PostService {
         }
     }
 
-    private List<Post> bulkGetPosts(List<Long> postIds, long userId) {
-        User user = userService.get(userId);
-        List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
-        List<Long> postsUserImageIds = postRepoModels.stream()
-                .flatMap(postRepoModel -> postRepoModel.getImages().keySet().stream())
-                .collect(Collectors.toList());
-        List<UserImage> userImages = userImageService.getUserImages(postsUserImageIds);
-        Map<Long, UserImage> userImageMap = userImages.stream().collect(Collectors.toMap(UserImage::getId, Function.identity()));
-        return postRepoModels.stream().map(postRepoModel -> {
-
-            Map<Long, String> repoImages = postRepoModel.getImages();
-            Map<UserImage, String> postImageMap = repoImages.entrySet().stream().collect(Collectors.toMap(entry -> userImageMap.get(entry.getKey()), Map.Entry::getValue));
-            return makePost(postRepoModel, user, postImageMap);
-
-        })
-                .collect(Collectors.toList());
-    }
-
     private List<Post> bulkGetPosts(List<Long> postIds) {
         List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
+        Set<Long> userIds = postRepoModels.stream()
+                .map(PostRepoModel::getUserId)
+                .collect(Collectors.toSet());
+        List<User> userList = userService.bulkGet(userIds);
+        // userId, user
+        Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
         List<Long> postsUserImageIds = postRepoModels.stream()
-                .flatMap(postRepoModel -> postRepoModel.getImages().keySet().stream())
+                .flatMap(postRepoModel -> postRepoModel.getImages().stream())
                 .collect(Collectors.toList());
         List<UserImage> userImages = userImageService.getUserImages(postsUserImageIds);
+        // userImage_Id , userImage
         Map<Long, UserImage> userImageMap = userImages.stream().collect(Collectors.toMap(UserImage::getId, Function.identity()));
-        return postRepoModels.stream().map(postRepoModel -> {
-            User user = userService.get(postRepoModel.getUserId());
-            Map<Long, String> repoImages = postRepoModel.getImages();
-            Map<UserImage, String> postImageMap = repoImages.entrySet().stream().collect(Collectors.toMap(entry -> userImageMap.get(entry.getKey()), Map.Entry::getValue));
-            return makePost(postRepoModel, user, postImageMap);
-
-        })
-                .collect(Collectors.toList());
+        return postRepoModels.stream()
+                .map(postRepoModel -> {
+                            User user = userMap.get(postRepoModel.getUserId());
+                            Set<Long> repoImagesIds = postRepoModel.getImages();
+                            Set<UserImage> postImageMap = repoImagesIds.stream().map(userImageMap::get).collect(Collectors.toSet());
+                            return makePost(postRepoModel, user, postImageMap);
+                        }
+                ).collect(Collectors.toList());
     }
 
-    private Post makePost(PostRepoModel postRepoModel, User user, Map<UserImage, String> postUserImages) {
+    private Post makePost(PostRepoModel postRepoModel, User user, Set<UserImage> postUserImages) {
         return new Post(
                 postRepoModel.getId(),
                 postRepoModel.getName(),

@@ -123,7 +123,7 @@ export class ImagePageComponent implements OnInit {
   public shareWithCommunity() {
     if (this.isReadonly()) return;
     const newPost: Post = new Post();
-    newPost.images = new Map<UserImage, string>([[this.userImage, null]]);
+    newPost.images = [this.userImage];
     this.postService.addPost(newPost)
       .then(post => {
         // TODO router route to post
