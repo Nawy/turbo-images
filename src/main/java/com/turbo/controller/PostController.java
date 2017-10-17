@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
-import com.turbo.model.dto.TransferPost;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.dto.PostPreview;
+import com.turbo.model.dto.TransferPost;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
@@ -14,9 +14,11 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +60,17 @@ public class PostController {
         final long userId = authorizationService.getCurrentUserId();
         return toPostSearchDtos(
                 postService.getUserPosts(page, userId, new SearchPattern(period, sort, order))
+        );
+    }
+
+    @Secured(SecurityRole.USER)
+    @GetMapping("/get/user/posts/by_date")
+    public List<PostPreview> getUserPostsByDate(
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
+    ) {
+        final long userId = authorizationService.getCurrentUserId();
+        return toPostSearchDtos(
+                postService.getUserPostsByDate(userId, startDate)
         );
     }
 

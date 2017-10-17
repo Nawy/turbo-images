@@ -1,8 +1,9 @@
-<a [routerLink]="['/post', postdata.id]">
+<a>
   <img
-    src="{{postdata.preview_image}}"
-    alt="{{postdata.preview_image}}"
+    src="{{getThumbnail()}}"
+    alt="{{getThumbnail()}}"
     class="rounded postpreview-margin postpreview-medium-size {{useClass}}"
+    (click)="showPost()"
     (mouseover)="onMouseOver()"
     (mouseout)="onMouseOut()"
     popoverTitle="{{getHeaderString()}}"

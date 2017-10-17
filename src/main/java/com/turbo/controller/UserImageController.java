@@ -88,7 +88,8 @@ public class UserImageController {
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/images")
     public List<UserImageDto> getUserImages(
-            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate) {
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
+    ) {
         long userId = authorizationService.getCurrentUserId();
         List<UserImage> userImages = userImageService.getCurrentUserImages(userId, startDate);
         return userImages.stream().map(UserImageDto::from).collect(Collectors.toList());

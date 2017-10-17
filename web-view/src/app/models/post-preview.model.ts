@@ -13,7 +13,7 @@ export class PostPreview {
   rating: number;
   views: number;
   preview_image: string;
-  deviceType: DeviceType;
+  device_type: DeviceType;
   tags: Array<string>;
   create_date: string;
 

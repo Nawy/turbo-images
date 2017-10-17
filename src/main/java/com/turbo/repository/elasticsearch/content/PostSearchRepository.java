@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
     /**
      * Add new post to search engine
+     *
      * @param post
      * @return
      */
@@ -75,7 +77,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 PostField.ID.getFieldName(),
                 id
         );
-        if(response.getHits().getTotalHits() <= 0) {
+        if (response.getHits().getTotalHits() <= 0) {
             throw new InternalServerErrorHttpException("Not found post by id=" + id);
         }
         return elasticUtils.parseElasticIdSearchResponse(response);
@@ -83,6 +85,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
 
     /**
      * Find post by id (not search id)
+     *
      * @param id
      * @return
      */
@@ -107,21 +110,21 @@ public class PostSearchRepository extends AbstractSearchRepository {
     ) {
         final Page queryPage = new Page(page);
         LocalDate lowestDate = null;
-        if(period != SearchPeriod.ALL_TIME) {
+        if (period != SearchPeriod.ALL_TIME) {
             switch (period) {
-                case DAY:{
+                case DAY: {
                     lowestDate = LocalDate.now().minusDays(1);
                     break;
                 }
-                case WEEK:{
+                case WEEK: {
                     lowestDate = LocalDate.now().minusWeeks(1);
                     break;
                 }
-                case MONTH:{
+                case MONTH: {
                     lowestDate = LocalDate.now().minusMonths(1);
                     break;
                 }
-                case YEAR:{
+                case YEAR: {
                     lowestDate = LocalDate.now().minusYears(1);
                     break;
                 }
@@ -136,7 +139,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         )
                 );
 
-        if(Objects.nonNull(lowestDate)) {
+        if (Objects.nonNull(lowestDate)) {
             boolQueryBuilder.must(
                     QueryBuilders.rangeQuery(
                             PostField.CREATION_DATE.getFieldName()
@@ -151,7 +154,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .setFrom(queryPage.getOffset())
                 .setSize(queryPage.getSize());
 
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+        if (Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
             request.addSort(
                     SortBuilders
                             .fieldSort(postField.getFieldName())
@@ -169,9 +172,33 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .collect(Collectors.toList());
     }
 
+    public List<Long> getUserPosts(final Long userId, final LocalDateTime lastDate, final int pageSize) {
+        SearchResponse response = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .addSort(PostField.CREATION_DATE.getFieldName(), SortOrder.DESC)
+                .setQuery(
+                        QueryBuilders.boolQuery()
+                                .must(
+                                        QueryBuilders.termQuery(PostField.USER_ID.getFieldName(), userId)
+                                )
+                                .must(
+                                        QueryBuilders.rangeQuery(PostField.CREATION_DATE.getFieldName()).lte(formatter.format(lastDate))
+                                )
+                )
+                .setSize(pageSize)
+                .get();
+
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Find posts by name
      * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     *
      * @param name
      * @param page
      * @param postField
@@ -203,6 +230,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
     /**
      * Find post by description
      * Throws Exception if page size more than limit {@link ElasticsearchConfig#getMaxSizePostsPerPage()}}
+     *
      * @param description
      * @param page
      * @param postField
@@ -251,7 +279,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .setFrom(queryPage.getOffset())
                 .setSize(queryPage.getSize());
 
-        if(Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
+        if (Objects.nonNull(postField) && Objects.nonNull(searchOrder)) {
             request.addSort(
                     SortBuilders
                             .fieldSort(postField.getFieldName())
@@ -311,13 +339,13 @@ public class PostSearchRepository extends AbstractSearchRepository {
                         QueryBuilders.matchAllQuery()
                 )
                 .addSort(
-                SortBuilders
-                        .fieldSort(postField.getFieldName())
-                        .order(
-                                searchOrder == SearchOrder.DESC ?
-                                        SortOrder.DESC :
-                                        SortOrder.ASC
-                        )
+                        SortBuilders
+                                .fieldSort(postField.getFieldName())
+                                .order(
+                                        searchOrder == SearchOrder.DESC ?
+                                                SortOrder.DESC :
+                                                SortOrder.ASC
+                                )
                 )
                 .setFrom(queryPage.getOffset())
                 .setSize(queryPage.getSize());

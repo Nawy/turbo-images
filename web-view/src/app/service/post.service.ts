@@ -3,6 +3,8 @@ import {Headers, Http} from "@angular/http";
 import {Post} from "../models/post.model";
 import {environment} from "../../environments/environment";
 import {SessionService} from "./session.service";
+import {PostPreview} from "../models/post-preview.model";
+import * as moment from 'moment';
 
 class PostDto {
   name: string;
@@ -48,6 +50,25 @@ export class PostService {
             console.info(value);
             return value;
           })
+      });
+  }
+
+  public getUserPosts(startDate: Date): Promise<Array<PostPreview>> {
+    return this.sessionService.getUserSession()
+      .then(sessionID => {
+        const url = `${environment.host}${environment.requests.getUserPostsByDate}`;
+        return this.http.get(
+          url,
+          {
+            headers: new Headers({"session": sessionID}),
+            params: {"date": moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS")}
+          }
+        ).toPromise()
+          .then(res => {
+            return res.json() as Array<PostPreview>
+          })
+      }).catch(res => {
+        return Promise.reject(res);
       });
   }
 

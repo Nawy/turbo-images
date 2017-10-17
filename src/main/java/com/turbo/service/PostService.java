@@ -20,6 +20,7 @@ import com.turbo.repository.elasticsearch.stat.PostStatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PostService {
+
+    private static final int PAGE_SIZE = 30;
 
     private final PostSearchRepository postSearchRepository;
     private final PostStatRepository postStatRepository;
@@ -268,6 +271,11 @@ public class PostService {
         }
 
         return bulkGetPosts(resultIds);
+    }
+
+    public List<Post> getUserPostsByDate(final long userId, final LocalDateTime dateTime) {
+        final List<Long> postsIds = postSearchRepository.getUserPosts(userId, dateTime, PAGE_SIZE);
+        return bulkGetPosts(postsIds);
     }
 
     public void delete(long id) {

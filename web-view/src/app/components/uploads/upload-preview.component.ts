@@ -57,6 +57,7 @@ export class UploadPreviewComponent implements OnInit {
       .then(userImage => this.userImage = userImage);
   }
 
+  //TODO work only for first image! Fix!!!
   autoGrow() {
     let element: HTMLElement = document.getElementById("desc");
     element.style.height = "5px";

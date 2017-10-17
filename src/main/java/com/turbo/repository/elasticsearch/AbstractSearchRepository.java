@@ -4,6 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
+import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.util.ElasticUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -12,12 +13,15 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
  * Created by ermolaev on 5/28/17.
  */
 public abstract class AbstractSearchRepository {
+
+    protected static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ImageSearchEntity.CREATION_DATE_PATTERN);
 
     protected final TransportClient elasticClient;
     protected final ElasticsearchConfig config;

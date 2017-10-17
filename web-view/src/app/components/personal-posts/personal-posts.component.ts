@@ -1,10 +1,12 @@
 /**
  * Created by ermolaev on 5/14/17.
  */
-import {Component} from '@angular/core'
+import {Component, HostListener} from '@angular/core'
 import {PostPreview} from "../../models/post-preview.model";
 import * as moment from 'moment';
 import * as Rx from "rxjs"
+import {PostService} from "../../service/post.service";
+import {environment} from "environments/environment";
 
 class UserPostsMap {
   creationDate: Date;
@@ -32,54 +34,54 @@ class UserPostsMap {
   templateUrl: '../../templates/personal-posts.template.html'
 })
 export class PersonalPostsComponent {
-  imagesMap: Array<PostPreview> = [];
+  postsMap: Array<UserPostsMap> = [];
   isLoaderVisible: boolean = false;
-  isAllImageUploaded: boolean = false;
+  isAllPostsUploaded: boolean = false;
+
+  constructor(private postService: PostService) {}
 
   ngOnInit(): void {
-    this.uploadImagesByDate(new Date(Date.now()));
+    this.uploadPostsByDate(new Date(Date.now()));
   }
 
-  private uploadImagesByDate(startDate: Date) {
+  private uploadPostsByDate(startDate: Date) {
     this.isLoaderVisible = true;
-    /*this.imageService.getUserImages(startDate).then(images => {
+    this.postService.getUserPosts(startDate).then(posts => {
 
-      if(images.length < environment.pageSize) {
-        this.isAllImageUploaded = true;
+      if(posts.length < environment.pageSize) {
+        this.isAllPostsUploaded = true;
       }
 
-      Rx.Observable.from(images)
+      Rx.Observable.from(posts)
         .groupBy(
-          image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
+          post => moment(post.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
         )
-        .flatMap(group => {
-          return group.reduce((acc, curr) => [...acc, curr], []);
-        })
-        .map(values => {
-          return new UserImagesMap(moment(values[0].creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), values);
-        })
-        .forEach(value => this.imagesMap.push(value));
+        .flatMap(group =>
+          group.reduce((acc, curr) => [...acc, curr], [])
+        )
+        .map(posts =>
+          new UserPostsMap(moment(posts[0].create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), posts)
+        )
+        .forEach(post => this.postsMap.push(post));
       this.isLoaderVisible = false
-    })*/
+    })
   }
 
-  /*@HostListener('window:scroll', ['$event'])*/
+  @HostListener('window:scroll', ['$event'])
   public onScroll(event: Event) {
-    if (this.isAllImageUploaded || this.isLoaderVisible) {
+    if (this.isAllPostsUploaded || this.isLoaderVisible) {
       return;
     }
 
     if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
-      this.uploadImagesByDate(this.getLastImageDate());
+      this.uploadPostsByDate(this.getLastPostDate());
       console.debug('scroll at bottom');
     }
   }
 
-  private getLastImageDate(): Date {
-    /*let lastPartOfDay = this.imagesMap[this.imagesMap.length-1];
-    let stringDate = lastPartOfDay.images[lastPartOfDay.images.length-1].creation_date;
-    return moment(stringDate, "YYYY-MM-DD HH:mm:ss.SSS").toDate()*/
-    //FIXME just stub
-    return new Date();
+  private getLastPostDate(): Date {
+    let lastPartOfDay = this.postsMap[this.postsMap.length-1];
+    let stringDate = lastPartOfDay.posts[lastPartOfDay.posts.length-1].create_date;
+    return moment(stringDate, "YYYY-MM-DD HH:mm:ss.SSS").toDate();
   }
 }

@@ -3,16 +3,16 @@
  */
 
 import {Component, Input} from "@angular/core";
-import {UserImage} from "../models/user-image.model";
-import {environment} from "../../environments/environment";
-import {PersonalImageModalComponent} from "./personal-images/personal-image-modal.component";
+import {UserImage} from "../../models/user-image.model";
+import {environment} from "../../../environments/environment";
+import {PersonalImageModalComponent} from "./personal-image-modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {PersonalHolderService} from "../service/personal-holder.service";
+import {PersonalHolderService} from "../../service/personal-holder.service";
 import * as moment from 'moment';
 
 @Component({
   selector: "s-image-preview",
-  templateUrl: './../templates/image-preview.template.html'
+  templateUrl: '../../templates/image-preview.template.html'
 })
 export class ImagePreviewComponent {
   @Input("user_image") userImage: UserImage;

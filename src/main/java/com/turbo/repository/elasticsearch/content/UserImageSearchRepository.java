@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 @Repository
 public class UserImageSearchRepository extends AbstractSearchRepository {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ImageSearchEntity.CREATION_DATE_PATTERN);
-
     @Autowired
     public UserImageSearchRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
         super(config.getElasticClient(), config, elasticUtils);
