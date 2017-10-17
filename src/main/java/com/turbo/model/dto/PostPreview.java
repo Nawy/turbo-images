@@ -10,7 +10,6 @@ import com.turbo.util.EncryptionService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
@@ -56,6 +55,33 @@ public class PostPreview {
         this.deviceType = deviceType;
         this.tags = tags;
         this.createDate = createDate;
+    }
+
+    @JsonIgnore
+    public static PostPreview from(Post post) {
+        final String imageDescription = post.getImages()
+                .stream()
+                .filter(image -> StringUtils.isNotBlank(image.getDescription()))
+                .map(UserImage::getDescription)
+                .findFirst().orElse(null);
+
+        return new PostPreview(
+                EncryptionService.encodeHashId(post.getId()),
+                post.getName(),
+                firstNonNull(
+                        post.getDescription(),
+                        imageDescription,
+                        ""
+                ),
+                post.getUps(),
+                post.getDowns(),
+                post.getRating(),
+                post.getViews(),
+                post.getImages().stream().findFirst().get().getImage().getThumbnail(),
+                post.getDeviceType(),
+                post.getTags(),
+                post.getCreateDate()
+        );
     }
 
     public String getId() {
@@ -104,33 +130,5 @@ public class PostPreview {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public LocalDateTime getCreateDate() {
         return createDate;
-    }
-
-    @JsonIgnore
-    public static PostPreview from(Post post) {
-        final UserImage imageWithDescription= post.getImages()
-                .stream()
-                .filter(image -> StringUtils.isNotBlank(image.getDescription()))
-                .findFirst().orElse(null);
-
-        Objects.requireNonNull(imageWithDescription);
-
-        return new PostPreview(
-                EncryptionService.encodeHashId(post.getId()),
-                post.getName(),
-                firstNonNull(
-                        post.getDescription(),
-                        imageWithDescription.getDescription(),
-                        ""
-                ),
-                post.getUps(),
-                post.getDowns(),
-                post.getRating(),
-                post.getViews(),
-                post.getImages().stream().findFirst().get().getImage().getThumbnail(),
-                post.getDeviceType(),
-                post.getTags(),
-                post.getCreateDate()
-        );
     }
 }
