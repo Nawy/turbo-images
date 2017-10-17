@@ -8,7 +8,7 @@ import { Location }               from '@angular/common';
 
 @Component({
   selector: "s-post",
-  templateUrl: './../templates/post.template.html',
+  templateUrl: '../templates/posts/post.template.html',
   styleUrls: ['./../css/post.style.css']
 })
 export class PostComponent implements OnInit {

@@ -1,17 +1,17 @@
 <div class="container space-top">
   <div class="card">
     <div class="card-body">
-      <h3 class="card-title">My Posts</h3>
+      <h3 class="card-title">My Images</h3>
 
-      <div *ngFor="let postMap of postsMap">
+      <div *ngFor="let imageMap of imagesMap">
         <div class="row justify-content-md-center">
-          <h2><span class="badge badge-pill badge-default">{{postMap.getCreationDate()}}</span></h2>
+          <h2><span class="badge badge-secondary">{{imageMap.getCreationDate()}}</span></h2>
         </div>
 
         <div class="card-body medium-margin">
           <div class="row justify-content-center">
-            <div class="col-auto" *ngFor="let post of postMap.posts">
-              <s-postpreview [post]="post"></s-postpreview>
+            <div class="col-auto small-preview-image" *ngFor="let image of imageMap.images">
+              <s-image-preview [user_image]="image"></s-image-preview>
             </div>
           </div>
         </div>
@@ -25,9 +25,9 @@
     </div>
 
     <!-- ALL UPLOADED -->
-    <div class="card-footer text-muted" *ngIf="isAllPostsUploaded">
+    <div class="card-footer text-muted" *ngIf="isAllImageUploaded">
       <div class="row justify-content-md-center">
-        All posts uploaded
+        All images uploaded
       </div>
     </div>
 

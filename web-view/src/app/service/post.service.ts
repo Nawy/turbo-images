@@ -5,6 +5,8 @@ import {environment} from "../../environments/environment";
 import {SessionService} from "./session.service";
 import {PostPreview} from "../models/post-preview.model";
 import * as moment from 'moment';
+import {SearchSort} from "app/models/search-sort.model";
+import {SearchPeriod} from "../models/search-period.model";
 
 class PostDto {
   name: string;
@@ -67,6 +69,22 @@ export class PostService {
           .then(res => {
             return res.json() as Array<PostPreview>
           })
+      }).catch(res => {
+        return Promise.reject(res);
+      });
+  }
+
+  public getPosts(startDate: Date): Promise<Array<PostPreview>> {
+
+    const url = `${environment.host}${environment.requests.getPostsByDate}`;
+    return this.http.get(
+      url,
+      {
+        params: {"date": moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS")}
+      }
+    ).toPromise()
+      .then(res => {
+        return res.json() as Array<PostPreview>
       }).catch(res => {
         return Promise.reject(res);
       });

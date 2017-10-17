@@ -38,6 +38,7 @@ public class PostController {
         this.authorizationService = authorizationService;
     }
 
+    //FIXME NOT WORKING!!! STAT IS BAD!!!
     @GetMapping("/get/viral/post")
     public List<PostPreview> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
@@ -49,6 +50,7 @@ public class PostController {
         );
     }
 
+    //FIXME NOT WORKING???!!!
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/posts")
     public List<PostPreview> getUserPosts(
@@ -71,6 +73,15 @@ public class PostController {
         final long userId = authorizationService.getCurrentUserId();
         return toPostSearchDtos(
                 postService.getUserPostsByDate(userId, startDate)
+        );
+    }
+
+    @GetMapping("/get/posts/by_date")
+    public List<PostPreview> getPostsByDate(
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
+    ) {
+        return toPostSearchDtos(
+                postService.getPostsByDate(startDate)
         );
     }
 

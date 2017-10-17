@@ -8,7 +8,7 @@ import {environment} from "../../../environments/environment";
 
 @Component({
   selector: "s-postpreview",
-  templateUrl: '../../templates/postpreview.template.html'
+  templateUrl: '../../templates/posts/post-preview.template.html'
 })
 export class PostPreviewComponent {
   @Input("post") post: PostPreview;

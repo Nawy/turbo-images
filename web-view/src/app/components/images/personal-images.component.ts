@@ -32,8 +32,8 @@ class UserImagesMap {
 }
 
 @Component({
-  templateUrl: './../../templates/personal-images/personal-images.template.html',
-  styleUrls: ['./../../css/personal-images.style.css']
+  templateUrl: '../../templates/images/personal-images.template.html',
+  styleUrls: ['../../css/personal-images.style.css']
 })
 export class PersonalImagesComponent implements OnInit {
   imagesMap: Array<UserImagesMap> = [];
@@ -77,7 +77,6 @@ export class PersonalImagesComponent implements OnInit {
 
     if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
       this.uploadImagesByDate(this.getLastImageDate());
-      console.debug('scroll at bottom');
     }
   }
 

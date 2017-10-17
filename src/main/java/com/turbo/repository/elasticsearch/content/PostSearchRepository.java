@@ -172,6 +172,26 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .collect(Collectors.toList());
     }
 
+    public List<Long> getPosts(final LocalDateTime lastDate, final int pageSize) {
+        SearchResponse response = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .addSort(PostField.CREATION_DATE.getFieldName(), SortOrder.DESC)
+                .setQuery(
+                        QueryBuilders.boolQuery()
+                                .must(
+                                        QueryBuilders.rangeQuery(PostField.CREATION_DATE.getFieldName()).lte(formatter.format(lastDate))
+                                )
+                )
+                .setSize(pageSize)
+                .get();
+
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
     public List<Long> getUserPosts(final Long userId, final LocalDateTime lastDate, final int pageSize) {
         SearchResponse response = elasticClient
                 .prepareSearch(config.getSearchPostIndexName())

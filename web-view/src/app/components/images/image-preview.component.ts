@@ -12,7 +12,7 @@ import * as moment from 'moment';
 
 @Component({
   selector: "s-image-preview",
-  templateUrl: '../../templates/image-preview.template.html'
+  templateUrl: '../../templates/images/image-preview.template.html'
 })
 export class ImagePreviewComponent {
   @Input("user_image") userImage: UserImage;

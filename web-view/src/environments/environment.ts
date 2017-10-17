@@ -32,6 +32,8 @@ export const environment = {
     //posts
     addPost: "/save/post",
     getUserPostsByDate: "/get/user/posts/by_date",
+    getPostsByDate:"/get/posts/by_date",
+    getPosts: "/get/viral/post",
     editPostName: "/edit/post/name",
     editPostDescription: "/edit/post/description",
     addPostTag: "/add/post/tag",

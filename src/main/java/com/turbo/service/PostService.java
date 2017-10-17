@@ -273,6 +273,11 @@ public class PostService {
         return bulkGetPosts(resultIds);
     }
 
+    public List<Post> getPostsByDate( final LocalDateTime dateTime) {
+        final List<Long> postsIds = postSearchRepository.getPosts(dateTime, PAGE_SIZE);
+        return bulkGetPosts(postsIds);
+    }
+
     public List<Post> getUserPostsByDate(final long userId, final LocalDateTime dateTime) {
         final List<Long> postsIds = postSearchRepository.getUserPosts(userId, dateTime, PAGE_SIZE);
         return bulkGetPosts(postsIds);

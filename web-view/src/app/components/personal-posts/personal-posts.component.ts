@@ -2,43 +2,22 @@
  * Created by ermolaev on 5/14/17.
  */
 import {Component, HostListener} from '@angular/core'
-import {PostPreview} from "../../models/post-preview.model";
 import * as moment from 'moment';
 import * as Rx from "rxjs"
 import {PostService} from "../../service/post.service";
 import {environment} from "environments/environment";
-
-class UserPostsMap {
-  creationDate: Date;
-  posts: Array<PostPreview>;
-
-
-  constructor(creationDate: Date, posts: Array<PostPreview>) {
-    this.creationDate = creationDate;
-    this.posts = posts;
-  }
-
-  getCreationDate(): string {
-    let currentDate = new Date().getDate();
-    if (this.creationDate.getDate() == currentDate) {
-      return "Today";
-    }
-    if (moment(this.creationDate).add(1, 'd').toDate().getDate() == currentDate) {
-      return "Yesterday";
-    }
-    return moment(this.creationDate).format("D MMMM");
-  }
-}
+import {UserPostsMap} from "../../models/user-posts-map.model";
 
 @Component({
-  templateUrl: '../../templates/personal-posts.template.html'
+  templateUrl: '../../templates/posts/personal-posts.template.html'
 })
 export class PersonalPostsComponent {
   postsMap: Array<UserPostsMap> = [];
   isLoaderVisible: boolean = false;
   isAllPostsUploaded: boolean = false;
 
-  constructor(private postService: PostService) {}
+  constructor(private postService: PostService) {
+  }
 
   ngOnInit(): void {
     this.uploadPostsByDate(new Date(Date.now()));
@@ -48,7 +27,7 @@ export class PersonalPostsComponent {
     this.isLoaderVisible = true;
     this.postService.getUserPosts(startDate).then(posts => {
 
-      if(posts.length < environment.pageSize) {
+      if (posts.length < environment.pageSize) {
         this.isAllPostsUploaded = true;
       }
 
@@ -75,13 +54,12 @@ export class PersonalPostsComponent {
 
     if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
       this.uploadPostsByDate(this.getLastPostDate());
-      console.debug('scroll at bottom');
     }
   }
 
   private getLastPostDate(): Date {
-    let lastPartOfDay = this.postsMap[this.postsMap.length-1];
-    let stringDate = lastPartOfDay.posts[lastPartOfDay.posts.length-1].create_date;
+    let lastPartOfDay = this.postsMap[this.postsMap.length - 1];
+    let stringDate = lastPartOfDay.posts[lastPartOfDay.posts.length - 1].create_date;
     return moment(stringDate, "YYYY-MM-DD HH:mm:ss.SSS").toDate();
   }
 }

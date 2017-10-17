@@ -11,8 +11,8 @@ import {Router} from "@angular/router";
 
 @Component({
   selector: "ngbd-modal-personal-image",
-  templateUrl: './../../templates/personal-images/personal-image-modal.template.html',
-  styleUrls: ['./../../css/personal-images/personal-image-modal.style.css']
+  templateUrl: '../../templates/images/personal-image-modal.template.html',
+  styleUrls: ['../../css/personal-images/personal-image-modal.style.css']
 })
 export class PersonalImageModalComponent {
   userImage: UserImage;
