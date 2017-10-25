@@ -35,6 +35,7 @@ public class PostSearchEntity {
     private Set<String> tags;
     private LocalDateTime creationDate;
     private long userId;
+    private boolean isVisible;
 
     public PostSearchEntity(
             @JsonProperty(PostFieldNames.ID) Long id,
@@ -48,7 +49,8 @@ public class PostSearchEntity {
             @JsonProperty(PostFieldNames.DOWNS) Long downs,
             @JsonProperty(PostFieldNames.RATING) Long rating,
             @JsonProperty(PostFieldNames.VIEWS) Long views,
-            @JsonProperty(PostFieldNames.CREATION_DATE) @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate
+            @JsonProperty(PostFieldNames.CREATION_DATE) @JsonFormat(pattern = CREATION_DATE_PATTERN) LocalDateTime creationDate,
+            @JsonProperty(PostFieldNames.VISIBLE) boolean isVisible
     ) {
         this.id = id;
         this.name = name;
@@ -62,6 +64,7 @@ public class PostSearchEntity {
         this.rating = rating;
         this.views = views;
         this.creationDate = creationDate;
+        this.isVisible = isVisible;
     }
 
     public PostSearchEntity(final Post post) {
@@ -78,6 +81,7 @@ public class PostSearchEntity {
         this.rating = post.getRating();
         this.views = post.getViews();
         this.creationDate = post.getCreateDate();
+        this.isVisible = post.isVisible();
     }
 
     @JsonProperty(PostFieldNames.ID)
@@ -139,5 +143,10 @@ public class PostSearchEntity {
     @JsonFormat(pattern = CREATION_DATE_PATTERN)
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    @JsonProperty(PostFieldNames.VISIBLE)
+    public boolean isVisible() {
+        return isVisible;
     }
 }

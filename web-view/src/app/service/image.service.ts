@@ -22,16 +22,10 @@ export class ImageService {
 
   getUserImage(imageId: string): Promise<UserImage> {
     const url = `${environment.host}${environment.requests.getUserImageByIdUrl}${imageId}`;
-    return this.http.get(
-      url
-    ).toPromise()
-      .then(res => {
-        console.info(res.json());
-        let images = res.json() as UserImage;
-        return images
-      }).catch(res => {
-        return Promise.reject(res);
-      });
+    return this.http.get(url)
+      .toPromise()
+      .then(res => res.json() as UserImage)
+      .catch(res => Promise.reject(res));
   }
 
   getUserImages(startDate: Date): Promise<Array<UserImage>> {

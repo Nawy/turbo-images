@@ -16,6 +16,5 @@ export class AppComponent {
   dropImage(event : any, content : any) {
     event.preventDefault();
     content.close();
-    console.info("UPLOOOOOAAAD~!");
   }
 }

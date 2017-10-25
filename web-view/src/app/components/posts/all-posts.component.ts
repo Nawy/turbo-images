@@ -52,8 +52,12 @@ export class AllPostsComponent {
             new UserPostsMap(moment(posts[0].create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), posts)
           )
           .forEach(post => this.postsMap.push(post));
-        this.isLoaderVisible = false
-      })
+        this.isLoaderVisible = false;
+      }).catch(res => {
+        if (res.status === 404) {
+          this.isLoaderVisible = false;
+        }
+    })
   }
 
   @HostListener('window:scroll', ['$event'])

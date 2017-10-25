@@ -1,5 +1,5 @@
 
-import {PostPreview} from "./post-preview.model";
+import {PostPreview} from "./post/post-preview.model";
 import * as moment from 'moment';
 
 export class UserPostsMap {

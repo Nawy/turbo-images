@@ -1,8 +1,56 @@
 <div class="container space-top">
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title">Post {{id}}</h3>
-      <p class="card-text">Post data here</p>
+
+  <div class="container">
+    <div class="row justify-content-md-center">
+
+      <div class="col-9">
+
+        <input
+          class="form-control input-header"
+          id="nameInput"
+          placeholder="Name ..."
+          maxlength="100"
+          [(ngModel)]="newPost.name"
+          [ngModelOptions]="{standalone: true}">
+
+
+
+        <div class="card-body without-side-space">
+          <s-upload-preview *ngFor="let image of images" [user_image]="image"></s-upload-preview>
+        </div>
+
+        <textarea
+          class="form-control"
+          id="descriptionTextArea"
+          rows="3"
+          [(ngModel)]="newPost.description"
+          [ngModelOptions]="{standalone: true}">
+          </textarea>
+
+      </div>
+
+      <div class="col-3">
+
+        <div>
+          <label for="tagsTextArea">Tags (separated ',')</label>
+          <textarea
+            class="form-control"
+            id="tagsTextArea"
+            rows="3"
+            (input)="updateTags()"
+            [(ngModel)]="tagsModel"
+            [ngModelOptions]="{standalone: true}">
+          </textarea>
+        </div>
+        <div class="form-group">
+          <span *ngFor="let tag of tags" class="badge badge-dark tags-group">{{tag}}</span>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-success btn-block" (click)="shareWithCommunity()">Share with Community</button>
+        </div>
+      </div>
     </div>
   </div>
+
 </div>
+

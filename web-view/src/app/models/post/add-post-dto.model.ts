@@ -1,6 +1,6 @@
-import {UserImage} from "./user-image.model";
+import {UserImage} from "../user-image.model";
 
-export class Post {
+export class addPostDto {
 
   name : string;
   description : string;

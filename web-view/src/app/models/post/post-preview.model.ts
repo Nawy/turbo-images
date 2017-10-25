@@ -1,7 +1,7 @@
 /**
  * Created by ermolaev on 5/9/17.
  */
-import {DeviceType} from "./device-type.model";
+import {DeviceType} from "../device-type.model";
 
 export class PostPreview {
 

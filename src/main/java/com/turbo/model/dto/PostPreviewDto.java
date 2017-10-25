@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 /**
  * Created by ermolaev on 6/12/17.
  */
-public class PostPreview {
+public class PostPreviewDto {
 
     private String id;
     private String name;
@@ -31,7 +31,7 @@ public class PostPreview {
     private Set<String> tags;
     private LocalDateTime createDate;
 
-    public PostPreview(
+    public PostPreviewDto(
             String id,
             String name,
             String description,
@@ -58,14 +58,14 @@ public class PostPreview {
     }
 
     @JsonIgnore
-    public static PostPreview from(Post post) {
+    public static PostPreviewDto from(Post post) {
         final String imageDescription = post.getImages()
                 .stream()
                 .filter(image -> StringUtils.isNotBlank(image.getDescription()))
                 .map(UserImage::getDescription)
                 .findFirst().orElse(null);
 
-        return new PostPreview(
+        return new PostPreviewDto(
                 EncryptionService.encodeHashId(post.getId()),
                 post.getName(),
                 firstNonNull(

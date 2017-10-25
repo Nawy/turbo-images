@@ -12,7 +12,8 @@ public enum PostField {
     VIEWS("views"),
     USER_ID("user_id"),
     TAGS("tags"),
-    CREATION_DATE("creation_date");
+    CREATION_DATE("creation_date"),
+    VISIBLE("visible");
 
     private String fieldName;
 

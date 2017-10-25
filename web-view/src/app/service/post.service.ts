@@ -1,12 +1,11 @@
 import {Injectable} from "@angular/core";
 import {Headers, Http} from "@angular/http";
-import {Post} from "../models/post.model";
+import {addPostDto} from "../models/post/add-post-dto.model";
 import {environment} from "../../environments/environment";
 import {SessionService} from "./session.service";
-import {PostPreview} from "../models/post-preview.model";
+import {PostPreview} from "../models/post/post-preview.model";
 import * as moment from 'moment';
-import {SearchSort} from "app/models/search-sort.model";
-import {SearchPeriod} from "../models/search-period.model";
+import {Post} from "../models/post/post.model";
 
 class PostDto {
   name: string;
@@ -16,7 +15,7 @@ class PostDto {
   tags: Array<string>;
   visible: boolean;
 
-  constructor(that: Post) {
+  constructor(that: addPostDto) {
     this.name = that.name;
     this.description = that.description;
     this.image_ids = that.images.map(image => image.id);
@@ -37,57 +36,50 @@ export class PostService {
 
   /**
    * Add new post
-   * @param {Post} post
-   * @returns {Promise<Post>}
+   * @param {addPostDto} post
+   * @returns {Promise<addPostDto>}
    */
-  public addPost(post: Post): Promise<Post> {
+  public addPost(post: addPostDto): Promise<Post> {
     return this.sessionService.getUserSession()
       .then(sessionID => {
         const url = `${environment.host}${environment.requests.addPost}`;
         console.info(url);
-        return this.http
-          .post(url, new PostDto(post), {headers: new Headers({"session": sessionID})})
+        return this.http.post(url, new PostDto(post), {headers: new Headers({"session": sessionID})})
           .toPromise()
-          .then(value => {
-            console.info(value);
-            return value;
-          })
+          .then(value => value.json() as Post)
       });
   }
 
   public getUserPosts(startDate: Date): Promise<Array<PostPreview>> {
     return this.sessionService.getUserSession()
-      .then(sessionID => {
-        const url = `${environment.host}${environment.requests.getUserPostsByDate}`;
-        return this.http.get(
-          url,
+      .then(sessionID =>
+        this.http.get(
+          `${environment.host}${environment.requests.getUserPostsByDate}`,
           {
             headers: new Headers({"session": sessionID}),
             params: {"date": moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS")}
           }
-        ).toPromise()
-          .then(res => {
-            return res.json() as Array<PostPreview>
-          })
-      }).catch(res => {
-        return Promise.reject(res);
-      });
+        )
+          .toPromise()
+          .then(res => res.json() as Array<PostPreview>)
+      ).catch(res => Promise.reject(res));
   }
 
   public getPosts(startDate: Date): Promise<Array<PostPreview>> {
-
-    const url = `${environment.host}${environment.requests.getPostsByDate}`;
     return this.http.get(
-      url,
+      `${environment.host}${environment.requests.getPostsByDate}`,
       {
         params: {"date": moment(startDate).format("YYYY-MM-DD HH:mm:ss.SSS")}
       }
     ).toPromise()
-      .then(res => {
-        return res.json() as Array<PostPreview>
-      }).catch(res => {
-        return Promise.reject(res);
-      });
+      .then(res => res.json() as Array<PostPreview>)
+      .catch(res => Promise.reject(res));
   }
 
+  public getPost(id: string): Promise<Post> {
+    return this.http.get(`${environment.host}${environment.requests.getPost}${id}`)
+      .toPromise()
+      .then(res => res.json() as Post)
+      .catch(res => Promise.reject(res));
+  }
 }

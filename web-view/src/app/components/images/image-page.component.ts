@@ -1,13 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {PersonalHolderService} from "../../service/personal-holder.service";
 import {UserImage} from "../../models/user-image.model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ImageService} from "../../service/image.service";
 import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";
 import {UserInfo} from "../../models/user-info.model";
 import {UserService} from "app/service/user.service";
-import {Post} from "../../models/post.model";
+import {addPostDto} from "../../models/post/add-post-dto.model";
 import {PostService} from "../../service/post.service";
 
 /**
@@ -29,6 +29,7 @@ export class ImagePageComponent implements OnInit {
   creationDate: string;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private imageService: ImageService,
               private location: Location,
               private personalHolderService: PersonalHolderService,
@@ -122,11 +123,14 @@ export class ImagePageComponent implements OnInit {
 
   public shareWithCommunity() {
     if (this.isReadonly()) return;
-    const newPost: Post = new Post();
+    const newPost: addPostDto = new addPostDto();
     newPost.images = [this.userImage];
+    if (this.userImage.name) newPost.name = this.userImage.name;
+    if (this.userImage.description) newPost.description = this.userImage.description;
+
     this.postService.addPost(newPost)
       .then(post => {
-        // TODO router route to post
+        this.router.navigateByUrl("post/" + post.id)
       });
   }
 }

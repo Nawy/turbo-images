@@ -14,4 +14,5 @@ public abstract class PostFieldNames {
     public static final String RATING = "rating";
     public static final String VIEWS = "views";
     public static final String CREATION_DATE = "creation_date";
+    public static final String VISIBLE = "visible";
 }

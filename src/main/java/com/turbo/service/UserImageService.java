@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -82,7 +79,9 @@ public class UserImageService {
     }
 
     public List<UserImage> getUserImages(Collection<Long> userImageIds) {
-        final List<UserImageRepoModel> userImageRepoModels = userImageRepository.bulkGet(userImageIds);
+        if (userImageIds.isEmpty()) throw new NotFoundHttpException("No user images found");
+
+        final List<UserImageRepoModel> userImageRepoModels = userImageRepository.bulkGet(new HashSet<>(userImageIds));
 
         final List<Long> imageIds = userImageRepoModels.stream()
                 .map(UserImageRepoModel::getImageId)

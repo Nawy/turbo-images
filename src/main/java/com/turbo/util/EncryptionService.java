@@ -1,5 +1,6 @@
 package com.turbo.util;
 
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import org.apache.commons.lang3.StringUtils;
 import org.hashids.Hashids;
@@ -42,6 +43,9 @@ public class EncryptionService {
 
     public static long decodeHashId(String id) {
         final long[] results = hashids.decode(id);
+        if (results.length == 0){
+            throw new BadRequestHttpException("Can't parse id");
+        }
         if(results.length > 1) {
             return getAssembledOneValue(results);
         }

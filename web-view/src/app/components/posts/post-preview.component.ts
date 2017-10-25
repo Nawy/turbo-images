@@ -3,8 +3,9 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {PostPreview} from "../../models/post-preview.model";
+import {PostPreview} from "../../models/post/post-preview.model";
 import {environment} from "../../../environments/environment";
+import {Router} from "@angular/router";
 
 @Component({
   selector: "s-postpreview",
@@ -21,7 +22,9 @@ export class PostPreviewComponent {
   //data
   hintHeaderString: string;
 
-  constructor() {
+  constructor(
+    private router:Router
+  ) {
     this.activeClass = "postpreview-active";
     this.defaultClass = "postpreview-default";
 
@@ -46,7 +49,6 @@ export class PostPreviewComponent {
 
   showPost() {
     console.log("post is shown");
-    /*this.personalHolderService.personalImage = this.userImage;
-    this.modalService.open(PersonalImageModalComponent, { size: "lg"});*/
+    this.router.navigateByUrl("post/" + this.post.id);
   }
 }

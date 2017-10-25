@@ -170,6 +170,7 @@ public class PostService {
 
     public Post getPostById(final long id) {
         PostRepoModel postRepoModel = postRepository.get(id);
+        if (postRepoModel == null) throw new NotFoundHttpException("can't find post with such id");
         return makePost(postRepoModel);
     }
 
@@ -310,6 +311,7 @@ public class PostService {
     }
 
     private List<Post> bulkGetPosts(List<Long> postIds) {
+        if (postIds.isEmpty()) return Collections.emptyList();
         List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
         Set<Long> userIds = postRepoModels.stream()
                 .map(PostRepoModel::getUserId)
@@ -319,6 +321,7 @@ public class PostService {
         Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
         List<Long> postsUserImageIds = postRepoModels.stream()
                 .flatMap(postRepoModel -> postRepoModel.getImages().stream())
+                .distinct()
                 .collect(Collectors.toList());
         List<UserImage> userImages = userImageService.getUserImages(postsUserImageIds);
         // userImage_Id , userImage

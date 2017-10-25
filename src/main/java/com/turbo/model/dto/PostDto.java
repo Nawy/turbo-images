@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
+import com.turbo.model.UserImage;
+import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.util.EncryptionService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +19,7 @@ public class PostDto {
 
     private String id;
     private String name;
+    private String description;
     private long ups;
     private long downs;
     private long rating;
@@ -30,9 +30,28 @@ public class PostDto {
     private LocalDateTime createDate;
     private boolean visible;
 
-    public PostDto(String id, String name, long ups, long downs, long rating, long views, Set<UserImageDto> images, DeviceType deviceType, Set<String> tags, LocalDateTime createDate, boolean visible) {
+    private String userId;
+    private String userName;
+
+    public PostDto(
+            String id,
+            String name,
+            String description,
+            long ups,
+            long downs,
+            long rating,
+            long views,
+            Set<UserImageDto> images,
+            DeviceType deviceType,
+            Set<String> tags,
+            LocalDateTime createDate,
+            boolean visible,
+            String userId,
+            String userName
+    ) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.ups = ups;
         this.downs = downs;
         this.rating = rating;
@@ -42,6 +61,8 @@ public class PostDto {
         this.tags = tags;
         this.createDate = createDate;
         this.visible = visible;
+        this.userId = userId;
+        this.userName = userName;
     }
 
     @JsonIgnore
@@ -53,6 +74,7 @@ public class PostDto {
         return new PostDto(
                 EncryptionService.encodeHashId(post.getId()),
                 post.getName(),
+                post.getDescription(),
                 post.getUps(),
                 post.getDowns(),
                 post.getRating(),
@@ -61,7 +83,9 @@ public class PostDto {
                 post.getDeviceType(),
                 post.getTags(),
                 post.getCreateDate(),
-                post.isVisible()
+                post.isVisible(),
+                EncryptionService.encodeHashId(post.getUser().getId()),
+                post.getUser().getName()
         );
     }
 
@@ -107,8 +131,23 @@ public class PostDto {
         return createDate;
     }
 
+    @JsonProperty("visible")
     public boolean isVisible() {
         return visible;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @JsonProperty("user_id")
+    public String getUserId() {
+        return userId;
+    }
+
+    @JsonProperty("user_name")
+    public String getUserName() {
+        return userName;
     }
 }
 

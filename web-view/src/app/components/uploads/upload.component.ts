@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
 import {Router} from "@angular/router";
-import {Post} from "../../models/post.model";
+import {addPostDto} from "../../models/post/add-post-dto.model";
 import {PostService} from "../../service/post.service";
 
 /**
@@ -21,7 +21,7 @@ export class UploadComponent implements OnInit {
   uploadedProgress: number;
   totalImageCount: number;
 
-  newPost: Post = new Post();
+  newPost: addPostDto = new addPostDto();
   tagsModel: string;
 
   tags: Array<string> = [];

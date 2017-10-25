@@ -5,8 +5,9 @@ import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.PostDto;
-import com.turbo.model.dto.PostPreview;
+import com.turbo.model.dto.PostPreviewDto;
 import com.turbo.model.dto.TransferPost;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
@@ -14,6 +15,7 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +42,7 @@ public class PostController {
 
     //FIXME NOT WORKING!!! STAT IS BAD!!!
     @GetMapping("/get/viral/post")
-    public List<PostPreview> getMostViral(
+    public List<PostPreviewDto> getMostViral(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "RATING") SearchSort searchSort,
             @RequestParam(value = "period", defaultValue = "DAY") SearchPeriod searchPeriod
@@ -53,7 +55,7 @@ public class PostController {
     //FIXME NOT WORKING???!!!
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/posts")
-    public List<PostPreview> getUserPosts(
+    public List<PostPreviewDto> getUserPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "sort", defaultValue = "NEWEST") SearchSort sort,
             @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
@@ -67,7 +69,7 @@ public class PostController {
 
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/posts/by_date")
-    public List<PostPreview> getUserPostsByDate(
+    public List<PostPreviewDto> getUserPostsByDate(
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
     ) {
         final long userId = authorizationService.getCurrentUserId();
@@ -77,7 +79,7 @@ public class PostController {
     }
 
     @GetMapping("/get/posts/by_date")
-    public List<PostPreview> getPostsByDate(
+    public List<PostPreviewDto> getPostsByDate(
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
     ) {
         return toPostSearchDtos(
@@ -85,17 +87,17 @@ public class PostController {
         );
     }
 
-    private List<PostPreview> toPostSearchDtos(List<Post> posts) {
+    private List<PostPreviewDto> toPostSearchDtos(List<Post> posts) {
         return posts.stream()
-                .map(PostPreview::from)
+                .map(PostPreviewDto::from)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/get/post/{id}")
     public PostDto get(@PathVariable("id") String id) {
-        return PostDto.from(
-                postService.getPostById(EncryptionService.decodeHashId(id))
-        );
+        if (StringUtils.isBlank(id)) throw new BadRequestHttpException("id is blank");
+        Post post = postService.getPostById(EncryptionService.decodeHashId(id));
+        return PostDto.from(post);
     }
 
     @Secured(SecurityRole.USER)

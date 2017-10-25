@@ -182,6 +182,9 @@ public class PostSearchRepository extends AbstractSearchRepository {
                                 .must(
                                         QueryBuilders.rangeQuery(PostField.CREATION_DATE.getFieldName()).lte(formatter.format(lastDate))
                                 )
+                                .must(
+                                        QueryBuilders.termQuery(PostField.VISIBLE.getFieldName(), true)
+                                )
                 )
                 .setSize(pageSize)
                 .get();
