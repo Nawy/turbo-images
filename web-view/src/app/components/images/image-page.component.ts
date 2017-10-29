@@ -7,8 +7,9 @@ import {Location} from '@angular/common';
 import {environment} from "../../../environments/environment";
 import {UserInfo} from "../../models/user-info.model";
 import {UserService} from "app/service/user.service";
-import {addPostDto} from "../../models/post/add-post-dto.model";
+import {TransferPost} from "../../models/post/add-post-dto.model";
 import {PostService} from "../../service/post.service";
+import {DeviceType} from "../../models/device-type.model";
 
 /**
  * Created by ermolaev on 7/23/17.
@@ -123,12 +124,16 @@ export class ImagePageComponent implements OnInit {
 
   public shareWithCommunity() {
     if (this.isReadonly()) return;
-    const newPost: addPostDto = new addPostDto();
-    newPost.images = [this.userImage];
-    if (this.userImage.name) newPost.name = this.userImage.name;
-    if (this.userImage.description) newPost.description = this.userImage.description;
+    const newPost: TransferPost = new TransferPost(
+      null,
+      this.userImage.name ? this.userImage.name : null,
+      this.userImage.description ? this.userImage.description : null,
+      [this.userImage],
+      DeviceType.PC,
+      null
+    );
 
-    this.postService.addPost(newPost)
+    this.postService.savePost(newPost)
       .then(post => {
         this.router.navigateByUrl("post/" + post.id)
       });

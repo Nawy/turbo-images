@@ -88,3 +88,10 @@ html {
   margin: 0px;
   padding: 0px;
 }
+
+// Any name header
+
+.input-header {
+  font-size: $name-header-font-size;
+  border: $name-header-border;
+}

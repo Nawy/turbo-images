@@ -4,7 +4,6 @@ import com.turbo.model.Post;
 import com.turbo.model.User;
 import com.turbo.model.UserImage;
 import com.turbo.model.aerospike.PostRepoModel;
-import com.turbo.model.dto.TransferPost;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.search.SearchOrder;
@@ -53,12 +52,6 @@ public class PostService {
         this.userImageService = userImageService;
     }
 
-    public Post save(final TransferPost postDto, final long userId) {
-        return save(
-                new PostRepoModel(postDto, userId)
-        );
-    }
-
     public Post save(final PostRepoModel post) {
         return post.getId() != null ?
                 update(post) :
@@ -73,11 +66,11 @@ public class PostService {
     }
 
     private Post update(PostRepoModel post) {
-        PostRepoModel updatedPost = postRepository.save(post);
-        //FIXME add to search tags?
-        //FIXME may be long update what to do with that?
+        postRepository.save(post);
+        Post updatedPost = getPostById(post.getId());
+        //FIXME i can update too long
         postSearchRepository.updatePost(updatedPost);
-        return getPostById(post.getId());
+        return updatedPost;
     }
 
     public Post updatePostName(long postId, String name) {

@@ -30,7 +30,7 @@ export const environment = {
     getUserImageByIdUrl: "/get/user/image/",
 
     //posts
-    addPost: "/save/post",
+    savePost: "/save/post",
     getUserPostsByDate: "/get/user/posts/by_date",
     getPostsByDate:"/get/posts/by_date",
     getPosts: "/get/viral/post",

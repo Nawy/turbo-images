@@ -2,14 +2,8 @@
   margin-bottom: 40px;
 }
 
-
 .input-group:focus {
   outline: none !important;
-}
-
-.input-header {
-  font-size: 150%;
-  border: none;
 }
 
 .description {

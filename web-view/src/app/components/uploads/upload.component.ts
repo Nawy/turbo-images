@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {ImageService} from "../../service/image.service";
 import {UserImage} from "../../models/user-image.model";
 import {Router} from "@angular/router";
-import {addPostDto} from "../../models/post/add-post-dto.model";
+import {TransferPost} from "../../models/post/add-post-dto.model";
 import {PostService} from "../../service/post.service";
 
 /**
@@ -21,7 +21,7 @@ export class UploadComponent implements OnInit {
   uploadedProgress: number;
   totalImageCount: number;
 
-  newPost: addPostDto = new addPostDto();
+  newPost: TransferPost = TransferPost.emptyTransferPost();
   tagsModel: string;
 
   tags: Array<string> = [];
@@ -71,7 +71,10 @@ export class UploadComponent implements OnInit {
 
   public shareWithCommunity() {
     console.info("Pressed!");
-    this.newPost.images = this.images;
-    this.postService.addPost(this.newPost);
+    this.newPost.setImages(this.images);
+    this.postService.savePost(this.newPost)
+      .then(post => {
+        this.router.navigateByUrl("post/" + post.id)
+      });
   }
 }

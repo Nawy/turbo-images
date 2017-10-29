@@ -9,6 +9,7 @@ import {UserInfo} from "../../models/user-info.model";
 import {Post} from "../../models/post/post.model";
 import {PostService} from "../../service/post.service";
 import {UserService} from "../../service/user.service";
+import {TransferPost} from "../../models/post/add-post-dto.model";
 
 @Component({
   selector: "s-post",
@@ -19,6 +20,7 @@ export class PostComponent implements OnInit {
 
   userInfo: UserInfo;
   post: Post;
+  tags: Array<string> = [];
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -50,5 +52,19 @@ export class PostComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  show(){
+    this.post.visible=true;
+    this.postService.savePost(
+      TransferPost.makeTransferPost(this.post)
+    );
+  }
+
+  hide(){
+    this.post.visible=false;
+    this.postService.savePost(
+      TransferPost.makeTransferPost(this.post)
+    );
   }
 }
