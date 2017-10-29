@@ -95,3 +95,31 @@ html {
   font-size: $name-header-font-size;
   border: $name-header-border;
 }
+
+// Any description
+
+.description {
+  min-height: 60px;
+  overflow: hidden;
+  resize: none;
+  border: none;
+}
+
+.input-group:focus {
+  outline: none !important;
+}
+
+input[readonly].input-header {
+  background-color: #fff;
+}
+
+textarea[readonly].description {
+  background-color: #fff;
+}
+
+.post-description {
+  min-height: 60px;
+  overflow: hidden;
+  resize: none;
+}
+

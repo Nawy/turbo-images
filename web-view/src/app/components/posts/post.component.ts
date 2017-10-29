@@ -46,8 +46,7 @@ export class PostComponent implements OnInit {
   }
 
   isReadonly() {
-    return this.post != null && this.userInfo != null
-      && this.post.user_id != this.userInfo.id;
+    return !this.post || !this.userInfo || this.post.user_id != this.userInfo.id;
   }
 
   goBack(): void {

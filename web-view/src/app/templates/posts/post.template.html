@@ -1,16 +1,16 @@
 <div class="container space-top">
 
-  <div class="container">
+  <div class="container" *ngIf="post">
     <div class="row justify-content-md-center">
 
       <div class="col-9">
 
         <input
-          *ngIf="post.name"
           class="form-control input-header"
           id="nameInput"
           placeholder="Name ..."
           maxlength="100"
+          [readonly]="isReadonly()"
           [(ngModel)]="post.name"
           [ngModelOptions]="{standalone: true}">
 
@@ -20,33 +20,35 @@
         </div>
 
         <textarea
-          *ngIf="post.description"
-          class="form-control"
+          class="form-control post-description"
           id="descriptionTextArea"
-          rows="3"
+          [readonly]="isReadonly()"
           [(ngModel)]="post.description"
           [ngModelOptions]="{standalone: true}">
           </textarea>
+
+        HERE WILL BE COMMENTS
 
       </div>
 
       <div class="col-3">
 
         <div>
-          <label for="tagsTextArea">Tags (separated ',')</label>
+          <label *ngIf="isReadonly()" for="tagsTextArea">Tags</label>
+          <label *ngIf="!isReadonly()" for="tagsTextArea">Tags (separated ',')</label>
           <textarea
-            class="form-control"
+            class="form-control post-description"
             id="tagsTextArea"
-            rows="3"
             (input)="updateTags()"
-            [(ngModel)]="tagsModel"
-            [ngModelOptions]="{standalone: true}">
+            [(ngModel)]="post.tags"
+            [ngModelOptions]="{standalone: true}"
+            *ngIf="!isReadonly()">
           </textarea>
         </div>
         <div class="form-group">
           <span *ngFor="let tag of post.tags" class="badge badge-dark tags-group">{{tag}}</span>
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="!isReadonly()">
           <button *ngIf="post.visible" type="button" class="btn btn-success btn-block" (click)="hide()">Hide</button>
           <button *ngIf="!post.visible" type="button" class="btn btn-success btn-block" (click)="show()">Share with
             Community
