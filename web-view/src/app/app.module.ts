@@ -11,7 +11,8 @@ import {SigninComponent} from "./components/signin.component";
 import {PostComponent} from "./components/posts/post.component";
 import {NavbarComponent} from "./components/navbar.component";
 import {AllPostsComponent} from "./components/posts/all-posts.component";
-import {CommentComponent} from "./components/comment.component";
+import {CommentComponent} from "./components/comments/comment.component";
+import {CommentsListComponent} from "./components/comments/comments-list.component";
 import {SettingsComponent} from "./components/settings.component";
 import {PersonalPostsComponent} from "./components/posts/personal-posts.component";
 import {PostPreviewComponent} from "./components/posts/post-preview.component";
@@ -40,6 +41,7 @@ import {PostService} from "./service/post.service";
     NavbarComponent,
     AllPostsComponent,
     CommentComponent,
+    CommentsListComponent,
     SettingsComponent,
     PersonalPostsComponent,
     PersonalImagesComponent,
