@@ -48,7 +48,6 @@ export class PostPreviewComponent {
   }
 
   showPost() {
-    console.log("post is shown");
     this.router.navigateByUrl("post/" + this.post.id);
   }
 }

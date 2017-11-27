@@ -109,16 +109,8 @@ html {
   border: none;
 }
 
-.input-group:focus {
-  outline: none !important;
-}
-
-input[readonly].input-header {
-  background-color: #fff;
-}
-
-textarea[readonly].description {
-  background-color: #fff;
+textarea[readonly].post-description, textarea[readonly].description, input[readonly].input-header {
+  background-color: $readonly-backgroud-color;
 }
 
 .post-description {
@@ -127,3 +119,6 @@ textarea[readonly].description {
   resize: none;
 }
 
+textarea.focus, .description:focus, .input-group:focus, .post-description:focus {
+  outline: none !important;
+}

@@ -22,7 +22,7 @@ export class UploadComponent implements OnInit {
   totalImageCount: number;
 
   newPost: TransferPost = TransferPost.emptyTransferPost();
-  tagsModel: string;
+  tagsString: string;
 
   tags: Array<string> = [];
 
@@ -61,12 +61,14 @@ export class UploadComponent implements OnInit {
 
   public updateTags() {
     this.tags = [];
-    this.tagsModel.trim()
+    this.tagsString.trim()
       .split(",")
-      .forEach(value => {
-        this.tags.push(value.trim());
-        this.newPost.tags = this.tags;
+      .forEach(tagValue => {
+        if (tagValue.length > 0) {
+          this.tags.push(tagValue.trim());
+        }
       });
+    this.newPost.tags = this.tags;
   }
 
   public shareWithCommunity() {

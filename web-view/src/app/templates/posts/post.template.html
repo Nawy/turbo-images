@@ -8,7 +8,6 @@
         <input
           class="form-control input-header"
           id="nameInput"
-          placeholder="Name ..."
           maxlength="100"
           [readonly]="isReadonly()"
           [(ngModel)]="post.name"
@@ -20,9 +19,11 @@
         </div>
 
         <textarea
+          *ngIf="post && canView(post.description)"
           class="form-control post-description"
           id="descriptionTextArea"
           [readonly]="isReadonly()"
+          (input)="autoGrow();deferredPostUpdate();"
           [(ngModel)]="post.description"
           [ngModelOptions]="{standalone: true}">
           </textarea>
@@ -37,27 +38,29 @@
 
       <div class="col-3">
 
+        <div class="col-xs-12" style="height:34px;"></div>
+
         <div>
           <label *ngIf="isReadonly()" for="tagsTextArea">Tags</label>
-          <label *ngIf="!isReadonly()" for="tagsTextArea">Tags (separated ',')</label>
+          <label *ngIf="!isReadonly()" for="tagsTextArea">Add Tags separated by ','</label>
           <textarea
             class="form-control post-description"
             id="tagsTextArea"
-            (input)="updateTags()"
-            [(ngModel)]="post.tags"
+            (input)="updateTags();deferredPostUpdate();"
+            [(ngModel)]="tagsString"
             [ngModelOptions]="{standalone: true}"
-            *ngIf="!isReadonly()">
+            [readonly]="isReadonly()">
           </textarea>
         </div>
-        <div class="form-group">
-          <span *ngFor="let tag of post.tags" class="badge badge-dark tags-group">{{tag}}</span>
+
+        <div class="col-xs-12" style="height:50px;"></div>
+
+        <div class="form-group ">
+          <button type="button" class="btn-with-margin btn btn-warning btn-block" (click)="goBack()">Go Back</button>
+          <button *ngIf="!isReadonly() && post.visible" type="button" class="btn btn-success btn-block" (click)="hide()">Hide</button>
+          <button *ngIf="!isReadonly() && !post.visible" type="button" class="btn btn-success btn-block" (click)="show()">Share with Community</button>
         </div>
-        <div class="form-group" *ngIf="!isReadonly()">
-          <button *ngIf="post.visible" type="button" class="btn btn-success btn-block" (click)="hide()">Hide</button>
-          <button *ngIf="!post.visible" type="button" class="btn btn-success btn-block" (click)="show()">Share with
-            Community
-          </button>
-        </div>
+
       </div>
     </div>
   </div>

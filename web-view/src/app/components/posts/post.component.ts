@@ -10,6 +10,8 @@ import {Post} from "../../models/post/post.model";
 import {PostService} from "../../service/post.service";
 import {UserService} from "../../service/user.service";
 import {TransferPost} from "../../models/post/add-post-dto.model";
+import {isNullOrUndefined} from "util";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: "s-post",
@@ -20,7 +22,9 @@ export class PostComponent implements OnInit {
 
   userInfo: UserInfo;
   post: Post;
-  tags: Array<string> = [];
+  updateTimer;
+  autoUpdateInterval: number = environment.autoUpdateInterval;
+  tagsString: string = "";
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -30,40 +34,76 @@ export class PostComponent implements OnInit {
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    this.userService.userInfoSource.subscribe(userInfo => {
-      this.userInfo = userInfo;
-    });
-    if (this.userInfo == null) {
-      this.userService.updateUserInfo();
-    }
+    this.userService.userInfoSource.subscribe(userInfo => this.userInfo = userInfo);
+    if (this.userInfo == null) this.userService.updateUserInfo();
     this.route.params.subscribe(
       params => {
         const id = params['id'];
         this.postService.getPost(id)
-          .then(post => this.post = post)
+          .then(post => {
+            this.post = post;
+            if (post.tags.length > 0) {
+              this.tagsString = post.tags.join();
+              console.log("tags string: " + this.tagsString);
+            }
+          })
       }
     )
   }
 
-  isReadonly() {
-    return !this.post || !this.userInfo || this.post.user_id != this.userInfo.id;
+  isReadonly(): boolean {
+    return !(this.post && this.userInfo && this.post.user_id == this.userInfo.id);
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  show(){
-    this.post.visible=true;
-    this.postService.savePost(
-      TransferPost.makeTransferPost(this.post)
+  deferredPostUpdate() {
+    clearTimeout(this.updateTimer);
+    this.updateTimer = setTimeout(
+      () => this.savePost(this.post),
+      this.autoUpdateInterval
     );
   }
 
-  hide(){
-    this.post.visible=false;
+  //FIXME I'm not correct working
+  autoGrow() {
+    let element: HTMLElement = document.getElementById("desc");
+    element.style.height = "5px";
+    element.style.height = (element.scrollHeight) + "px";
+  }
+
+  public updateTags() {
+    const tags = [];
+    this.tagsString.trim()
+      .split(",")
+      .forEach(tagValue => {
+        if (tagValue.length > 0) {
+          tags.push(tagValue.trim());
+        }
+      });
+    this.post.tags = tags;
+  }
+
+  show() {
+    this.post.visible = true;
+    this.savePost(this.post);
+  }
+
+  hide() {
+    this.post.visible = false;
+    this.savePost(this.post);
+  }
+
+  canView(field: string): boolean {
+    return (!isNullOrUndefined(field) && field.length > 0) || !this.isReadonly();
+  }
+
+  savePost(post: Post) {
+    console.log("Post saved");
     this.postService.savePost(
-      TransferPost.makeTransferPost(this.post)
-    );
+      TransferPost.makeTransferPost(post)
+    )
   }
 }

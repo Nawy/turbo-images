@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" *ngIf="userImage">
 
   <div class="card-body">
     <input
@@ -8,6 +8,7 @@
       [(ngModel)]="userImage.name"
       [ngModelOptions]="{standalone: true}"
       (input)="deferredTitleUpdate();"
+      *ngIf="canView(userImage.name)"
     >
   </div>
 
@@ -24,6 +25,7 @@
       [ngModelOptions]="{standalone: true}"
       (input)="autoGrow();deferredDescriptionUpdate();"
       maxlength="3000"
+      *ngIf="canView(userImage.description)"
     ></textarea>
 
     <p class="card-text">
