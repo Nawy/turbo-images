@@ -3,6 +3,7 @@
  */
 
 import {Component, Input} from '@angular/core';
+import {Comment} from './../../models/comments/comment.model'
 
 @Component({
   selector: "s-comment",
@@ -10,5 +11,5 @@ import {Component, Input} from '@angular/core';
   styleUrls: ['../../css/comment.style.css']
 })
 export class CommentComponent {
-  @Input("value") comment : Comment;
+  @Input("value") currentComment : Comment;
 }

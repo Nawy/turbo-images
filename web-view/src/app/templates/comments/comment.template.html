@@ -1,6 +1,9 @@
-<div class="card" style="width: 20rem;">
+<div class="card">
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted">User name</h6>
-    <p class="card-text">{{comment.text}}</p>
+    <p class="card-text">{{currentComment.text}}</p>
+    <div class="row" *ngFor="let reply of currentComment.replies">
+      <s-comment [value]="reply"></s-comment>
+    </div>
   </div>
 </div>
