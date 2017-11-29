@@ -20,11 +20,11 @@ class UserImagesMap {
   }
 
   getCreationDate() : string {
-    let currentDate = new Date().getDate();
-    if(this.creationDate.getDate() == currentDate) {
+    let currentDate = new Date().toDateString();
+    if(this.creationDate.toDateString() == currentDate) {
       return "Today";
     }
-    if(moment(this.creationDate).add(1, 'd').toDate().getDate() == currentDate) {
+    if(moment(this.creationDate).add(1, 'd').toDate().toDateString() == currentDate) {
       return "Yesterday";
     }
     return moment(this.creationDate).format("D MMMM");
@@ -56,7 +56,7 @@ export class PersonalImagesComponent implements OnInit {
 
       Rx.Observable.from(images)
         .groupBy(
-          image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
+          image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().toDateString()
         )
         .flatMap(group => {
           return group.reduce((acc, curr) => [...acc, curr], []);

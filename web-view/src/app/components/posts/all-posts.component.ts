@@ -43,14 +43,12 @@ export class AllPostsComponent {
 
         Rx.Observable.from(posts)
           .groupBy(
-            post => moment(post.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
+            post => moment(post.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().toDateString()
           )
           .flatMap(group =>
             group.reduce((acc, curr) => [...acc, curr], [])
           )
-          .map(posts =>
-            new UserPostsMap(moment(posts[0].create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), posts)
-          )
+          .map(posts =>  new UserPostsMap(moment(posts[0].create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), posts))
           .forEach(post => this.postsMap.push(post));
         this.isLoaderVisible = false;
       }).catch(res => {

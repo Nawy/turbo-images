@@ -13,11 +13,11 @@ export class UserPostsMap {
   }
 
   getCreationDate(): string {
-    let currentDate = new Date().getDate();
-    if (this.creationDate.getDate() == currentDate) {
+    let currentDate = new Date().toDateString();
+    if (this.creationDate.toDateString() == currentDate) {
       return "Today";
     }
-    if (moment(this.creationDate).add(1, 'd').toDate().getDate() == currentDate) {
+    if (moment(this.creationDate).add(1, 'd').toDate().toDateString() == currentDate) {
       return "Yesterday";
     }
     return moment(this.creationDate).format("D MMMM");

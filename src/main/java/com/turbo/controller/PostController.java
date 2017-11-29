@@ -5,8 +5,8 @@ import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.dto.PostDto;
-import com.turbo.model.dto.TransferPost;
 import com.turbo.model.dto.PostPreviewDto;
+import com.turbo.model.dto.TransferPost;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
@@ -15,6 +15,8 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
@@ -81,9 +83,8 @@ public class PostController {
     public List<PostPreviewDto> getPostsByDate(
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS") LocalDateTime startDate
     ) {
-        return toPostSearchDtos(
-                postService.getPostsByDate(startDate)
-        );
+        List<Post> posts = postService.getPostsByDate(startDate);
+        return toPostSearchDtos(posts);
     }
 
     private List<PostPreviewDto> toPostSearchDtos(List<Post> posts) {

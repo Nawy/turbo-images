@@ -33,7 +33,7 @@ export class PersonalPostsComponent {
 
       Rx.Observable.from(posts)
         .groupBy(
-          post => moment(post.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().getDate()
+          post => moment(post.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().toDateString()
         )
         .flatMap(group =>
           group.reduce((acc, curr) => [...acc, curr], [])
