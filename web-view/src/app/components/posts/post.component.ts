@@ -34,7 +34,11 @@ export class PostComponent implements OnInit {
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    this.userService.userInfoSource.subscribe(userInfo => this.userInfo = userInfo);
+    this.userService.userInfoSource.subscribe(userInfo => {
+      this.userInfo = userInfo;
+      // this required because autogrow work only if window component is loaded and filled with data
+      setTimeout(() => this.autoGrow(), 20);
+    });
     if (this.userInfo == null) this.userService.updateUserInfo();
     this.route.params.subscribe(
       params => {
@@ -46,9 +50,9 @@ export class PostComponent implements OnInit {
               this.tagsString = post.tags.join();
               console.log("tags string: " + this.tagsString);
             }
-          })
+          });
       }
-    )
+    );
   }
 
   isReadonly(): boolean {
@@ -67,11 +71,13 @@ export class PostComponent implements OnInit {
     );
   }
 
-  //FIXME I'm not correct working
   autoGrow() {
-    let element: HTMLElement = document.getElementById("desc");
-    element.style.height = "5px";
-    element.style.height = (element.scrollHeight) + "px";
+    let elements: any = document.getElementsByClassName("post-description");
+
+    for (let element of elements) {
+      element.style.height = "5px";
+      element.style.height = (element.scrollHeight) + "px";
+    }
   }
 
   public updateTags() {

@@ -21,7 +21,6 @@
         <textarea
           *ngIf="post && canView(post.description)"
           class="form-control post-description"
-          id="descriptionTextArea"
           [readonly]="isReadonly()"
           (input)="autoGrow();deferredPostUpdate();"
           [(ngModel)]="post.description"

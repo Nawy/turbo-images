@@ -1,7 +1,7 @@
 /**
  * Created by ermolaev on 7/13/17.
  */
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, ElementRef, Input, OnInit} from "@angular/core";
 import {UserImage} from "../../models/user-image.model";
 import {environment} from "../../../environments/environment";
 import {ImageService} from "../../service/image.service";
@@ -19,6 +19,7 @@ import {UserService} from "../../service/user.service";
   styleUrls: ['./../../css/upload-preview.style.css'],
 })
 export class UploadPreviewComponent implements OnInit {
+
   @Input("user_image") userImage: UserImage;
   userInfo: UserInfo;
   private imageSource: string;
@@ -30,7 +31,11 @@ export class UploadPreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userService.userInfoSource.subscribe(userInfo => this.userInfo = userInfo);
+    this.userService.userInfoSource.subscribe(userInfo => {
+      this.userInfo = userInfo;
+      // this required because autogrow work only if window component is loaded and filled with data
+      setTimeout(() => this.autoGrow(), 20);
+    });
     if (this.userInfo == null) this.userService.updateUserInfo();
     this.imageSource = `http://${environment.imageHost}${this.userImage.image.source}`;
   }
@@ -71,10 +76,12 @@ export class UploadPreviewComponent implements OnInit {
     return !(this.userImage && this.userInfo && this.userImage.user_id == this.userInfo.id);
   }
 
-  //TODO work only for first image! Fix!!!
   autoGrow() {
-    let element: HTMLElement = document.getElementById("desc");
-    element.style.height = "5px";
-    element.style.height = (element.scrollHeight) + "px";
+    let elements: any = document.getElementsByClassName("description");
+    for(let element of elements){
+      element.style.height = "5px";
+      element.style.height = (element.scrollHeight) + "px";
+    }
   }
+
 }

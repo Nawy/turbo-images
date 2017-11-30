@@ -42,6 +42,8 @@ export class ImagePageComponent implements OnInit {
     window.scrollTo(0, 0);
     this.userService.userInfoSource.subscribe(userInfo => {
       this.userInfo = userInfo;
+      // this required because autogrow work only if window component is loaded and filled with data
+      setTimeout(() => this.autoGrow(), 20);
     });
     if (this.userInfo == null) {
       this.userService.updateUserInfo();
@@ -58,8 +60,6 @@ export class ImagePageComponent implements OnInit {
           .then(image => {
             this.userImage = image;
             this.fillFields();
-            // this required because autogrow work only if window component is loaded and filled with data
-            setTimeout(() => this.autoGrow(), 20)
           });
       }
     );
@@ -117,9 +117,11 @@ export class ImagePageComponent implements OnInit {
   }
 
   autoGrow() {
-    let element: HTMLElement = document.getElementById("desc");
-    element.style.height = "5px";
-    element.style.height = (element.scrollHeight) + "px";
+    let elements: any = document.getElementsByClassName("description");
+    for(let element of elements){
+      element.style.height = "5px";
+      element.style.height = (element.scrollHeight) + "px";
+    }
   }
 
   public shareWithCommunity() {
