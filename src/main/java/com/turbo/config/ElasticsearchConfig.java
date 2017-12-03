@@ -1,9 +1,12 @@
 package com.turbo.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turbo.model.search.content.ImageSearchEntity;
+import com.turbo.model.search.content.PostSearchEntity;
+import com.turbo.model.search.field.CommentFieldNames;
 import com.turbo.model.search.field.ImageFieldNames;
+import com.turbo.model.search.field.PostFieldNames;
 import com.turbo.model.search.field.UserFieldNames;
+import lombok.Data;
 import org.apache.http.util.Asserts;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -30,6 +33,7 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  */
 @Configuration
 @ConfigurationProperties(prefix = "elasticsearch")
+@Data
 public class ElasticsearchConfig {
     private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchConfig.class);
     private static final int MAX_SIZE_OF_SELECT_LIST = 300;
@@ -39,6 +43,9 @@ public class ElasticsearchConfig {
 
     private String searchPostIndexName;
     private String searchPostTypeName;
+
+    private String searchCommentIndexName;
+    private String searchCommentTypeName;
 
     private String searchImageIndexName;
     private String searchImageTypeName;
@@ -73,10 +80,6 @@ public class ElasticsearchConfig {
         createStatisticIndicesIfNonExist();
     }
 
-    public TransportClient getElasticClient() {
-        return elasticClient;
-    }
-
     private InetSocketTransportAddress[] getAddresses() throws UnknownHostException {
         Objects.requireNonNull(hosts, "Elasticsearch hosts in properties cannot be empty");
         InetSocketTransportAddress[] addresses = new InetSocketTransportAddress[hosts.length];
@@ -94,12 +97,11 @@ public class ElasticsearchConfig {
     private void createContentIndicesIfNonExist() {
         Objects.requireNonNull(elasticClient);
 
-        final ObjectMapper objectMapper = new ObjectMapper();
-
         IndicesAdminClient indices = elasticClient.admin().indices();
         final boolean isPostExists = indices.exists(new IndicesExistsRequest(searchPostIndexName)).actionGet().isExists();
         final boolean isUserExists = indices.exists(new IndicesExistsRequest(searchUserIndexName)).actionGet().isExists();
         final boolean isImageExists = indices.exists(new IndicesExistsRequest(searchImageIndexName)).actionGet().isExists();
+        final boolean isCommentExists = indices.exists(new IndicesExistsRequest(searchCommentIndexName)).actionGet().isExists();
 
         if(!isPostExists) {
             indices.create(new CreateIndexRequest(searchPostIndexName)).actionGet();
@@ -110,79 +112,234 @@ public class ElasticsearchConfig {
         if(!isImageExists) {
             indices.create(new CreateIndexRequest(searchImageIndexName)).actionGet();
         }
-
-        if(!isImageExists) {
-            try {
-                XContentBuilder mapping = jsonBuilder()
-                        .startObject()
-                            .startObject(searchImageTypeName)
-                                .startObject("properties")
-                                    .startObject(ImageFieldNames.ID)
-                                        .field("type", "long")
-                                    .endObject()
-                                    .startObject(ImageFieldNames.NAME)
-                                        .field("type","text")
-                                    .endObject()
-                                    .startObject(ImageFieldNames.DESCRIPTION)
-                                        .field("type","text")
-                                    .endObject()
-                                    .startObject(ImageFieldNames.USER_ID)
-                                        .field("type","long")
-                                    .endObject()
-                                    .startObject(ImageFieldNames.CREATION_DATE)
-                                        .field("type","date")
-                                        .field("format",ImageSearchEntity.CREATION_DATE_PATTERN)
-                                        .field("doc_values", true)
-                                    .endObject()
-                                .endObject()
-                            .endObject()
-                        .endObject();
-
-                indices.preparePutMapping(searchImageIndexName)
-                        .setType(searchImageTypeName)
-                        .setSource(mapping)
-                        .execute().actionGet();
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        if (!isCommentExists) {
+            indices.create(new CreateIndexRequest(searchCommentIndexName)).actionGet();
         }
 
+        //FIXME IS This required? Is This correct?
+        if (!isPostExists) {
+            createPostMapping(indices);
+        }
+        //FIXME IS This required? Is This correct?
+        if (!isCommentExists) {
+            createCommentMapping(indices);
+        }
+        if(!isImageExists) {
+            createImageMapping(indices);
+        }
         if(!isUserExists) {
-            try {
-                XContentBuilder mapping = jsonBuilder()
-                        .startObject()
-                            .startObject(searchUserTypeName)
-                                .startObject("properties")
-                                    .startObject(UserFieldNames.ID)
-                                        .field("type", "long")
-                                    .endObject()
-                                    .startObject(UserFieldNames.NAME)
-                                        .field("type", "text")
-                                    .endObject()
-                                    .startObject(UserFieldNames.EMAIL)
-                                        .field("type", "text")
-                                    .endObject()
-                                    .startObject(UserFieldNames.RATING)
-                                        .field("type", "long")
-                                    .endObject()
-                                    .startObject(UserFieldNames.CREATION_DATE)
-                                        .field("type", "date")
-                                        .field("format", ImageSearchEntity.CREATION_DATE_PATTERN)
-                                        .field("doc_values", true)
-                                    .endObject()
+            createUserMapping(indices);
+        }
+    }
+
+    private void createPostMapping(IndicesAdminClient indices) {
+        try {
+            XContentBuilder mapping = jsonBuilder()
+                    .startObject()
+                    .startObject(searchPostTypeName)
+                    .startObject("properties")
+
+                    .startObject(PostFieldNames.ID)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.NAME)
+                    .field("type", "text")
+                    .endObject()
+
+                    .startObject(PostFieldNames.DESCRIPTIONS)
+                    .field("type", "text")
+                    .endObject()
+
+                    .startObject(PostFieldNames.DEVICE_TYPE)
+                    .field("type", "text")
+                    .endObject()
+
+                    //FIXME is this field required?
+                    /*.startObject(PostFieldNames.IMAGE_IDS)
+                    .field("type","array")
+                    .endObject()*/
+
+                    /*.startObject(PostFieldNames.TAGS)
+                    .field("type","array")
+                    .endObject()*/
+
+                    .startObject(PostFieldNames.USER_ID)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.UPS)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.DOWNS)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.RATING)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.VIEWS)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.VISIBLE)
+                    .field("type", "boolean")
+                    .endObject()
+
+                    .startObject(PostFieldNames.CREATION_DATE)
+                    .field("type", "date")
+                    .field("format", PostSearchEntity.CREATION_DATE_PATTERN)
+                    .field("doc_values", true)
+                    .endObject()
+                    .endObject()
+                    .endObject()
+                    .endObject();
+
+            indices.preparePutMapping(searchPostIndexName)
+                    .setType(searchPostTypeName)
+                    .setSource(mapping)
+                    .execute().actionGet();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createCommentMapping(IndicesAdminClient indices) {
+        try {
+            XContentBuilder mapping = jsonBuilder()
+                    .startObject()
+                    .startObject(searchCommentTypeName)
+                    .startObject("properties")
+
+                    .startObject(CommentFieldNames.ID)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.USER_ID)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.REPLY_ID)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.REPLY_TYPE)
+                    .field("type", "text")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.DEVICE)
+                    .field("type", "text")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.CONTENT)
+                    .field("type", "text")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.UPS)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.DOWNS)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(CommentFieldNames.RATING)
+                    .field("type", "long")
+                    .endObject()
+
+                    .startObject(PostFieldNames.CREATION_DATE)
+                    .field("type", "date")
+                    .field("format", PostSearchEntity.CREATION_DATE_PATTERN)
+                    .field("doc_values", true)
+                    .endObject()
+                    .endObject()
+                    .endObject()
+                    .endObject();
+
+            indices.preparePutMapping(searchCommentIndexName)
+                    .setType(searchCommentTypeName)
+                    .setSource(mapping)
+                    .execute().actionGet();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createUserMapping(IndicesAdminClient indices) {
+        try {
+            XContentBuilder mapping = jsonBuilder()
+                    .startObject()
+                        .startObject(searchUserTypeName)
+                            .startObject("properties")
+                                .startObject(UserFieldNames.ID)
+                                    .field("type", "long")
+                                .endObject()
+                                .startObject(UserFieldNames.NAME)
+                                    .field("type", "text")
+                                .endObject()
+                                .startObject(UserFieldNames.EMAIL)
+                                    .field("type", "text")
+                                .endObject()
+                                .startObject(UserFieldNames.RATING)
+                                    .field("type", "long")
+                                .endObject()
+                                .startObject(UserFieldNames.CREATION_DATE)
+                                    .field("type", "date")
+                                    .field("format", ImageSearchEntity.CREATION_DATE_PATTERN)
+                                    .field("doc_values", true)
                                 .endObject()
                             .endObject()
-                        .endObject();
+                        .endObject()
+                    .endObject();
 
-                indices.preparePutMapping(searchUserIndexName)
-                        .setType(searchUserTypeName)
-                        .setSource(mapping)
-                        .execute().actionGet();
+            indices.preparePutMapping(searchUserIndexName)
+                    .setType(searchUserTypeName)
+                    .setSource(mapping)
+                    .execute().actionGet();
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void createImageMapping(IndicesAdminClient indices) {
+        try {
+            XContentBuilder mapping = jsonBuilder()
+                    .startObject()
+                        .startObject(searchImageTypeName)
+                            .startObject("properties")
+                                .startObject(ImageFieldNames.ID)
+                                    .field("type", "long")
+                                .endObject()
+                                .startObject(ImageFieldNames.NAME)
+                                    .field("type","text")
+                                .endObject()
+                                .startObject(ImageFieldNames.DESCRIPTION)
+                                    .field("type","text")
+                                .endObject()
+                                .startObject(ImageFieldNames.USER_ID)
+                                    .field("type","long")
+                                .endObject()
+                                .startObject(ImageFieldNames.CREATION_DATE)
+                                    .field("type","date")
+                                    .field("format", ImageSearchEntity.CREATION_DATE_PATTERN)
+                                    .field("doc_values", true)
+                                .endObject()
+                            .endObject()
+                        .endObject()
+                    .endObject();
+
+            indices.preparePutMapping(searchImageIndexName)
+                    .setType(searchImageTypeName)
+                    .setSource(mapping)
+                    .execute().actionGet();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -195,106 +352,5 @@ public class ElasticsearchConfig {
         if(!isStatPostExists) {
             indices.create(new CreateIndexRequest(statPostsIndexName)).actionGet();
         }
-    }
-
-
-    public String[] getHosts() {
-        return hosts;
-    }
-
-    public void setHosts(String[] hosts) {
-        this.hosts = hosts;
-    }
-
-    public String getClusterName() {
-        return clusterName;
-    }
-
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
-    }
-
-    public String getSearchPostIndexName() {
-        return searchPostIndexName;
-    }
-
-    public void setSearchPostIndexName(String searchPostIndexName) {
-        this.searchPostIndexName = searchPostIndexName;
-    }
-
-    public String getSearchPostTypeName() {
-        return searchPostTypeName;
-    }
-
-    public void setSearchPostTypeName(String searchPostTypeName) {
-        this.searchPostTypeName = searchPostTypeName;
-    }
-
-    public String getSearchUserIndexName() {
-        return searchUserIndexName;
-    }
-
-    public void setSearchUserIndexName(String searchUserIndexName) {
-        this.searchUserIndexName = searchUserIndexName;
-    }
-
-    public String getSearchUserTypeName() {
-        return searchUserTypeName;
-    }
-
-    public void setSearchUserTypeName(String searchUserTypeName) {
-        this.searchUserTypeName = searchUserTypeName;
-    }
-
-    public int getMaxSizePostsPerPage() {
-        return maxSizePostsPerPage;
-    }
-
-    public void setMaxSizePostsPerPage(int maxSizePostsPerPage) {
-        this.maxSizePostsPerPage = maxSizePostsPerPage;
-    }
-
-    public int getMaxSizeUsersPerPage() {
-        return maxSizeUsersPerPage;
-    }
-
-    public void setMaxSizeUsersPerPage(int maxSizeUsersPerPage) {
-        this.maxSizeUsersPerPage = maxSizeUsersPerPage;
-    }
-
-    public void setElasticClient(TransportClient elasticClient) {
-        this.elasticClient = elasticClient;
-    }
-
-    public String getStatPostsIndexName() {
-        return statPostsIndexName;
-    }
-
-    public void setStatPostsIndexName(String statPostsIndexName) {
-        this.statPostsIndexName = statPostsIndexName;
-    }
-
-    public String getStatPostsTypeName() {
-        return statPostsTypeName;
-    }
-
-    public void setStatPostsTypeName(String statPostsTypeName) {
-        this.statPostsTypeName = statPostsTypeName;
-    }
-
-    public String getSearchImageIndexName() {
-        return searchImageIndexName;
-    }
-
-    public void setSearchImageIndexName(String searchImageIndexName) {
-        this.searchImageIndexName = searchImageIndexName;
-    }
-
-    public String getSearchImageTypeName() {
-        return searchImageTypeName;
-    }
-
-    public void setSearchImageTypeName(String searchImageTypeName) {
-        this.searchImageTypeName = searchImageTypeName;
     }
 }

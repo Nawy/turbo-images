@@ -21,7 +21,6 @@ public class ImageDto {
         this.thumbnail = thumbnail;
     }
 
-
     @JsonProperty("id")
     public String getId() {
         return id;

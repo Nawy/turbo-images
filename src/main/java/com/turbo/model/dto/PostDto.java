@@ -1,5 +1,6 @@
 package com.turbo.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
@@ -127,6 +128,7 @@ public class PostDto {
     }
 
     @JsonProperty("create_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     public LocalDateTime getCreateDate() {
         return createDate;
     }

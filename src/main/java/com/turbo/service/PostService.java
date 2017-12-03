@@ -66,8 +66,8 @@ public class PostService {
     }
 
     private Post update(PostRepoModel post) {
-        postRepository.save(post);
-        Post updatedPost = getPostById(post.getId());
+        PostRepoModel postWithId = postRepository.save(post);
+        Post updatedPost = getPostById(postWithId.getId());
         //FIXME i can update too long
         postSearchRepository.updatePost(updatedPost);
         return updatedPost;

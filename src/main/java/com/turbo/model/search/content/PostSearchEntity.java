@@ -33,6 +33,7 @@ public class PostSearchEntity {
     private List<String> descriptions;
     private List<Long> imageIds;
     private Set<String> tags;
+    @JsonFormat(pattern = CREATION_DATE_PATTERN)
     private LocalDateTime creationDate;
     private long userId;
     private boolean isVisible;
