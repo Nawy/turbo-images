@@ -24,5 +24,19 @@ public class StatisticService {
         rabbitTemplate.convertAndSend(new UpdateAction(ActionType.VIEW, id, 1));
     }
 
+    public void updatePostName(final String name, final long id) {
 
+    }
+
+    public void deletePost(final long id) {
+
+    }
+
+    public void updateImageName(final String name, final long id) {
+
+    }
+
+    public void deleteImage(final long id) {
+
+    }
 }
