@@ -1,16 +1,20 @@
 package com.turbo.model.statistic;
 
+import com.turbo.model.Nullable;
 import lombok.Data;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 
 @Data
 public class ReindexPostContent extends ReindexAction {
     private String name;
     private String description;
 
-    public ReindexPostContent(long id, String name, String description) {
+    public ReindexPostContent(long id, @Nullable final String name, @Nullable final String description) {
         super(id);
-        this.name = name;
-        this.description = description;
+        this.name = firstNonNull(name, this.name);
+        this.description = firstNonNull(description, this.description);
     }
 
     @Override

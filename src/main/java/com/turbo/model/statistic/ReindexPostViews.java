@@ -2,22 +2,20 @@ package com.turbo.model.statistic;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class ReindexPostViews extends ReindexAction  {
 
-    private List<Long> values;
+    private Long views;
 
-    public ReindexPostViews(long id, List<Long> values) {
+    public ReindexPostViews(long id, Long value) {
         super(id);
-        this.values = values;
+        this.views = value;
     }
 
     @Override
     public ReindexAction merge(ReindexAction newValue) {
-        final ReindexPostRating value = (ReindexPostRating)newValue;
-        this.values.addAll(value.getValues());
+        final ReindexPostViews value = (ReindexPostViews)newValue;
+        this.views += value.getViews();
         return this;
     }
 
