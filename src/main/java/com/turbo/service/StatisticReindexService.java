@@ -1,7 +1,8 @@
 package com.turbo.service;
 
 import com.turbo.config.RabbitConfig;
-import com.turbo.model.statistic.UpdateAction;
+import com.turbo.model.statistic.ActionType;
+import com.turbo.model.statistic.ReindexAction;
 import lombok.extern.java.Log;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ import java.util.concurrent.*;
 @Log
 public class StatisticReindexService {
 
-    private final Map<String, List<UpdateAction>> updateActionMap = new ConcurrentHashMap<>();
+    private final Map<String, ReindexAction> updateActionMap = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public StatisticReindexService(
@@ -36,62 +37,46 @@ public class StatisticReindexService {
     }
 
     @RabbitListener(queues = RabbitConfig.UPDATES_QUEUE_NAME)
-    private void updatesListener(final UpdateAction message) {
+    private void updatesListener(final ReindexAction message) {
         putUpdateActionToMap(message);
     }
 
-    private void putUpdateActionToMap(final UpdateAction message) {
+    private void putUpdateActionToMap(final ReindexAction message) {
         updateActionMap.merge(
                 getUpdateId(message),
-                Collections.singletonList(message),
+                message,
                 this::mergeUpdateActions
         );
     }
 
-    private String getUpdateId(final UpdateAction action) {
-        return action.getType().toString() + String.valueOf(action.getId());
+    private String getUpdateId(final ReindexAction action) {
+        return action.getType() + String.valueOf(action.getId());
     }
 
-    private List<UpdateAction> mergeUpdateActions(
-            final List<UpdateAction> newValue,
-            final List<UpdateAction> currentValue
+    private ReindexAction mergeUpdateActions(
+            final ReindexAction oldValue,
+            final ReindexAction newValue
     ) {
-        currentValue.addAll(newValue);
-        return currentValue;
+        return oldValue.merge(newValue);
     }
 
     private void reindexStatistic() {
         updateActionMap.keySet()
                 .forEach(key -> {
-                            final List<UpdateAction> actions = updateActionMap.remove(key);
-                            // counting result views or rating
-                            final long resultValue = actions.stream().mapToLong(UpdateAction::getId).sum();
-                            final UpdateAction firstElement = actions.get(0);
-                            final UpdateAction resultAction =
-                                    new UpdateAction(
-                                            firstElement.getType(),
-                                            firstElement.getValue(),
-                                            resultValue
-                                    );
-
+                            final ReindexAction action = updateActionMap.remove(key);
                             try {
                                 //main action for update
-                                reindexRoute(resultAction);
+                                reindexRoute(action);
                             } catch (Exception e) {
-                                putUpdateActionToMap(resultAction);
+                                putUpdateActionToMap(action);
                             }
                         }
                 );
     }
 
-    private void reindexRoute(final UpdateAction action) {
+    private void reindexRoute(final ReindexAction action) {
         switch (action.getType()) {
-            case RATING: {
-                break;
-            }
-            case VIEW: {
-                break;
-            }
+
             default: {
                 throw new RuntimeException("Cannot find update type!");
             }
