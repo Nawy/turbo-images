@@ -58,7 +58,7 @@ public class PostController {
     @GetMapping("/get/user/posts")
     public List<PostPreviewDto> getUserPosts(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "sort", defaultValue = "NEWEST") SearchSort sort,
+            @RequestParam(value = "sort", defaultValue = "DATE") SearchSort sort,
             @RequestParam(value = "period", defaultValue = "ALL_TIME") SearchPeriod period,
             @RequestParam(value = "order", defaultValue = "DESC") SearchOrder order
     ) {
@@ -151,7 +151,7 @@ public class PostController {
     }
 
     @Secured(SecurityRole.USER)
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/post/{id}")
     public void delete(@PathVariable("id") String id) {
         postService.delete(
                 EncryptionService.decodeHashId(id)

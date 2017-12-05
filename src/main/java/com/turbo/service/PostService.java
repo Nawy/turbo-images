@@ -178,19 +178,19 @@ public class PostService {
         List<Long> resultIds = null;
 
         // NEWEST
-        if (searchSort == SearchSort.NEWEST) {
+        if (searchSort == SearchSort.DATE) {
             resultIds = postSearchRepository.getNewestPost(page);
         }
 
         // RATING or VIEWS for ALL_TIME from CONTENT
-        if (searchPeriod == SearchPeriod.ALL_TIME && searchSort != SearchSort.NEWEST) {
+        if (searchPeriod == SearchPeriod.ALL_TIME && searchSort != SearchSort.DATE) {
             final PostField sortingField = getContentPostField(searchSort);
 
             resultIds = postSearchRepository.getSortedPost(page, sortingField, SearchOrder.DESC);
         }
 
         //RATING or VIEWS for specific time from STATISTICS
-        if (searchSort != SearchSort.NEWEST && searchPeriod != SearchPeriod.ALL_TIME) {
+        if (searchSort != SearchSort.DATE && searchPeriod != SearchPeriod.ALL_TIME) {
             final PostDiffStatField sortingField = getStatPostField(searchSort);
 
             PostStatPeriod period;
@@ -242,7 +242,7 @@ public class PostService {
 
         List<Long> resultIds;
 
-        if (searchPattern.getSort() == SearchSort.NEWEST) {
+        if (searchPattern.getSort() == SearchSort.DATE) {
             // ONLY NEWEST
             resultIds = postSearchRepository.getPostByAuthor(
                     userId,
@@ -279,6 +279,7 @@ public class PostService {
 
     public void delete(long id) {
         postRepository.delete(id);
+        //TODO add Elastic remove entity
     }
 
     private PostField getContentPostField(SearchSort searchSort) {

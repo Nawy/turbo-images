@@ -6,5 +6,5 @@ package com.turbo.model.search;
 public enum SearchSort {
     RATING,
     VIEWS,
-    NEWEST
+    DATE
 }

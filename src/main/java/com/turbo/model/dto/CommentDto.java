@@ -22,7 +22,7 @@ public class CommentDto {
     private String id;
     private String userId;
     private String userName;
-    private long replyId;
+    private String replyId;
     private CommentReplyType replyType;
     private DeviceType device; // from what was posted
     private String content;
@@ -37,7 +37,7 @@ public class CommentDto {
                 EncryptionService.encodeHashId(comment.getId()),
                 EncryptionService.encodeHashId(comment.getUser().getId()),
                 comment.getUser().getName(),
-                comment.getReplyId(),
+                EncryptionService.encodeHashId(comment.getReplyId()),
                 comment.getReplyType(),
                 comment.getDevice(),
                 comment.getContent(),

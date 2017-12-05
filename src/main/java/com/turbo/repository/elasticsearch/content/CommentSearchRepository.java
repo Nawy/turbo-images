@@ -2,7 +2,9 @@ package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.comment.Comment;
+import com.turbo.model.comment.CommentReplyType;
 import com.turbo.model.exception.InternalServerErrorHttpException;
+import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.content.CommentSearchEntity;
 import com.turbo.model.search.field.CommentField;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
@@ -36,6 +38,38 @@ public class CommentSearchRepository extends AbstractSearchRepository {
                 )
                 .setSource(elasticUtils.writeAsJsonBytes(new CommentSearchEntity(comment)), XContentType.JSON)
                 .get();
+    }
+
+    public List<Long> getByReply(
+            final long replyId,
+            final CommentReplyType replyType,
+            final int pageSize,
+            final CommentField commentField,
+            final SearchOrder searchOrder
+    ) {
+        SearchResponse response = elasticClient
+                .prepareSearch(config.getSearchCommentIndexName())
+                .setTypes(config.getSearchCommentTypeName())
+                .addSort(
+                        commentField.getFieldName(),
+                        searchOrder == SearchOrder.DESC ? SortOrder.DESC : SortOrder.ASC
+                )
+                .setQuery(
+                        QueryBuilders.boolQuery()
+                                .must(
+                                        QueryBuilders.termQuery(CommentField.REPLY_ID.getFieldName(), replyId)
+                                )
+                                .must(
+                                        QueryBuilders.matchQuery(CommentField.REPLY_TYPE.getFieldName(), replyType.toString())
+                                )
+                )
+                .setSize(pageSize)
+                .get();
+
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
     }
 
     public void update(final Comment comment) {
