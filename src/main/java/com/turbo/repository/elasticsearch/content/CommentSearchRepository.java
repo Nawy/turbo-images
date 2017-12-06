@@ -117,4 +117,13 @@ public class CommentSearchRepository extends AbstractSearchRepository {
                 .map(ElasticId::getId)
                 .collect(Collectors.toList());
     }
+
+    public void delete(final Long id) {
+        final String elasticId = getElasticId(id);
+        elasticClient.prepareDelete(
+                config.getSearchCommentIndexName(),
+                config.getSearchCommentTypeName(),
+                elasticId
+        );
+    }
 }

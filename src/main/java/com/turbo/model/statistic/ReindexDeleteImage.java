@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ReindexDeleteImage extends ReindexAction {
 
-    public ReindexDeleteImage(final int id) {
+    public ReindexDeleteImage(final long id) {
         super(id);
     }
 

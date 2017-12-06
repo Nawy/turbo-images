@@ -21,6 +21,9 @@ import lombok.Data;
         @JsonSubTypes.Type(value = ReindexCommentContent.class, name = ActionType.COMMENT_CONTENT),
         @JsonSubTypes.Type(value = ReindexCommentRating.class, name = ActionType.COMMENT_RATING),
         @JsonSubTypes.Type(value = ReindexImageContent.class, name = ActionType.IMAGE_CONTENT),
+        @JsonSubTypes.Type(value = ReindexDeleteComment.class, name = ActionType.DELETE_COMMENT),
+        @JsonSubTypes.Type(value = ReindexDeleteImage.class, name = ActionType.DELETE_IMAGE),
+        @JsonSubTypes.Type(value = ReindexDeletePost.class, name = ActionType.DELETE_POST),
 })
 public abstract class ReindexAction {
     private long id;

@@ -20,11 +20,14 @@ public class StatisticReindexService {
 
     private final Map<String, ReindexAction> updateActionMap = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final StatisticActionService statisticActionService;
 
     public StatisticReindexService(
             @Value("${statistic.initial-reindex-delay}") final Integer initReindexDelay,
-            @Value("${statistic.reindex-delay}") final Integer reindexDelay
+            @Value("${statistic.reindex-delay}") final Integer reindexDelay,
+            StatisticActionService statisticActionService
     ) {
+        this.statisticActionService = statisticActionService;
         Objects.requireNonNull(initReindexDelay);
         Objects.requireNonNull(reindexDelay);
 
@@ -76,7 +79,15 @@ public class StatisticReindexService {
 
     private void reindexRoute(final ReindexAction action) {
         switch (action.getType()) {
-
+            case ActionType.DELETE_COMMENT : {
+                statisticActionService.deleteComment(action.getId());
+            }
+            case ActionType.DELETE_POST : {
+                statisticActionService.deleteComment(action.getId());
+            }
+            case ActionType.DELETE_IMAGE : {
+                statisticActionService.deleteComment(action.getId());
+            }
             default: {
                 throw new RuntimeException("Cannot find update type!");
             }

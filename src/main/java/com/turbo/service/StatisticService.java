@@ -38,14 +38,18 @@ public class StatisticService {
     }
 
     public void deletePost(final long id) {
-
+        rabbitTemplate.convertAndSend(new ReindexDeletePost(id));
     }
 
-    public void updateImageName(final String name, final long id) {
-
+    public void deleteComment(final long id) {
+        rabbitTemplate.convertAndSend(new ReindexDeleteComment(id));
     }
 
     public void deleteImage(final long id) {
+        rabbitTemplate.convertAndSend(new ReindexDeleteImage(id));
+    }
+
+    public void updateImageName(final String name, final long id) {
 
     }
 }

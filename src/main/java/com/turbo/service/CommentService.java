@@ -29,6 +29,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentSearchRepository commentSearchRepository;
+    private final StatisticService statisticService;
     private final UserService userService;
 
     public Comment save(CommentRepoModel repoModel) {
@@ -119,6 +120,7 @@ public class CommentService {
 
     public void delete(long commentId) {
         commentRepository.delete(commentId);
-        //TODO add Elastic remove entity
+        //add task for delete in the future
+        statisticService.deleteImage(commentId);
     }
 }
