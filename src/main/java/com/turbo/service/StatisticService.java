@@ -1,9 +1,6 @@
 package com.turbo.service;
 
-import com.turbo.model.statistic.ActionType;
-import com.turbo.model.statistic.ReindexAction;
-import com.turbo.model.statistic.ReindexPostRating;
-import com.turbo.model.statistic.ReindexPostViews;
+import com.turbo.model.statistic.*;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -25,11 +22,19 @@ public class StatisticService {
     }
 
     public void increaseViews(final long id, final long count) {
-        rabbitTemplate.convertAndSend(new ReindexPostViews(id, Collections.singletonList(count)));
+        rabbitTemplate.convertAndSend(new ReindexPostViews(id, count));
     }
 
-    public void updatePostName(final String name, final long id) {
+    public void updateCommentContent(final long id, final String content) {
+        rabbitTemplate.convertAndSend(new ReindexCommentContent(id, content));
+    }
 
+    public void updatePostName(final long id, final String name) {
+        rabbitTemplate.convertAndSend(new ReindexPostContent(id, name, null));
+    }
+
+    public void updatePostDescription(final long id, final String description) {
+        rabbitTemplate.convertAndSend(new ReindexPostContent(id, null, description));
     }
 
     public void deletePost(final long id) {
