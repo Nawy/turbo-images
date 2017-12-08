@@ -85,6 +85,23 @@ public class CommentSearchRepository extends AbstractSearchRepository {
         ).setRetryOnConflict(5).get();
     }
 
+    public Comment get(final long id) {
+        SearchResponse response = elasticClient
+                .prepareSearch(config.getSearchCommentIndexName())
+                .setTypes(config.getSearchCommentTypeName())
+                .addSort(CommentField.CREATION_DATE.getFieldName(), SortOrder.DESC)
+                .setQuery(
+                        QueryBuilders.boolQuery()
+                                .must(
+                                        QueryBuilders.matchQuery(CommentField.ID.getFieldName(), id)
+                                )
+                )
+                .setSize(1)
+                .get();
+
+        return elasticUtils.parseUniqueSearchResponse(response, Comment.class);
+    }
+
     private String getElasticId(final Long id) {
         final SearchResponse response = searchUniqueByField(
                 config.getSearchCommentIndexName(),

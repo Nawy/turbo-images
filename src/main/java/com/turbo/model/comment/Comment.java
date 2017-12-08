@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
  * Implements serializable for Aerospike serialization
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class Comment {
 

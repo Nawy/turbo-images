@@ -30,4 +30,8 @@ public abstract class ReindexAction {
 
     public abstract ReindexAction merge(ReindexAction newValue);
     public abstract String getType();
+
+    public <T> T getOriginalValue() {
+        return (T)this;
+    }
 }
