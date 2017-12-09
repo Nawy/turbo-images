@@ -3,14 +3,11 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
-import com.turbo.model.Image;
 import com.turbo.model.Post;
 import com.turbo.model.UserImage;
-import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.search.field.PostFieldNames;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

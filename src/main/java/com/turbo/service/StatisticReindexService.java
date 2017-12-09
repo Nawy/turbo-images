@@ -8,8 +8,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -79,17 +77,20 @@ public class StatisticReindexService {
 
     private void reindexRoute(final ReindexAction action) {
         switch (action.getType()) {
-            case ActionType.COMMENT_CONTENT : {
-                statisticActionService.updateCommentContent(action);
+            case ActionType.UPDATE_COMMENT_CONTENT: {
+                statisticActionService.updateCommentContent(action.getOriginalValue());
             }
             case ActionType.DELETE_COMMENT : {
                 statisticActionService.deleteComment(action.getId());
             }
             case ActionType.DELETE_POST : {
-                statisticActionService.deleteComment(action.getId());
+                statisticActionService.deletePost(action.getId());
             }
             case ActionType.DELETE_IMAGE : {
-                statisticActionService.deleteComment(action.getId());
+                statisticActionService.deleteImage(action.getId());
+            }
+            case ActionType.UPDATE_POST_CONTENT: {
+                statisticActionService.updatePostContent(action.getOriginalValue());
             }
             default: {
                 throw new RuntimeException("Cannot find update type!");

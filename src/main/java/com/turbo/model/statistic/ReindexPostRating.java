@@ -23,6 +23,6 @@ public class ReindexPostRating extends ReindexAction {
 
     @Override
     public String getType() {
-        return ActionType.POST_RATING;
+        return ActionType.UPDATE_POST_RATING;
     }
 }

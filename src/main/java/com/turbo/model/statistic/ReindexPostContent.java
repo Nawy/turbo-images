@@ -27,6 +27,6 @@ public class ReindexPostContent extends ReindexAction {
 
     @Override
     public String getType() {
-        return ActionType.POST_CONTENT;
+        return ActionType.UPDATE_POST_CONTENT;
     }
 }

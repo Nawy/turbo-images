@@ -22,6 +22,6 @@ public class ReindexCommentContent extends ReindexAction {
 
     @Override
     public String getType() {
-        return ActionType.COMMENT_CONTENT;
+        return ActionType.UPDATE_COMMENT_CONTENT;
     }
 }

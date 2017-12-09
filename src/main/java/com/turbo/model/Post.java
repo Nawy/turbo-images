@@ -2,13 +2,12 @@ package com.turbo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
@@ -18,6 +17,7 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
  * <p>
  * Just post on site with picture and comments
  */
+@Data
 public class Post {
 
     private Long id;

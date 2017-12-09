@@ -29,12 +29,8 @@ public class StatisticService {
         rabbitTemplate.convertAndSend(new ReindexCommentContent(id, content));
     }
 
-    public void updatePostName(final long id, final String name) {
-        rabbitTemplate.convertAndSend(new ReindexPostContent(id, name, null));
-    }
-
-    public void updatePostDescription(final long id, final String description) {
-        rabbitTemplate.convertAndSend(new ReindexPostContent(id, null, description));
+    public void updatePostContent(final long id, final String name, final String description) {
+        rabbitTemplate.convertAndSend(new ReindexPostContent(id, name, description));
     }
 
     public void deletePost(final long id) {

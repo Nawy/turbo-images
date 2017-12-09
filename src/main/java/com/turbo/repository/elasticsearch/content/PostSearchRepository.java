@@ -56,7 +56,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
                 .get();
     }
 
-    public void updatePost(final Post post) {
+    public void upsertPost(final Post post) {
         Objects.requireNonNull(post.getId(), "for update post you need have id for update");
         final String elasticId = getPostElasticId(post.getId());
         elasticClient.prepareUpdate(
@@ -69,7 +69,7 @@ public class PostSearchRepository extends AbstractSearchRepository {
         ).setRetryOnConflict(5).get();
     }
 
-    public String getPostElasticId(final Long id) {
+    private String getPostElasticId(final Long id) {
         final SearchResponse response = searchUniqueByField(
                 config.getSearchPostIndexName(),
                 config.getSearchPostTypeName(),
@@ -80,24 +80,6 @@ public class PostSearchRepository extends AbstractSearchRepository {
             throw new InternalServerErrorHttpException("Not found post by id=" + id);
         }
         return elasticUtils.parseElasticIdSearchResponse(response);
-    }
-
-    /**
-     * Find post by id (not search id)
-     *
-     * @param id
-     * @return
-     */
-    public PostSearchEntity getPostById(final Long id) {
-        return elasticUtils.parseUniqueSearchResponse(
-                searchUniqueByField(
-                        config.getSearchPostIndexName(),
-                        config.getSearchPostTypeName(),
-                        PostField.ID.getFieldName(),
-                        id
-                ),
-                PostSearchEntity.class
-        );
     }
 
     public List<Long> getPostByAuthor(

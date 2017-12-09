@@ -26,6 +26,6 @@ public class ReindexImageContent extends ReindexAction {
 
     @Override
     public String getType() {
-        return ActionType.IMAGE_CONTENT;
+        return ActionType.UPDATE_IMAGE_CONTENT;
     }
 }

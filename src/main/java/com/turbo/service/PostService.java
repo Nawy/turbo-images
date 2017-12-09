@@ -16,6 +16,7 @@ import com.turbo.model.search.field.stat.PostStatPeriod;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.repository.elasticsearch.stat.PostStatRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  * Created by rakhmetov on 09.05.17.
  */
 @Service
+@AllArgsConstructor
 public class PostService {
 
     private static final int PAGE_SIZE = 30;
@@ -37,24 +39,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserImageService userImageService;
-
-    public PostService(
-            PostSearchRepository postSearchRepository,
-            PostStatRepository postStatRepository,
-            PostRepository postRepository,
-            UserService userService,
-            UserImageService userImageService
-    ) {
-        this.postSearchRepository = postSearchRepository;
-        this.postStatRepository = postStatRepository;
-        this.postRepository = postRepository;
-        this.userService = userService;
-        this.userImageService = userImageService;
-    }
+    private final StatisticService statisticService;
 
     public Post save(final PostRepoModel post) {
         return post.getId() != null ?
-                update(post) :
+                upsert(post) :
                 addPost(post);
     }
 
@@ -65,11 +54,22 @@ public class PostService {
         return post;
     }
 
-    private Post update(PostRepoModel post) {
+    private Post upsert(PostRepoModel post) {
         PostRepoModel postWithId = postRepository.save(post);
         Post updatedPost = getPostById(postWithId.getId());
         //FIXME i can update too long
-        postSearchRepository.updatePost(updatedPost);
+        postSearchRepository.upsertPost(updatedPost);
+        return updatedPost;
+    }
+
+    private Post updateWithReindex(PostRepoModel post) {
+        PostRepoModel postWithId = postRepository.save(post);
+        Post updatedPost = getPostById(postWithId.getId());
+        statisticService.updatePostContent(
+                updatedPost.getId(),
+                updatedPost.getName(),
+                updatedPost.getDescription()
+        );
         return updatedPost;
     }
 
@@ -90,7 +90,7 @@ public class PostService {
                 postRepoModel.isVisible(),
                 postRepoModel.getDescription()
         );
-        update(updatedRepoModel);
+        updateWithReindex(updatedRepoModel);
         return makePost(updatedRepoModel);
     }
 
@@ -111,7 +111,7 @@ public class PostService {
                 postRepoModel.isVisible(),
                 description
         );
-        update(updatedRepoModel);
+        updateWithReindex(updatedRepoModel);
         return makePost(updatedRepoModel);
     }
 
@@ -134,7 +134,8 @@ public class PostService {
                 postRepoModel.isVisible(),
                 postRepoModel.getDescription()
         );
-        update(updatedRepoModel);
+        // TODO Should to add them to statistic
+        upsert(updatedRepoModel);
         return makePost(updatedRepoModel);
     }
 
@@ -157,7 +158,8 @@ public class PostService {
                 postRepoModel.isVisible(),
                 postRepoModel.getDescription()
         );
-        update(updatedRepoModel);
+        // TODO Should to add them to statistic
+        upsert(updatedRepoModel);
         return makePost(updatedRepoModel);
     }
 

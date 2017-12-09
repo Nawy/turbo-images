@@ -21,6 +21,6 @@ public class ReindexPostViews extends ReindexAction  {
 
     @Override
     public String getType() {
-        return ActionType.POST_VIEWS;
+        return ActionType.UPDATE_POST_VIEWS;
     }
 }

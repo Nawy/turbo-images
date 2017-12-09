@@ -23,6 +23,6 @@ public class ReindexCommentRating extends ReindexAction {
 
     @Override
     public String getType() {
-        return ActionType.COMMENT_RATING;
+        return ActionType.UPDATE_COMMENT_RATING;
     }
 }
