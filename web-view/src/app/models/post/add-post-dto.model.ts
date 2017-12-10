@@ -54,7 +54,9 @@ export class TransferPost {
   }
 
   public setImages(images:Array<UserImage>){
-    this.image_ids = images.map(image => image.id);
+    if(images != null) {
+      this.image_ids = images.map(image => image.id);
+    }
   }
 
 }

@@ -39,6 +39,7 @@ export class PersonalImagesComponent implements OnInit {
   imagesMap: Array<UserImagesMap> = [];
   isLoaderVisible: boolean = false;
   isAllImageUploaded: boolean = false;
+  isNotHaveImages: boolean = false;
 
   constructor(private imageService: ImageService) {}
 
@@ -48,25 +49,32 @@ export class PersonalImagesComponent implements OnInit {
 
   private uploadImagesByDate(startDate : Date) {
     this.isLoaderVisible = true;
-    this.imageService.getUserImages(startDate).then(images => {
+    this.isNotHaveImages = false;
 
-      if(images.length < environment.uploadPersonImage.pageSize) {
-        this.isAllImageUploaded = true;
-      }
+    this.imageService.getUserImages(startDate)
+      .then(images => {
+        if(images.length < environment.uploadPersonImage.pageSize) {
+          this.isAllImageUploaded = true;
+        }
 
-      Rx.Observable.from(images)
-        .groupBy(
-          image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().toDateString()
-        )
-        .flatMap(group => {
-          return group.reduce((acc, curr) => [...acc, curr], []);
-        })
-        .map(values => {
-          return new UserImagesMap(moment(values[0].creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), values);
-        })
-        .forEach(value => this.imagesMap.push(value));
-        this.isLoaderVisible = false
-    })
+        Rx.Observable.from(images)
+          .groupBy(
+            image => moment(image.creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate().toDateString()
+          )
+          .flatMap(group => {
+            return group.reduce((acc, curr) => [...acc, curr], []);
+          })
+          .map(values => {
+            return new UserImagesMap(moment(values[0].creation_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate(), values);
+          })
+          .forEach(value => this.imagesMap.push(value));
+          this.isLoaderVisible = false
+      })
+      .catch(response => {
+        this.isLoaderVisible = false;
+        this.isNotHaveImages = true;
+        console.info(response);
+      });
   }
 
   @HostListener('window:scroll', ['$event'])
