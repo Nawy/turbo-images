@@ -1,5 +1,6 @@
 package com.turbo.model.statistic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -31,6 +32,7 @@ public abstract class ReindexAction {
     public abstract ReindexAction merge(ReindexAction newValue);
     public abstract String getType();
 
+    @JsonIgnore
     public <T> T getOriginalValue() {
         return (T)this;
     }

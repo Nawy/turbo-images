@@ -13,8 +13,8 @@ public class ReindexPostContent extends ReindexAction {
 
     public ReindexPostContent(long id, @Nullable final String name, @Nullable final String description) {
         super(id);
-        this.name = firstNonNull(name, this.name);
-        this.description = firstNonNull(description, this.description);
+        this.name = name != null ? name : this.name;
+        this.description = description != null ? description : this.description;
     }
 
     @Override
