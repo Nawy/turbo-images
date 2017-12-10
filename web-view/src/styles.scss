@@ -1,5 +1,6 @@
 @import 'variables';
 @import '../node_modules/bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister');
 
 .col-right {
   text-align: right;
@@ -121,4 +122,8 @@ textarea[readonly].post-description, textarea[readonly].description, input[reado
 
 textarea.focus, .description:focus, .input-group:focus, .post-description:focus {
   outline: none !important;
+}
+
+.logo-text {
+  font-family: 'Love Ya Like A Sister', cursive;
 }

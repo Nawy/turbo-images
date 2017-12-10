@@ -4,24 +4,24 @@
     <div class="container">
       <div class="row">
         <div class="col-6">
-          <a class="navbar-brand" routerLink="/">Turbo Images</a>
+          <a class="navbar-brand logo-text" routerLink="/">
+            <img src="/assets/picture.svg" height="30"> turbi
+          </a>
         </div>
         <div class="col-6 col-right">
-          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
-            <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
+          <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
+          <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
 
-            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" role="group">
-              <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
-                @{{userInfo.name}} <span class="caret"></span>
-              </button>
-              <div ngbDropdownMenu aria-labelledby="dropdownManual">
-                <a class="dropdown-item" routerLink="/my-images">My Images</a>
-                <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
-                <a class="dropdown-item" routerLink="/settings">Settings</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" (click)="logout()">Log Out</a>
-              </div>
+          <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" role="group">
+            <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
+              @{{userInfo.name}} <span class="caret"></span>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownManual">
+              <a class="dropdown-item" routerLink="/my-images">My Images</a>
+              <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
+              <a class="dropdown-item" routerLink="/settings">Settings</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)="logout()">Log Out</a>
             </div>
           </div>
         </div>
