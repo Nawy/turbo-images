@@ -5,29 +5,47 @@
 
       <div class="col-9">
 
-        <input
-          class="form-control input-header"
-          id="nameInput"
-          maxlength="100"
-          [readonly]="isReadonly()"
-          [(ngModel)]="post.name"
-          [ngModelOptions]="{standalone: true}">
+        <div class="main-part main-part-color">
+
+          <input
+            class="form-control input-header main-part-color"
+            id="nameInput"
+            maxlength="100"
+            [readonly]="isReadonly()"
+            [(ngModel)]="post.name"
+            [ngModelOptions]="{standalone: true}">
 
 
-        <div class="card-body without-side-space">
-          <s-upload-preview *ngFor="let image of post.images" [user_image]="image"></s-upload-preview>
-        </div>
+          <div style="padding-top: 0px" class="card-body without-side-space">
+            <s-upload-preview *ngFor="let image of post.images" [user_image]="image"></s-upload-preview>
+          </div>
 
-        <textarea
-          *ngIf="post && canView(post.description)"
-          class="form-control post-description"
-          [readonly]="isReadonly()"
-          (input)="autoGrow();deferredPostUpdate();"
-          [(ngModel)]="post.description"
-          [ngModelOptions]="{standalone: true}">
+          <textarea
+            *ngIf="post && canView(post.description)"
+            class="form-control post-description"
+            [readonly]="isReadonly()"
+            (input)="autoGrow();deferredPostUpdate();"
+            [(ngModel)]="post.description"
+            [ngModelOptions]="{standalone: true}">
           </textarea>
 
+          <div style="padding-bottom: 20px;">
+            <hr class="split-pane-divider"/>
+            <div>
+              <i style="margin-left: 10px" class="fa fa-arrow-up turbo-icons"></i>
+              <i class="fa fa-arrow-down turbo-icons"></i>
+              <i style="margin-left: 50px" class="fa fa-heart turbo-icons"></i>
+            </div>
+            <div>
+              <span>1000 points</span>
+              <span style="margin-left: 15px">80.000 views</span>
+            </div>
+          </div>
+        </div>
+
+
         <div class="card-body without-side-space">
+          <span style="padding-left: 10px">172 Comments</span>
           <div class="container-fliud">
             <s-comments-list></s-comments-list>
           </div>

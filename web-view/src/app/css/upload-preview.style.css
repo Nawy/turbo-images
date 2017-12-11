@@ -1,14 +1,13 @@
-.card{
-  margin-bottom: 40px;
-}
-
 .input-group:focus {
   outline: none !important;
 }
 
 .description {
-  min-height: 60px;
+  min-height: 30px;
   overflow: hidden;
   resize: none;
   border: none;
+  padding-bottom: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }

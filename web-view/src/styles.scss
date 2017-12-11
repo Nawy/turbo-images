@@ -46,6 +46,15 @@
   cursor: pointer;
 }
 
+.main-part {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.main-part-color {
+  background-color: $main-part-background-color;
+}
+
 //MY IMAGE PREVIEW
 
 .imagepreview-medium-size {
@@ -99,6 +108,7 @@ html {
 .input-header {
   font-size: $name-header-font-size;
   border: $name-header-border;
+  padding: 0;
 }
 
 // Any description
@@ -115,9 +125,13 @@ textarea[readonly].post-description, textarea[readonly].description, input[reado
 }
 
 .post-description {
-  min-height: 60px;
+  padding-left: 20px;
+  padding-right: 20px;
+  min-height: 30px;
   overflow: hidden;
   resize: none;
+  border: none;
+  background-color: $main-part-background-color;
 }
 
 textarea.focus, .description:focus, .input-group:focus, .post-description:focus {
@@ -126,4 +140,17 @@ textarea.focus, .description:focus, .input-group:focus, .post-description:focus 
 
 .logo-text {
   font-family: 'Love Ya Like A Sister', cursive;
+}
+
+.without-side-space {
+  padding-left: 0px;
+  padding-right: 0px;
+
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.turbo-icons {
+  margin: 5px;
+  font-size: 1.5em;
 }

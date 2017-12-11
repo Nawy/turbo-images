@@ -1,9 +1,28 @@
-<div class="card">
-  <div class="card-body">
-    <h6 class="card-subtitle mb-2 text-muted">User name</h6>
-    <p class="card-text">{{currentComment.text}}</p>
-    <div class="row" *ngFor="let reply of currentComment.replies">
-      <s-comment [value]="reply"></s-comment>
+<div class="card main-part-color" style="margin: 5px 0;">
+  <div class="card-body" style="padding: 10px 15px">
+
+    <div class="row">
+
+      <div class="col-11">
+
+        <div class="card-text" style="font-size: small;margin-bottom: 5px">
+          <a href="#">Max Stuart</a> via <span>Iphone</span>
+          <small style="margin-left: 10px">919 pts</small>
+          <small style="margin-left: 10px">5 hrs</small>
     </div>
+        <div class="card-text">{{currentComment.text}}</div>
+
+      </div>
+
+      <div class="col-1" style="padding: 0px 10px">
+        <i class="fa fa-reply" style="padding: 5px"></i>
+        <div style="font-size: small">Reply</div>
+      </div>
+
+    </div>
+
   </div>
+</div>
+<div style="margin-left: 40px" *ngFor="let reply of currentComment.replies">
+  <s-comment [value]="reply"></s-comment>
 </div>
