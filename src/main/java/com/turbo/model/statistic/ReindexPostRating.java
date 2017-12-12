@@ -1,10 +1,12 @@
 package com.turbo.model.statistic;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class ReindexPostRating extends ReindexAction {
 
     private List<Long> values;

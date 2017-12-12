@@ -8,9 +8,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log
@@ -39,6 +39,7 @@ public class StatisticReindexService {
 
     @RabbitListener(queues = RabbitConfig.UPDATES_QUEUE_NAME)
     private void updatesListener(final ReindexAction message) {
+        log.info("MESSAGE :" +  message.toString());
         putUpdateActionToMap(message);
     }
 
@@ -62,8 +63,9 @@ public class StatisticReindexService {
     }
 
     private void reindexStatistic() {
-        updateActionMap.keySet()
-                .forEach(key -> {
+        final Set<String> values = new HashSet<>(updateActionMap.keySet());
+
+        values.forEach(key -> {
                             final ReindexAction action = updateActionMap.remove(key);
                             try {
                                 //main action for update
@@ -79,18 +81,23 @@ public class StatisticReindexService {
         switch (action.getType()) {
             case ActionType.UPDATE_COMMENT_CONTENT: {
                 statisticActionService.updateCommentContent(action.getOriginalValue());
+                break;
             }
             case ActionType.DELETE_COMMENT : {
                 statisticActionService.deleteComment(action.getId());
+                break;
             }
             case ActionType.DELETE_POST : {
                 statisticActionService.deletePost(action.getId());
+                break;
             }
             case ActionType.DELETE_IMAGE : {
                 statisticActionService.deleteImage(action.getId());
+                break;
             }
             case ActionType.UPDATE_POST_CONTENT: {
                 statisticActionService.updatePostContent(action.getOriginalValue());
+                break;
             }
             default: {
                 throw new RuntimeException("Cannot find update type!");

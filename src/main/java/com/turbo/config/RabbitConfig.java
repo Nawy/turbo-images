@@ -19,7 +19,7 @@ public class RabbitConfig {
 
     @Bean
     Queue imagesUpdatesQueue() {
-        return new Queue(UPDATES_QUEUE_NAME, false);
+        return new Queue(UPDATES_QUEUE_NAME, true);
     }
 
     @Bean

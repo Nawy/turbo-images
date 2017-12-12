@@ -1,10 +1,12 @@
 package com.turbo.model.statistic;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
 @Data
+@NoArgsConstructor
 public class ReindexImageContent extends ReindexAction {
 
     private String name;

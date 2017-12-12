@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -29,7 +31,10 @@ import lombok.Data;
 public abstract class ReindexAction {
     private long id;
 
+    @JsonIgnore
     public abstract ReindexAction merge(ReindexAction newValue);
+
+    @JsonIgnore
     public abstract String getType();
 
     @JsonIgnore

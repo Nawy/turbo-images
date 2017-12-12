@@ -1,9 +1,11 @@
 package com.turbo.model.statistic;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@NoArgsConstructor
 public class ReindexCommentContent extends ReindexAction {
 
     private String content;

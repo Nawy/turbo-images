@@ -2,11 +2,13 @@ package com.turbo.model.statistic;
 
 import com.turbo.model.Nullable;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
 
 @Data
+@NoArgsConstructor
 public class ReindexPostContent extends ReindexAction {
     private String name;
     private String description;

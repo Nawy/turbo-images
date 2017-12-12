@@ -1,8 +1,10 @@
 package com.turbo.model.statistic;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ReindexDeletePost extends ReindexAction {
 
     public ReindexDeletePost(final long id) {

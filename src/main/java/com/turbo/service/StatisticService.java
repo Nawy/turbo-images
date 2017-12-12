@@ -1,5 +1,6 @@
 package com.turbo.service;
 
+import com.turbo.config.RabbitConfig;
 import com.turbo.model.statistic.*;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -30,7 +31,11 @@ public class StatisticService {
     }
 
     public void updatePostContent(final long id, final String name, final String description) {
-        rabbitTemplate.convertAndSend(new ReindexPostContent(id, name, description));
+        rabbitTemplate.convertAndSend(
+                RabbitConfig.UPDATES_EXCHANGE_NAME,
+                null,
+                new ReindexPostContent(id, name, description)
+        );
     }
 
     public void deletePost(final long id) {
