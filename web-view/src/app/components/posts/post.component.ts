@@ -25,6 +25,7 @@ export class PostComponent implements OnInit {
   updateTimer;
   autoUpdateInterval: number = environment.autoUpdateInterval;
   tagsString: string = "";
+  comment: string = "";
 
   constructor(private route: ActivatedRoute,
               private location: Location,

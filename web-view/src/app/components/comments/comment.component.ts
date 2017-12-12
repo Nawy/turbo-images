@@ -12,4 +12,9 @@ import {Comment} from './../../models/comments/comment.model'
 })
 export class CommentComponent {
   @Input("value") currentComment : Comment;
+  repliesIsVisible: boolean;
+
+  changeRepliesVisibility(){
+    this.repliesIsVisible = !this.repliesIsVisible;
+  }
 }

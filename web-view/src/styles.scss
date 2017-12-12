@@ -130,8 +130,11 @@ textarea[readonly].post-description, textarea[readonly].description, input[reado
   min-height: 30px;
   overflow: hidden;
   resize: none;
-  border: none;
   background-color: $main-part-background-color;
+}
+
+.no-border {
+  border: none;
 }
 
 textarea.focus, .description:focus, .input-group:focus, .post-description:focus {
@@ -153,4 +156,16 @@ textarea.focus, .description:focus, .input-group:focus, .post-description:focus 
 .turbo-icons {
   margin: 5px;
   font-size: 1.5em;
+}
+
+.turbo-small-icons {
+  font-size: 0.8em;
+}
+
+.turbo-small-text {
+  font-size: 0.8em;
+}
+
+.turbo-small-info-margin {
+  margin-left: 10px;
 }

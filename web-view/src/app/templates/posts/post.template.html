@@ -5,15 +5,30 @@
 
       <div class="col-9">
 
-        <div class="main-part main-part-color">
-
-          <input
-            class="form-control input-header main-part-color"
-            id="nameInput"
-            maxlength="100"
-            [readonly]="isReadonly()"
-            [(ngModel)]="post.name"
-            [ngModelOptions]="{standalone: true}">
+        <div style="padding-top: 10px" class="main-part main-part-color">
+          <div class="row">
+            <div class="col-8">
+              <input
+                class="form-control input-header main-part-color"
+                id="nameInput"
+                maxlength="100"
+                [readonly]="isReadonly()"
+                [(ngModel)]="post.name"
+                [ngModelOptions]="{standalone: true}">
+              <div class="turbo-small-text">
+                <span>by {{post.user_name}}</span>
+                <span class="turbo-small-info-margin">via {{post.device_type.toString().toLowerCase()}}</span>
+                <span class="turbo-small-info-margin">6 hr</span>
+              </div>
+            </div>
+            <div class="col text-right">
+              <div class="btn-block">
+                <button class="btn"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+                <button (click)="goBack()" class="btn"><i class="fa fa-arrow-up" aria-hidden="true"></i> Back</button>
+                <button class="btn btn-primary">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+              </div>
+            </div>
+          </div>
 
 
           <div style="padding-top: 0px" class="card-body without-side-space">
@@ -22,7 +37,7 @@
 
           <textarea
             *ngIf="post && canView(post.description)"
-            class="form-control post-description"
+            class="form-control post-description no-border"
             [readonly]="isReadonly()"
             (input)="autoGrow();deferredPostUpdate();"
             [(ngModel)]="post.description"
@@ -43,19 +58,33 @@
           </div>
         </div>
 
-
-        <div class="card-body without-side-space">
-          <span style="padding-left: 10px">172 Comments</span>
-          <div class="container-fliud">
-            <s-comments-list></s-comments-list>
+        <!--comments-->
+        <div style="margin-top: 20px" class="card main-part-color">
+          <div class="card-body" style="padding: 10px">
+            <div>
+              <textarea
+                *ngIf="post"
+                placeholder="Write a comment"
+                class="form-control post-description no-border"
+                [readonly]="isReadonly()"
+                (input)="autoGrow();"
+                [(ngModel)]="comment"
+                [ngModelOptions]="{standalone: true}"></textarea>
+            </div>
+            <div class="row">
+              <div class="col text-right">
+                <button class="btn">Post</button>
+              </div>
+            </div>
           </div>
         </div>
 
+
+        <s-comments-list></s-comments-list>
       </div>
 
-      <div class="col-3">
 
-        <div class="col-xs-12" style="height:34px;"></div>
+      <div class="col">
 
         <div>
           <label *ngIf="isReadonly()" for="tagsTextArea">Tags</label>
@@ -70,14 +99,10 @@
           </textarea>
         </div>
 
-        <div class="col-xs-12" style="height:50px;"></div>
-
-        <div class="form-group ">
-          <button type="button" class="btn-with-margin btn btn-warning btn-block" (click)="goBack()">Go Back</button>
-          <button *ngIf="!isReadonly() && post.visible" type="button" class="btn btn-success btn-block" (click)="hide()">Hide</button>
-          <button *ngIf="!isReadonly() && !post.visible" type="button" class="btn btn-success btn-block" (click)="show()">Share with Community</button>
+        <div style="margin-top: 20px">
+          <button *ngIf="!isReadonly() && post.visible" class="btn btn-warning btn-block" (click)="hide()">Hide</button>
+          <button *ngIf="!isReadonly() && !post.visible" class="btn btn-success btn-block" (click)="show()">Share with community</button>
         </div>
-
       </div>
     </div>
   </div>

@@ -1,20 +1,21 @@
-<div class="card main-part-color" style="margin: 5px 0;">
+<div class="card main-part-color" style="margin-top:5px;margin-bottom:0;">
   <div class="card-body" style="padding: 10px 15px">
 
     <div class="row">
 
       <div class="col-11">
 
-        <div class="card-text" style="font-size: small;margin-bottom: 5px">
-          <a href="#">Max Stuart</a> via <span>Iphone</span>
-          <small style="margin-left: 10px">919 pts</small>
-          <small style="margin-left: 10px">5 hrs</small>
-    </div>
+        <div class="card-text turbo-small-text">
+          <span>by Max Stuart</span>
+          <span class="turbo-small-info-margin">via Iphone</span>
+          <span class="turbo-small-info-margin">919 pts</span>
+          <span class="turbo-small-info-margin">5 hrs</span>
+        </div>
         <div class="card-text">{{currentComment.text}}</div>
 
       </div>
 
-      <div class="col-1" style="padding: 0px 10px">
+      <div class="col text-right" style="padding: 0 10px">
         <i class="fa fa-reply" style="padding: 5px"></i>
         <div style="font-size: small">Reply</div>
       </div>
@@ -23,6 +24,29 @@
 
   </div>
 </div>
-<div style="margin-left: 40px" *ngFor="let reply of currentComment.replies">
-  <s-comment [value]="reply"></s-comment>
+
+<div *ngIf="currentComment.replies">
+
+  <i
+    (click)="changeRepliesVisibility()"
+    style="margin-left: 20px"
+    *ngIf="!repliesIsVisible"
+    class="fa fa-plus-square-o turbo-small-icons"
+    aria-hidden="true"
+  >
+    {{currentComment.replies.length}} replies
+  </i>
+  <div *ngIf="repliesIsVisible">
+    <i
+      (click)="changeRepliesVisibility()"
+      style="margin-left: 20px"
+      class="fa fa-minus-square-o turbo-small-icons"
+      aria-hidden="true"
+    >
+      collapse
+    </i>
+    <div style="margin-left: 40px" *ngFor="let reply of currentComment.replies">
+      <s-comment [value]="reply"></s-comment>
+    </div>
+  </div>
 </div>
