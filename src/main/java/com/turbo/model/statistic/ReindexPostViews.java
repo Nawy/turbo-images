@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ReindexPostViews extends ReindexAction  {
+public class ReindexPostViews extends ReindexAction {
 
     private Long views;
 

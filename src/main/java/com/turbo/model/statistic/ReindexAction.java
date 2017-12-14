@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = ReindexPostContent.class, name = ActionType.UPDATE_POST_CONTENT),
         @JsonSubTypes.Type(value = ReindexPostRating.class, name = ActionType.UPDATE_POST_RATING),
         @JsonSubTypes.Type(value = ReindexPostRating.class, name = ActionType.UPDATE_POST_VIEWS),
+        @JsonSubTypes.Type(value = ReindexPostTags.class, name = ActionType.UPDATE_POST_TAGS),
         @JsonSubTypes.Type(value = ReindexCommentContent.class, name = ActionType.UPDATE_COMMENT_CONTENT),
         @JsonSubTypes.Type(value = ReindexCommentRating.class, name = ActionType.UPDATE_COMMENT_RATING),
         @JsonSubTypes.Type(value = ReindexImageContent.class, name = ActionType.UPDATE_IMAGE_CONTENT),
