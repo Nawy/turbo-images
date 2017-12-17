@@ -2,9 +2,8 @@ package com.turbo.service;
 
 import com.turbo.model.Post;
 import com.turbo.model.comment.Comment;
-import com.turbo.model.statistic.ReindexAction;
 import com.turbo.model.statistic.ReindexCommentContent;
-import com.turbo.model.statistic.ReindexPostContent;
+import com.turbo.model.statistic.ReindexPost;
 import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import lombok.AllArgsConstructor;
@@ -43,7 +42,7 @@ public class StatisticActionService {
         // TODO
     }
 
-    public void updatePostContent(final ReindexPostContent action) {
+    public void updatePostContent(final ReindexPost action) {
         final Post post = postService.getPostById(action.getId());
 
         if(Objects.isNull(post)) {

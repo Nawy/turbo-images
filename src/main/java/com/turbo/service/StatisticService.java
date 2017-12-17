@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
 @AllArgsConstructor
 public class StatisticService {
@@ -15,15 +13,21 @@ public class StatisticService {
     private RabbitTemplate rabbitTemplate;
 
     public void upvotePost(final long id) {
-        rabbitTemplate.convertAndSend(new ReindexPostRating(id, Collections.singletonList(1L)));
+        rabbitTemplate.convertAndSend(
+                ReindexPost.changeRating(id, 1L)
+        );
     }
 
     public void downvotePost(final long id) {
-        rabbitTemplate.convertAndSend(new ReindexPostRating(id, Collections.singletonList(-1L)));
+        rabbitTemplate.convertAndSend(
+                ReindexPost.changeRating(id, -1L)
+        );
     }
 
     public void increaseViews(final long id, final long count) {
-        rabbitTemplate.convertAndSend(new ReindexPostViews(id, count));
+        rabbitTemplate.convertAndSend(
+                ReindexPost.changeViews(id, count)
+        );
     }
 
     public void updateCommentContent(final long id, final String content) {
@@ -34,7 +38,7 @@ public class StatisticService {
         rabbitTemplate.convertAndSend(
                 RabbitConfig.UPDATES_EXCHANGE_NAME,
                 null,
-                new ReindexPostContent(id, name, description)
+                ReindexPost.changeContent(id, name, description)
         );
     }
 

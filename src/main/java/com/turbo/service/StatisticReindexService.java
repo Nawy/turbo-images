@@ -95,7 +95,7 @@ public class StatisticReindexService {
                 statisticActionService.deleteImage(action.getId());
                 break;
             }
-            case ActionType.UPDATE_POST_CONTENT: {
+            case ActionType.UPDATE_POST: {
                 statisticActionService.updatePostContent(action.getOriginalValue());
                 break;
             }
