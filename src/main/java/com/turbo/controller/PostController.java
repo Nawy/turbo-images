@@ -1,6 +1,8 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
@@ -15,6 +17,7 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
+import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -112,20 +115,20 @@ public class PostController {
 
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/post/name")
-    public PostDto editPostName(@RequestBody PostEditDto postEditDto) {
+    public PostDto editPostName(@RequestBody PostContentEditDto postEditDto) {
         Post updatePost = postService.updatePostName(
-                postEditDto.getPostId(),
-                postEditDto.getField()
+                EncryptionService.decodeHashId(postEditDto.getPostId()),
+                postEditDto.getValue()
         );
         return PostDto.from(updatePost);
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/edit/post/description")
-    public PostDto editPostDescription(@RequestBody PostEditDto postEditDto) {
+    public PostDto editPostDescription(@RequestBody PostContentEditDto postEditDto) {
         Post updatePost = postService.updatePostDescription(
-                postEditDto.getPostId(),
-                postEditDto.getField()
+                EncryptionService.decodeHashId(postEditDto.getPostId()),
+                postEditDto.getValue()
         );
         return PostDto.from(updatePost);
     }
@@ -177,5 +180,12 @@ public class PostController {
         public String getField() {
             return field;
         }
+    }
+
+    @Data
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    private static class PostContentEditDto {
+        private String postId;
+        private String value;
     }
 }

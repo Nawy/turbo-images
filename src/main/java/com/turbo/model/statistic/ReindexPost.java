@@ -1,7 +1,9 @@
 package com.turbo.model.statistic;
 
+import com.turbo.util.CommonUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +37,22 @@ public class ReindexPost extends ReindexAction {
     @Override
     public ReindexAction merge(ReindexAction newValue) {
         final ReindexPost value = (ReindexPost)newValue;
-        this.name = value.getName();
-        this.description = value.getDescription();
+
+        this.name = CommonUtils.mergeObjects(
+                this.name,
+                value.getName(),
+                (a, b) -> b
+        );
+
+        this.description = CommonUtils.mergeObjects(
+                this.description,
+                value.getDescription(),
+                (a, b) -> b
+        );
+
+        this.ratings.addAll(value.ratings);
+        this.tags = value.tags;
+        this.views += value.views;
         return this;
     }
 
