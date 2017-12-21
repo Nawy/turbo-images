@@ -1,4 +1,4 @@
-package com.turbo.repository.elasticsearch.stat;
+package com.turbo.repository.elasticsearch.statistic;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;

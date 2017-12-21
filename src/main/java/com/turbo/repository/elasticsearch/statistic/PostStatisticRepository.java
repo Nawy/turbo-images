@@ -1,4 +1,4 @@
-package com.turbo.repository.elasticsearch.stat;
+package com.turbo.repository.elasticsearch.statistic;
 
 import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
@@ -7,6 +7,7 @@ import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.field.stat.PostDiffStatField;
 import com.turbo.model.search.field.stat.PostStatField;
 import com.turbo.model.search.field.stat.PostStatPeriod;
+import com.turbo.model.search.stat.PostStatEntity;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.util.ElasticUtils;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -32,14 +34,14 @@ import java.util.stream.Collectors;
  * Created by ermolaev on 6/4/17.
  */
 @Repository
-public class PostStatRepository extends AbstractSearchRepository {
+public class PostStatisticRepository extends AbstractSearchRepository {
 
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd");
     private static final DateTimeFormatter weekFormatter = DateTimeFormatter.ofPattern("ww");
     private static final DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
 
     @Autowired
-    public PostStatRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
+    public PostStatisticRepository(ElasticsearchConfig config, ElasticUtils elasticUtils) {
         super(config.getElasticClient(), config, elasticUtils);
     }
 
@@ -50,6 +52,25 @@ public class PostStatRepository extends AbstractSearchRepository {
      */
     public PostStatBuilder getPostStat() {
         return new PostStatBuilder(this::getPostStat);
+    }
+
+    public PostStatEntity getById(final long id) {
+        SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getStatPostsIndexName())
+                .setTypes(
+                        ElasticUtils.getTypePerYear(
+                                config.getStatPostsTypeName(),
+                                LocalDate.now()
+                        )
+                )
+                .setQuery(
+                        QueryBuilders.matchQuery(
+                                PostStatField.ID.getFieldName(),
+                                id
+                        )
+                );
+
+        return elasticUtils.parseUniqueSearchResponse(request.get(), PostStatEntity.class);
     }
 
     private List<Long> getPostStat(

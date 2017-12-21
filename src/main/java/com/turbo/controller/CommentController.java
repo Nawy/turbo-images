@@ -11,11 +11,13 @@ import com.turbo.model.search.field.CommentField;
 import com.turbo.model.search.field.CommentFieldNames;
 import com.turbo.service.CommentService;
 import com.turbo.util.EncryptionService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Api
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.turbo.service;
+package com.turbo.service.statistic;
 
 import com.turbo.config.RabbitConfig;
 import com.turbo.model.statistic.ActionType;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 @Service
 @Log

@@ -1,4 +1,4 @@
-package com.turbo.service;
+package com.turbo.service.statistic;
 
 import com.turbo.config.RabbitConfig;
 import com.turbo.model.statistic.*;

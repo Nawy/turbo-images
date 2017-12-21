@@ -1,6 +1,8 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
 import com.turbo.model.UserImage;
@@ -9,6 +11,10 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.UserImageService;
 import com.turbo.util.EncryptionService;
+import io.swagger.annotations.Api;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +31,15 @@ import java.util.stream.Collectors;
 /**
  * Created by rakhmetov on 01.05.17.
  */
+@Api
 @RestController
+@Slf4j
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserImageController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(UserImageController.class);
 
     private final UserImageService userImageService;
     private final AuthorizationService authorizationService;
-
-    @Autowired
-    public UserImageController(UserImageService userImageService, AuthorizationService authorizationService) {
-        this.userImageService = userImageService;
-        this.authorizationService = authorizationService;
-    }
 
     @GetMapping("/get/user/image/{id}")
     public UserImageDto getImageInfo(@PathVariable("id") String id) {
@@ -53,12 +54,12 @@ public class UserImageController {
             @RequestParam("file") MultipartFile file
     ) {
         User user = authorizationService.getCurrentUser();
-        LOG.info("File uploaded with name='{}'", file.getOriginalFilename());
+        log.info("File uploaded with name='{}'", file.getOriginalFilename());
         byte[] bytes;
         try {
             bytes = file.getBytes();
         } catch (IOException e) {
-            LOG.error("Can't parse multipart file", e);
+            log.error("Can't parse multipart file", e);
             throw new InternalServerErrorHttpException("Can't parse multipart file");
         }
         UserImage userImage = userImageService.addUserImage(user.getId(), bytes);
@@ -69,7 +70,7 @@ public class UserImageController {
     @PostMapping("/edit/user/image/description")
     public UserImageDto saveUserImage(@RequestBody UserImageEditDto descriptionDto) {
         UserImage userImage = userImageService.editUserImageDescription(
-                descriptionDto.getUserImageId(),
+                EncryptionService.decodeHashId(descriptionDto.getUserImageId()),
                 descriptionDto.getField() //description
         );
         return UserImageDto.from(userImage);
@@ -79,7 +80,7 @@ public class UserImageController {
     @PostMapping("/edit/user/image/name")
     public UserImageDto editUserImageName(@RequestBody UserImageEditDto descriptionDto) {
         UserImage userImage = userImageService.editUserImageName(
-                descriptionDto.getUserImageId(),
+                EncryptionService.decodeHashId(descriptionDto.getUserImageId()),
                 descriptionDto.getField() // userImage name
         );
         return UserImageDto.from(userImage);
@@ -97,49 +98,24 @@ public class UserImageController {
 
     @DeleteMapping("/remove/user/image")
     public void removeUserImage(@RequestBody UserImageRemoveDto userImageRemoveDto) {
-        userImageService.removeUserImage(userImageRemoveDto.getUserId(), userImageRemoveDto.getUserImageId());
+        userImageService.removeUserImage(
+                EncryptionService.decodeHashId(userImageRemoveDto.getUserId()),
+                EncryptionService.decodeHashId(userImageRemoveDto.getUserImageId())
+        );
     }
 
+    @Data
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     private static class UserImageRemoveDto {
-        private long userId;
-        private long userImageId;
-
-        public UserImageRemoveDto(
-                @JsonProperty(value = "user_id", required = true) long userId,
-                @JsonProperty(value = "user_image_id", required = true) long userImageId
-        ) {
-            this.userId = userId;
-            this.userImageId = userImageId;
-        }
-
-        public long getUserId() {
-            return userId;
-        }
-
-        public long getUserImageId() {
-            return userImageId;
-        }
+        private String userId;
+        private String userImageId;
     }
 
+    @Data
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     private static class UserImageEditDto {
-        private long userImageId;
+        private String userImageId;
         private String field;
-
-        public UserImageEditDto(
-                @JsonProperty(value = "user_image_id", required = true) String userImageId,
-                @JsonProperty(value = "field", required = true) String field
-        ) {
-            this.userImageId = EncryptionService.decodeHashId(userImageId);
-            this.field = field;
-        }
-
-        public long getUserImageId() {
-            return userImageId;
-        }
-
-        public String getField() {
-            return field;
-        }
     }
 
 }

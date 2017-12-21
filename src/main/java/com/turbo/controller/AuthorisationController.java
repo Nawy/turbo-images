@@ -6,6 +6,8 @@ import com.turbo.service.AuthorizationService;
 import com.turbo.service.UserService;
 import com.turbo.util.EncryptionService;
 import com.turbo.util.Headers;
+import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +19,14 @@ import java.time.LocalDateTime;
 /**
  * Created by ermolaev on 5/7/17.
  */
+@Api
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class AuthorisationController {
 
     private final AuthorizationService authorizationService;
     private final UserService userService;
-
-    @Autowired
-    public AuthorisationController(
-            AuthorizationService authorizationService,
-            UserService userService
-    ) {
-        this.authorizationService = authorizationService;
-        this.userService = userService;
-    }
 
     @PostMapping("/signin")
     public void signin(

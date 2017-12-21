@@ -9,12 +9,12 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.exception.UnauthorizedHttpException;
 import com.turbo.repository.aerospike.counter.AuthenticationCounterRepository;
+import com.turbo.service.statistic.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 
 @Service

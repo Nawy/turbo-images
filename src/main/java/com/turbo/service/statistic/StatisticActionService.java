@@ -1,4 +1,4 @@
-package com.turbo.service;
+package com.turbo.service.statistic;
 
 import com.turbo.model.Post;
 import com.turbo.model.comment.Comment;
@@ -6,6 +6,7 @@ import com.turbo.model.statistic.ReindexCommentContent;
 import com.turbo.model.statistic.ReindexPost;
 import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
+import com.turbo.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,24 @@ public class StatisticActionService {
         if(Objects.nonNull(action.getDescription())) {
             post.setDescription(action.getDescription());
         }
+
+        long resultRating = post.getRating();
+        long resultUps = post.getUps();
+        long resultDowns = post.getDowns();
+
+        for(Long value : action.getRatings()) {
+            if(value > 0) {
+                resultUps += value;
+            } else {
+                resultDowns += value;
+            }
+            resultRating += value;
+        }
+
+        post.setViews(post.getViews() + action.getViews());
+        post.setRating(resultRating);
+        post.setUps(resultUps);
+        post.setDowns(resultDowns);
 
         postSearchRepository.upsertPost(post);
     }

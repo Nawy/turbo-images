@@ -17,7 +17,9 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
+import io.swagger.annotations.Api;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,17 +34,14 @@ import java.util.stream.Collectors;
 /**
  * Created by rakhmetov on 09.05.17.
  */
+@Api
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
     private final AuthorizationService authorizationService;
-
-    public PostController(PostService postService, AuthorizationService authorizationService) {
-        this.postService = postService;
-        this.authorizationService = authorizationService;
-    }
 
     //FIXME NOT WORKING!!! STAT IS BAD!!!
     @GetMapping("/get/viral/post")

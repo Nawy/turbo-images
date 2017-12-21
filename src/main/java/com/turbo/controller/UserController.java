@@ -16,6 +16,8 @@ import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserService;
 import com.turbo.util.EncryptionService;
+import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -28,20 +30,15 @@ import java.util.Map;
 /**
  * Created by rakhmetov on 24.05.17.
  */
+@Api
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
 
     private final AuthorizationService authorizationService;
     private final UserService userService;
     private final PostService postService;
-
-    @Autowired
-    public UserController(AuthorizationService authorizationService, UserService userService, PostService postService) {
-        this.authorizationService = authorizationService;
-        this.userService = userService;
-        this.postService = postService;
-    }
 
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/info")

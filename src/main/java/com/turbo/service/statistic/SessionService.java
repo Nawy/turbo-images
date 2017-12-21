@@ -1,4 +1,4 @@
-package com.turbo.service;
+package com.turbo.service.statistic;
 
 import com.turbo.model.Session;
 import com.turbo.repository.aerospike.SessionRepository;

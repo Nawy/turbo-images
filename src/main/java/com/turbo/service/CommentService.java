@@ -11,6 +11,7 @@ import com.turbo.model.search.SearchSort;
 import com.turbo.model.search.field.CommentField;
 import com.turbo.repository.aerospike.CommentRepository;
 import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
+import com.turbo.service.statistic.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

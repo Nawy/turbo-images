@@ -1,6 +1,7 @@
 package com.turbo.config;
 
 import com.google.common.base.Predicates;
+import io.swagger.annotations.Api;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.turbo"))
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(Predicates.not(PathSelectors.regex("/error")))
                 .build();
     }

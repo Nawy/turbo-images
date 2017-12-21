@@ -15,7 +15,8 @@ import com.turbo.model.search.field.stat.PostDiffStatField;
 import com.turbo.model.search.field.stat.PostStatPeriod;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
-import com.turbo.repository.elasticsearch.stat.PostStatRepository;
+import com.turbo.repository.elasticsearch.statistic.PostStatisticRepository;
+import com.turbo.service.statistic.StatisticService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class PostService {
     private static final int PAGE_SIZE = 30;
 
     private final PostSearchRepository postSearchRepository;
-    private final PostStatRepository postStatRepository;
+    private final PostStatisticRepository postStatisticRepository;
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserImageService userImageService;
@@ -223,7 +224,7 @@ public class PostService {
 
             Objects.requireNonNull(specificDate);
             Objects.requireNonNull(period);
-            resultIds = postStatRepository
+            resultIds = postStatisticRepository
                     .getPostStat()
                     .date(specificDate, period)
                     .sort(sortingField, SearchOrder.DESC)
