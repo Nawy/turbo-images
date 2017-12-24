@@ -2,6 +2,7 @@ package com.turbo.service.statistic;
 
 import com.turbo.model.Post;
 import com.turbo.model.comment.Comment;
+import com.turbo.model.search.stat.PostStatEntity;
 import com.turbo.model.statistic.ReindexCommentContent;
 import com.turbo.model.statistic.ReindexPost;
 import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
@@ -10,6 +11,7 @@ import com.turbo.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Service
@@ -19,6 +21,7 @@ public class StatisticActionService {
     private final CommentSearchRepository commentSearchRepository;
     private final PostService postService;
     private final PostSearchRepository postSearchRepository;
+    private final PostStatisticService postStatisticService;
 
     public void updateCommentContent(final ReindexCommentContent action) {
         final Comment comment = commentSearchRepository.get(action.getId());
@@ -77,5 +80,6 @@ public class StatisticActionService {
         post.setDowns(resultDowns);
 
         postSearchRepository.upsertPost(post);
+        postStatisticService.updateStaticPost(action, LocalDate.now());
     }
 }

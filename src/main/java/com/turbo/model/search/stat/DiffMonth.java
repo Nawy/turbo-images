@@ -2,12 +2,14 @@ package com.turbo.model.search.stat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 /**
  * Created by ermolaev on 6/23/17.
  */
+@Data
 public class DiffMonth {
     private LocalDate date;
     private long ups;
@@ -30,20 +32,5 @@ public class DiffMonth {
     @JsonFormat(pattern = "MM")
     public LocalDate getDate() {
         return date;
-    }
-
-    @JsonProperty(value = "ups", required = true)
-    public long getUps() {
-        return ups;
-    }
-
-    @JsonProperty(value = "downs", required = true)
-    public long getDowns() {
-        return downs;
-    }
-
-    @JsonProperty(value = "rating", required = true)
-    public long getRating() {
-        return rating;
     }
 }
