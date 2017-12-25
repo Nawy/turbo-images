@@ -3,20 +3,32 @@
 
     <div class="row">
 
+
       <div class="col-11">
+        <div class="row">
 
-        <div class="card-text turbo-small-text">
-          <span>by Max Stuart</span>
-          <span class="turbo-small-info-margin">via Iphone</span>
-          <span class="turbo-small-info-margin">919 pts</span>
-          <span class="turbo-small-info-margin">5 hrs</span>
+          <div class="col-1 text-center align-middle" style="max-width: 2em; ">
+            <i class="fa fa-arrow-up turbo-small-icons"></i>
+            <i class="fa fa-arrow-down turbo-small-icons"></i>
+          </div>
+
+          <div class="col text-left">
+            <div class="turbo-small-text">
+              <span>by Max Stuart</span>
+              <span class="turbo-small-info-margin">via Iphone</span>
+              <span class="turbo-small-info-margin">919 pts</span>
+              <span class="turbo-small-info-margin">5 hrs</span>
+            </div>
+
+            <div>{{currentComment.text}}</div>
+          </div>
+
         </div>
-        <div class="card-text">{{currentComment.text}}</div>
-
       </div>
 
-      <div class="col text-right" style="padding: 0 10px">
-        <i class="fa fa-reply" style="padding: 5px"></i>
+
+      <div class="col-1 text-center">
+        <i class="fa fa-reply comment-icons"></i>
         <div style="font-size: small">Reply</div>
       </div>
 
@@ -25,7 +37,7 @@
   </div>
 </div>
 
-<div *ngIf="currentComment.replies">
+<div *ngIf="currentComment.replies" class="cursor-pointer">
 
   <i
     (click)="changeRepliesVisibility()"
