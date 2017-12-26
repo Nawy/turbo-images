@@ -49,8 +49,12 @@ public class CommentService {
         return get(commentWithId.getId());
     }
 
-    private Comment update(CommentRepoModel repoModel) {
-        CommentRepoModel postWithId = commentRepository.save(repoModel);
+    private Comment update(CommentRepoModel newRepoModel) {
+        // set reply amount from old record or value will be overwritten
+        CommentRepoModel oldComment = getCommentRepoModel(newRepoModel.getId());
+        newRepoModel.setRepliesAmount(oldComment.getRepliesAmount());
+
+        CommentRepoModel postWithId = commentRepository.save(newRepoModel);
         //FIXME i can update too long
         commentSearchRepository.update(postWithId);
         return get(postWithId.getId());

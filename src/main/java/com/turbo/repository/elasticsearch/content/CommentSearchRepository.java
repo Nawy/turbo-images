@@ -75,18 +75,22 @@ public class CommentSearchRepository extends AbstractSearchRepository {
 
     public void update(final CommentRepoModel comment) {
         Objects.requireNonNull(comment.getId(), "for update comment you need have id for update");
+        update(new CommentSearchEntity(comment));
+    }
+
+    public void update(final CommentSearchEntity comment){
         final String elasticId = getElasticId(comment.getId());
         elasticClient.prepareUpdate(
                 config.getSearchCommentIndexName(),
                 config.getSearchCommentTypeName(),
                 elasticId
         ).setDoc(
-                elasticUtils.writeAsJsonBytes(new CommentSearchEntity(comment)),
+                elasticUtils.writeAsJsonBytes(comment),
                 XContentType.JSON
         ).setRetryOnConflict(5).get();
     }
 
-    public Comment get(final long id) {
+    public CommentSearchEntity get(final long id) {
         SearchResponse response = elasticClient
                 .prepareSearch(config.getSearchCommentIndexName())
                 .setTypes(config.getSearchCommentTypeName())
@@ -100,7 +104,7 @@ public class CommentSearchRepository extends AbstractSearchRepository {
                 .setSize(1)
                 .get();
 
-        return elasticUtils.parseUniqueSearchResponse(response, Comment.class);
+        return elasticUtils.parseUniqueSearchResponse(response, CommentSearchEntity.class);
     }
 
     private String getElasticId(final Long id) {

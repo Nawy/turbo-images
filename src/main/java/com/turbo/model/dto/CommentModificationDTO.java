@@ -41,7 +41,8 @@ public class CommentModificationDTO {
                 this.creationDate,
                 this.ups,
                 this.downs,
-                this.rating
+                this.rating,
+                0
         );
     }
 

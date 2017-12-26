@@ -8,6 +8,7 @@ import com.turbo.model.comment.Comment;
 import com.turbo.model.comment.CommentReplyType;
 import com.turbo.model.search.field.CommentFieldNames;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +34,8 @@ public class CommentSearchEntity {
     @JsonProperty(CommentFieldNames.DEVICE)
     private final DeviceType device; // from what was posted
     @JsonProperty(CommentFieldNames.CONTENT)
-    private final String content;
+    @Setter
+    private String content;
 
     @JsonProperty(CommentFieldNames.CREATION_DATE)
     @JsonFormat(pattern = CREATION_DATE_PATTERN)
