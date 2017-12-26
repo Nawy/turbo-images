@@ -129,8 +129,15 @@ public class CommentService {
     }
 
     public void delete(long commentId) {
+        CommentRepoModel comment = getCommentRepoModel(commentId);
         commentRepository.delete(commentId);
+        //decrement parent comment replies amount
+        if (comment.getReplyType() == CommentReplyType.COMMENT) {
+            CommentRepoModel parentComment = getCommentRepoModel(comment.getReplyId());
+            parentComment.setRepliesAmount(parentComment.getRepliesAmount() - 1);
+            commentRepository.save(parentComment);
+        }
         //add task for delete in the future
-        statisticService.deleteImage(commentId);
+        statisticService.deleteImage(commentId); //FIXME wtf is this?
     }
 }
