@@ -3,6 +3,7 @@ package com.turbo.service.statistic;
 import com.turbo.model.Post;
 import com.turbo.model.comment.Comment;
 import com.turbo.model.search.stat.PostStatEntity;
+import com.turbo.model.search.stat.UpdatePostStatistic;
 import com.turbo.model.statistic.ReindexCommentContent;
 import com.turbo.model.statistic.ReindexPost;
 import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
@@ -26,7 +27,7 @@ public class StatisticActionService {
     public void updateCommentContent(final ReindexCommentContent action) {
         final Comment comment = commentSearchRepository.get(action.getId());
 
-        if(Objects.isNull(comment)) {
+        if (Objects.isNull(comment)) {
             return;
         }
 
@@ -49,24 +50,24 @@ public class StatisticActionService {
     public void updatePostContent(final ReindexPost action) {
         final Post post = postService.getPostById(action.getId());
 
-        if(Objects.isNull(post)) {
+        if (Objects.isNull(post)) {
             return;
         }
 
-        if(Objects.nonNull(action.getName())) {
+        if (Objects.nonNull(action.getName())) {
             post.setName(action.getName());
         }
 
-        if(Objects.nonNull(action.getDescription())) {
+        if (Objects.nonNull(action.getDescription())) {
             post.setDescription(action.getDescription());
         }
 
-        long resultRating = post.getRating();
-        long resultUps = post.getUps();
-        long resultDowns = post.getDowns();
+        long resultRating = 0;
+        long resultUps = 0;
+        long resultDowns = 0;
 
-        for(Long value : action.getRatings()) {
-            if(value > 0) {
+        for (Long value : action.getRatings()) {
+            if (value > 0) {
                 resultUps += value;
             } else {
                 resultDowns += value;
@@ -75,11 +76,21 @@ public class StatisticActionService {
         }
 
         post.setViews(post.getViews() + action.getViews());
-        post.setRating(resultRating);
-        post.setUps(resultUps);
-        post.setDowns(resultDowns);
+        post.setRating(resultRating + post.getRating());
+        post.setUps(resultUps + post.getRating());
+        post.setDowns(resultDowns + post.getDowns());
 
         postSearchRepository.upsertPost(post);
-        postStatisticService.updateStaticPost(action, LocalDate.now());
+        postStatisticService.updateStaticPost(
+                UpdatePostStatistic.builder()
+                        .id(post.getId())
+                        .name(post.getName())
+                        .description(post.getDescription())
+                        .rating(resultRating)
+                        .views(action.getViews())
+                        .ups(resultUps)
+                        .downs(resultDowns)
+                        .build()
+        );
     }
 }

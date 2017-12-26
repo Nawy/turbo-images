@@ -2,12 +2,14 @@ package com.turbo.model.search.stat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import java.time.LocalDate;
 
 /**
  * Created by ermolaev on 6/23/17.
  */
+@Data
 public class DiffWeek {
     private LocalDate date;
     private long ups;

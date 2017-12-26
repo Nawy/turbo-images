@@ -2,12 +2,16 @@ package com.turbo.model.search.stat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 /**
  * Created by ermolaev on 6/7/17.
  */
+@Data
+@Setter
 public class DiffDay {
 
     private LocalDate date;

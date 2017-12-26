@@ -54,6 +54,8 @@ public class PostStatisticRepository extends AbstractSearchRepository {
         return new PostStatBuilder(this::getPostStat);
     }
 
+
+
     public PostStatEntity getById(final long id) {
         SearchRequestBuilder request = elasticClient
                 .prepareSearch(config.getStatPostsIndexName())

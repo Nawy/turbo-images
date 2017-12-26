@@ -1,10 +1,12 @@
 package com.turbo.model.search.stat;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 /**
  * Created by ermolaev on 6/23/17.
  */
+@Data
 public class DiffYear {
     private long ups;
     private long downs;

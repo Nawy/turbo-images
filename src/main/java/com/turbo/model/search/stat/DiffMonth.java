@@ -3,6 +3,7 @@ package com.turbo.model.search.stat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
