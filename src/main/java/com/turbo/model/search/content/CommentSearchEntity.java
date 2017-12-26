@@ -3,6 +3,7 @@ package com.turbo.model.search.content;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
+import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.comment.Comment;
 import com.turbo.model.comment.CommentReplyType;
 import com.turbo.model.search.field.CommentFieldNames;
@@ -69,9 +70,9 @@ public class CommentSearchEntity {
         this.rating = rating;
     }
 
-    public CommentSearchEntity(final Comment comment) {
+    public CommentSearchEntity(final CommentRepoModel comment) {
         this.id = comment.getId();
-        this.userId = comment.getUser().getId();
+        this.userId = comment.getUserId();
         this.replyId = comment.getReplyId();
         this.replyType = comment.getReplyType();
         this.device = comment.getDevice();

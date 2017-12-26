@@ -1,6 +1,7 @@
 package com.turbo.repository.elasticsearch.content;
 
 import com.turbo.config.ElasticsearchConfig;
+import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.comment.Comment;
 import com.turbo.model.comment.CommentReplyType;
 import com.turbo.model.exception.InternalServerErrorHttpException;
@@ -30,7 +31,7 @@ public class CommentSearchRepository extends AbstractSearchRepository {
         super(config.getElasticClient(), config, elasticUtils);
     }
 
-    public void add(final Comment comment) {
+    public void add(final CommentRepoModel comment) {
         elasticClient
                 .prepareIndex(
                         config.getSearchCommentIndexName(),
@@ -72,7 +73,7 @@ public class CommentSearchRepository extends AbstractSearchRepository {
                 .collect(Collectors.toList());
     }
 
-    public void update(final Comment comment) {
+    public void update(final CommentRepoModel comment) {
         Objects.requireNonNull(comment.getId(), "for update comment you need have id for update");
         final String elasticId = getElasticId(comment.getId());
         elasticClient.prepareUpdate(

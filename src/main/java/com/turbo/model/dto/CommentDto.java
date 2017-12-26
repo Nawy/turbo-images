@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,8 @@ public class CommentDto {
     private long downs;
     private long rating; // upvotes - downvotes
 
+    private long repliesAmount;
+
     public static CommentDto from(Comment comment) {
         return new CommentDto(
                 EncryptionService.encodeHashId(comment.getId()),
@@ -44,7 +47,8 @@ public class CommentDto {
                 comment.getCreationDate(),
                 comment.getUps(),
                 comment.getDowns(),
-                comment.getRating()
+                comment.getRating(),
+                comment.getRepliesAmount()
         );
     }
 

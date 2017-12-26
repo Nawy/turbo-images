@@ -29,5 +29,6 @@ public class Comment {
     private long ups;
     private long downs;
     private long rating; // upvotes - downvotes
+    private long repliesAmount; // how much child comments
 
 }

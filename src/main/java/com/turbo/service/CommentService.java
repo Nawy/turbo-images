@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final static int PAGE_SIZE = 50;
-
     private final CommentRepository commentRepository;
     private final CommentSearchRepository commentSearchRepository;
     private final StatisticService statisticService;
@@ -41,23 +39,33 @@ public class CommentService {
 
     private Comment add(CommentRepoModel repoModel) {
         CommentRepoModel commentWithId = commentRepository.save(repoModel);
-        Comment comment = get(commentWithId.getId());
-        commentSearchRepository.add(comment);
-        return comment;
+        commentSearchRepository.add(commentWithId);
+        //increment parent comment replies amount
+        if (commentWithId.getReplyType() == CommentReplyType.COMMENT) {
+            CommentRepoModel parentComment = getCommentRepoModel(commentWithId.getReplyId());
+            parentComment.setRepliesAmount(parentComment.getRepliesAmount() + 1);
+            commentRepository.save(parentComment);
+        }
+        return get(commentWithId.getId());
     }
 
     private Comment update(CommentRepoModel repoModel) {
         CommentRepoModel postWithId = commentRepository.save(repoModel);
-        Comment updatedPost = get(postWithId.getId());
         //FIXME i can update too long
-        commentSearchRepository.update(updatedPost);
-        return updatedPost;
+        commentSearchRepository.update(postWithId);
+        return get(postWithId.getId());
     }
 
     public Comment get(final long id) {
+        CommentRepoModel commentRepoModel = getCommentRepoModel(id);
+        User user = userService.get(commentRepoModel.getUserId());
+        return makeComment(commentRepoModel, user);
+    }
+
+    private CommentRepoModel getCommentRepoModel(final long id) {
         CommentRepoModel commentRepoModel = commentRepository.get(id);
         if (commentRepoModel == null) throw new NotFoundHttpException("can't find comment with such id");
-        return makeComment(commentRepoModel);
+        return commentRepoModel;
     }
 
     public List<Comment> getByReply(
@@ -87,6 +95,7 @@ public class CommentService {
         if (ids.isEmpty()) return Collections.emptyList();
         List<CommentRepoModel> comments = commentRepository.bulkGet(ids);
         if (comments.isEmpty()) return Collections.emptyList();
+        //get users
         Set<Long> userIds = comments.stream().map(CommentRepoModel::getUserId).collect(Collectors.toSet());
         List<User> users = userService.bulkGet(userIds);
         Map<Long, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity()));
@@ -97,11 +106,6 @@ public class CommentService {
                                 userMap.get(commentRepoModel.getUserId())
                         )
                 ).collect(Collectors.toList());
-    }
-
-    private Comment makeComment(CommentRepoModel commentRepoModel) {
-        User user = userService.get(commentRepoModel.getUserId());
-        return makeComment(commentRepoModel, user);
     }
 
     private Comment makeComment(CommentRepoModel commentRepoModel, User user) {
@@ -115,7 +119,8 @@ public class CommentService {
                 commentRepoModel.getCreationDate(),
                 commentRepoModel.getUps(),
                 commentRepoModel.getDowns(),
-                commentRepoModel.getRating()
+                commentRepoModel.getRating(),
+                commentRepoModel.getRepliesAmount()
         );
     }
 
