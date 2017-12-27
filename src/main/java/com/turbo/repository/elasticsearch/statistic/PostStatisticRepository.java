@@ -4,6 +4,7 @@ import com.turbo.config.ElasticsearchConfig;
 import com.turbo.model.Nullable;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
+import com.turbo.model.search.content.PostSearchEntity;
 import com.turbo.model.search.field.stat.PostDiffStatField;
 import com.turbo.model.search.field.stat.PostStatField;
 import com.turbo.model.search.field.stat.PostStatPeriod;
@@ -14,6 +15,7 @@ import com.turbo.util.ElasticUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -54,7 +56,24 @@ public class PostStatisticRepository extends AbstractSearchRepository {
         return new PostStatBuilder(this::getPostStat);
     }
 
+    public void updateById(PostStatEntity post) {
+        final String elasticId = getElasticId(post.getId());
 
+        elasticClient.prepareUpdate(
+                config.getStatPostsIndexName(),
+                ElasticUtils.getTypePerYear(
+                        config.getStatPostsTypeName(),
+                        LocalDate.now()
+                ),
+                elasticId
+        ).setUpsert(
+                elasticClient.prepareIndex()
+                        .setSource(
+                                elasticUtils.writeAsJsonBytes(post),
+                                XContentType.JSON
+                        )
+        ).get();
+    }
 
     public PostStatEntity getById(final long id) {
         SearchRequestBuilder request = elasticClient
@@ -73,6 +92,26 @@ public class PostStatisticRepository extends AbstractSearchRepository {
                 );
 
         return elasticUtils.parseUniqueSearchResponse(request.get(), PostStatEntity.class);
+    }
+
+    private String getElasticId(final long id) {
+        SearchRequestBuilder request = elasticClient
+                .prepareSearch(config.getStatPostsIndexName())
+                .setTypes(
+                        ElasticUtils.getTypePerYear(
+                                config.getStatPostsTypeName(),
+                                LocalDate.now()
+                        )
+                )
+                .setQuery(
+                        QueryBuilders.matchQuery(
+                                PostStatField.ID.getFieldName(),
+                                id
+                        )
+                );
+        return elasticUtils.parseElasticIdSearchResponse(
+                request.get()
+        );
     }
 
     private List<Long> getPostStat(

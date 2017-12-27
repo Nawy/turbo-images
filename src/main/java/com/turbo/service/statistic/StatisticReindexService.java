@@ -82,10 +82,6 @@ public class StatisticReindexService {
                 statisticActionService.updateCommentContent(action.getOriginalValue());
                 break;
             }
-            case ActionType.DELETE_COMMENT : {
-                statisticActionService.deleteComment(action.getId());
-                break;
-            }
             case ActionType.DELETE_POST : {
                 statisticActionService.deletePost(action.getId());
                 break;

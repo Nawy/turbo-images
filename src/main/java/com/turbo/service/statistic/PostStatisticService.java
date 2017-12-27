@@ -46,7 +46,8 @@ public class PostStatisticService {
         postStatEntity.setName(reindexPost.getName());
         postStatEntity.setTags(reindexPost.getTags());
 
-        // save or add post, needs to get object
+        // update post in elastic by id, heavy
+        postStatisticRepository.updateById(postStatEntity);
     }
 
     private List<DiffDay> updateDays(
