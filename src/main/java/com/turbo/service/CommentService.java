@@ -138,6 +138,6 @@ public class CommentService {
             commentRepository.save(parentComment);
         }
         //add task for delete in the future
-        statisticService.deleteImage(commentId); //FIXME wtf is this?
+        statisticService.deleteComment(commentId);
     }
 }

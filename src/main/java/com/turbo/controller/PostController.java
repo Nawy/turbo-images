@@ -160,6 +160,16 @@ public class PostController {
         );
     }
 
+    @PostMapping("/post/upvote")
+    public void upVote() {
+
+    }
+
+    @PostMapping("/post/downvote")
+    public void downVote() {
+
+    }
+
     private static class PostEditDto {
         private long postId;
         private String field;

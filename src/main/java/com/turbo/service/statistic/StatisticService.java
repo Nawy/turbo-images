@@ -12,19 +12,19 @@ public class StatisticService {
 
     private RabbitTemplate rabbitTemplate;
 
-    public void upvotePost(final long id) {
+    public void postUpvote(final long id) {
         rabbitTemplate.convertAndSend(
                 ReindexPost.changeRating(id, 1L)
         );
     }
 
-    public void downvotePost(final long id) {
+    public void postDownvote(final long id) {
         rabbitTemplate.convertAndSend(
                 ReindexPost.changeRating(id, -1L)
         );
     }
 
-    public void increaseViews(final long id, final long count) {
+    public void postView(final long id, final long count) {
         rabbitTemplate.convertAndSend(
                 ReindexPost.changeViews(id, count)
         );
@@ -44,10 +44,6 @@ public class StatisticService {
 
     public void deletePost(final long id) {
         rabbitTemplate.convertAndSend(new ReindexDeletePost(id));
-    }
-
-    public void deleteComment(final long id) {
-        rabbitTemplate.convertAndSend(new ReindexDeleteComment(id));
     }
 
     public void deleteImage(final long id) {
