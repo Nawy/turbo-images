@@ -12,8 +12,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -51,6 +53,9 @@ public class CommentDto {
     }
 
     public static List<CommentDto> from(List<Comment> comments, Map<Long, List<Comment>> allComments){
+        if(Objects.isNull(comments)) {
+            return Collections.emptyList();
+        }
         return comments.stream().map(comment -> from(comment, allComments)).collect(Collectors.toList());
     }
 }
