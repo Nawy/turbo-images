@@ -1,5 +1,6 @@
 package com.turbo.service;
 
+import com.turbo.model.Rating;
 import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
@@ -20,6 +21,7 @@ import static com.turbo.util.IdGenerator.ITERATIONS_TO_GENERATE_ID;
 public class CommentService {
 
     private final PostService postService;
+    private final UserHistoryService userHistoryService;
 
     public void addComment(long postId, CommentRepoModel commentRepoModel) {
         PostRepoModel post = postService.getRawPost(postId);
@@ -39,11 +41,32 @@ public class CommentService {
         postService.saveRawPost(post);
     }
 
-    public void changeCommentRating(long postId, long commentId, long rating) {
+    public void changeCommentRating(long userId, long postId, long commentId, Boolean rating) {
         PostRepoModel post = postService.getRawPost(postId);
         CommentRepoModel comment = post.getComments().get(commentId);
-        comment.getRating().change(rating);
+        Rating commentRating = comment.getRating();
+        if (commentRating == null) {
+            if (rating == null) return; // comment don't have rating, nothing reset
+            Rating newCommentRating = new Rating();
+            newCommentRating.changeRating(rating);
+            comment.setRating(newCommentRating);
+        } else {
+
+            if (rating == null) {
+                Boolean ratingHistory = userHistoryService.getCommentRatingChange(userId, postId, commentId);
+                if (ratingHistory == null) return; // rating should not be reset
+                commentRating.resetOneRating(ratingHistory);
+            } else {
+                Boolean ratingHistory = userHistoryService.getCommentRatingChange(userId, postId, commentId);
+                if (ratingHistory != null){
+                    commentRating.resetOneRating(ratingHistory);
+                }
+                commentRating.changeRating(rating);
+            }
+        }
+
         postService.saveRawPost(post);
+        userHistoryService.setCommentRatingChange(userId, postId, commentId, rating);
     }
 
     private Long generateCommentId(Map<Long, CommentRepoModel> comments) {

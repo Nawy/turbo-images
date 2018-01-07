@@ -1,10 +1,12 @@
 package com.turbo.model;
 
+import com.turbo.model.aerospike.CommentRepoModel;
 import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +59,6 @@ public class Post {
         this.visible = visible;
         this.description = description;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
-        this.comments = comments == null ? Collections.emptyMap() : Collections.unmodifiableMap(comments);
+        this.comments = comments == null? Collections.emptyMap() : Collections.unmodifiableMap(comments);
     }
 }

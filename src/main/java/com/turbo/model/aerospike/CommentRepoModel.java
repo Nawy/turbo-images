@@ -25,6 +25,7 @@ public class CommentRepoModel implements Serializable, IdHolder {
     private DeviceType device; // from what was posted
     private String content;
     private LocalDateTime creationDate;
+    @Setter
     private Rating rating;
 
 }

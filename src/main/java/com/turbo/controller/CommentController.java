@@ -3,6 +3,7 @@ package com.turbo.controller;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.CommentModificationDTO;
 import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.service.AuthorizationService;
 import com.turbo.service.CommentService;
 import com.turbo.util.EncryptionService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class CommentController {
 
+    private final AuthorizationService authorizationService;
     private final CommentService commentService;
 
     @PostMapping("/save/comment")
@@ -35,13 +37,15 @@ public class CommentController {
         );
     }
 
+    @Secured(SecurityRole.USER)
     @PostMapping("/change/comment/rating")
     public void changeCommentRating(
             @RequestParam("comment_id") String commentId,
             @RequestParam("post_id") String postId,
-            @RequestParam("rating") long rating
+            @RequestParam(value = "rating", required = false) Boolean rating
     ) {
         commentService.changeCommentRating(
+                authorizationService.getCurrentUserId(),
                 EncryptionService.decodeHashId(postId),
                 EncryptionService.decodeHashId(commentId),
                 rating

@@ -4,7 +4,7 @@ import com.turbo.model.DeviceType;
 import com.turbo.model.SecurityHeader;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.Session;
-import com.turbo.service.statistic.SessionService;
+import com.turbo.service.SessionService;
 import com.turbo.util.EncryptionService;
 import com.turbo.util.Headers;
 import org.apache.commons.lang3.StringUtils;

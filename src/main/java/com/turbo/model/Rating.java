@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Rating implements Serializable {
 
     private long ups;
@@ -22,5 +22,27 @@ public class Rating implements Serializable {
             downs += ratingChangeAmount;
         }
         rating += ratingChangeAmount;
+    }
+
+    //reset upvote or downvote
+    public void resetOneRating(boolean upvote){
+        if (upvote){
+            ups--;
+            rating--;
+        } else {
+            downs--;
+            rating++;
+        }
+    }
+
+    //upvote or downvote
+    public void changeRating(boolean upvote){
+        if (upvote){
+            ups++;
+            rating++;
+        } else {
+            downs++;
+            rating--;
+        }
     }
 }
