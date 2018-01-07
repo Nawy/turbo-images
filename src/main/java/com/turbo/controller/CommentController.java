@@ -1,79 +1,50 @@
 package com.turbo.controller;
 
-import com.turbo.model.comment.Comment;
-import com.turbo.model.comment.CommentReplyType;
-import com.turbo.model.dto.CommentDto;
+import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.CommentModificationDTO;
 import com.turbo.model.exception.BadRequestHttpException;
-import com.turbo.model.search.SearchOrder;
-import com.turbo.model.search.SearchSort;
-import com.turbo.model.search.field.CommentField;
-import com.turbo.model.search.field.CommentFieldNames;
 import com.turbo.service.CommentService;
 import com.turbo.util.EncryptionService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
-@Api
-@RestController
-@RequestMapping("/api")
+@Controller
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @GetMapping("/get/post/comments")
-    public List<CommentDto> getPostComments(
-            @RequestParam("reply_id") String encodedReplyId,
-            @RequestParam(value = "size", defaultValue = "50") int pageSize,
-            @RequestParam(value = "sort", defaultValue = "DATE") SearchSort sort,
-            @RequestParam(value = "order", defaultValue = "DESC") SearchOrder searchOrder
-    ) {
-        if (sort == SearchSort.VIEWS) throw new BadRequestHttpException("views sort unsupported");
-        long replyId = EncryptionService.decodeHashId(encodedReplyId);
-        return CommentDto.from(
-                commentService.getByReply(replyId, CommentReplyType.POST, pageSize, sort, searchOrder)
-        );
-    }
-
-    @GetMapping("/get/comment/comments")
-    public List<CommentDto> getCommentComments(
-            @RequestParam("reply_id") String encodedReplyId,
-            @RequestParam(value = "size", defaultValue = "50") int pageSize,
-            @RequestParam(value = "sort", defaultValue = "DATE") SearchSort sort,
-            @RequestParam(value = "order", defaultValue = "DESC") SearchOrder searchOrder
-    ) {
-        if (sort == SearchSort.VIEWS) throw new BadRequestHttpException("views sort unsupported");
-        long replyId = EncryptionService.decodeHashId(encodedReplyId);
-        return CommentDto.from(
-                commentService.getByReply(replyId, CommentReplyType.COMMENT, pageSize, sort, searchOrder)
-        );
-    }
-
     @PostMapping("/save/comment")
-    public CommentDto save(@RequestBody CommentModificationDTO commentModificationDTO) {
-        Comment comment = commentService.save(
-                commentModificationDTO.toRepoModel()
-        );
-
-        return CommentDto.from(comment);
+    public void saveComment(@RequestBody CommentModificationDTO commentModificationDTO) {
+        Long postId = commentModificationDTO.getDecodedPostId();
+        if (postId == null) throw new BadRequestHttpException("empty post id");
+        commentService.addComment(postId, commentModificationDTO.toRepoModel());
     }
 
-    @GetMapping("/get/comment/{id}")
-    public CommentDto get(@PathVariable("id") String encodedId) {
-        long id = EncryptionService.decodeHashId(encodedId);
-        return CommentDto.from(
-                commentService.get(id)
-        );
-    }
-
-    @DeleteMapping("/delete/comment/{id}")
-    public void delete(@PathVariable("id")String commentId){
-        commentService.delete(
+    @Secured(SecurityRole.USER)
+    @DeleteMapping("/delete/comment")
+    public void deleteComment(@RequestParam("comment_id") String commentId, @RequestParam("post_id") String postId) {
+        commentService.deleteComment(
+                EncryptionService.decodeHashId(postId),
                 EncryptionService.decodeHashId(commentId)
+        );
+    }
+
+    @PostMapping("/change/comment/rating")
+    public void changeCommentRating(
+            @RequestParam("comment_id") String commentId,
+            @RequestParam("post_id") String postId,
+            @RequestParam("rating") long rating
+    ) {
+        commentService.changeCommentRating(
+                EncryptionService.decodeHashId(postId),
+                EncryptionService.decodeHashId(commentId),
+                rating
         );
     }
 }

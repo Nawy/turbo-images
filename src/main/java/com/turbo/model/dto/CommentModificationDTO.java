@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.DeviceType;
+import com.turbo.model.Rating;
 import com.turbo.model.aerospike.CommentRepoModel;
-import com.turbo.model.comment.CommentReplyType;
 import com.turbo.util.EncryptionService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 public class CommentModificationDTO {
 
     private String id;
+    private String postId;
     private String userId;
     private String replyId;
-    private CommentReplyType replyType;
     private DeviceType device; // from what was posted
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
@@ -33,17 +33,17 @@ public class CommentModificationDTO {
     public CommentRepoModel toRepoModel() {
         return new CommentRepoModel(
                 StringUtils.isBlank(this.id) ? null : EncryptionService.decodeHashId(this.id),
-                EncryptionService.decodeHashId(this.userId),
-                EncryptionService.decodeHashId(this.replyId),
-                this.replyType,
+                StringUtils.isBlank(this.userId) ? null : EncryptionService.decodeHashId(this.userId),
+                StringUtils.isBlank(this.replyId) ? null :  EncryptionService.decodeHashId(this.replyId),
                 this.device,
                 this.content,
                 this.creationDate,
-                this.ups,
-                this.downs,
-                this.rating,
-                0
+                new Rating(ups, downs, rating)
         );
+    }
+
+    public Long getDecodedPostId(){
+       return StringUtils.isBlank(this.postId) ? null : EncryptionService.decodeHashId(this.postId);
     }
 
 }

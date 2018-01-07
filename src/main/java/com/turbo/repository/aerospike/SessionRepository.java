@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import static com.turbo.util.IdGenerator.ITERATIONS_TO_GENERATE_ID;
+
 /**
  * Created by rakhmetov on 17.05.17.
  */

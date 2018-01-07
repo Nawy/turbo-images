@@ -20,12 +20,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.turbo.util.IdGenerator.ITERATIONS_TO_GENERATE_ID;
+
 /**
  * Created by rakhmetov on 21.05.17.
  */
 public class AbstractAerospikeRepo<T extends IdHolder & Serializable> {
 
-    protected static final int ITERATIONS_TO_GENERATE_ID = 10;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAerospikeRepo.class);
     protected final AerospikeClient client;
     private final String binName;

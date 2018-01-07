@@ -78,10 +78,6 @@ public class StatisticReindexService {
 
     private void reindexRoute(final ReindexAction action) {
         switch (action.getType()) {
-            case ActionType.UPDATE_COMMENT_CONTENT: {
-                statisticActionService.updateCommentContent(action.getOriginalValue());
-                break;
-            }
             case ActionType.DELETE_POST : {
                 statisticActionService.deletePost(action.getId());
                 break;

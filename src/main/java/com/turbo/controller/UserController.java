@@ -3,23 +3,15 @@ package com.turbo.controller;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.User;
 import com.turbo.model.exception.BadRequestHttpException;
-import com.turbo.model.page.Paginator;
-import com.turbo.model.search.SearchOrder;
-import com.turbo.model.search.SearchPattern;
-import com.turbo.model.search.SearchPeriod;
-import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
-import com.turbo.service.PostService;
 import com.turbo.service.UserService;
 import com.turbo.util.EncryptionService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +30,6 @@ public class UserController {
 
     private final AuthorizationService authorizationService;
     private final UserService userService;
-    private final PostService postService;
 
     @Secured(SecurityRole.USER)
     @GetMapping("/get/user/info")
@@ -173,18 +164,6 @@ public class UserController {
             this.password = password;
             this.email = email;
             this.createDate = createDate;
-        }
-
-        @JsonIgnore
-        public User toUser() {
-            return new User(
-                    EncryptionService.decodeHashId(id),
-                    name,
-                    avatarPath,
-                    email,
-                    password,
-                    createDate
-            );
         }
 
         public String getId() {

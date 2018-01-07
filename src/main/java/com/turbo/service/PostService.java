@@ -1,8 +1,10 @@
 package com.turbo.service;
 
+import com.turbo.model.Comment;
 import com.turbo.model.Post;
 import com.turbo.model.User;
 import com.turbo.model.UserImage;
+import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
@@ -18,6 +20,7 @@ import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.repository.elasticsearch.statistic.PostStatisticRepository;
 import com.turbo.service.statistic.StatisticService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +32,7 @@ import java.util.stream.Collectors;
 /**
  * Created by rakhmetov on 09.05.17.
  */
+@Log
 @Service
 @AllArgsConstructor
 public class PostService {
@@ -56,11 +60,19 @@ public class PostService {
     }
 
     private Post upsert(PostRepoModel post) {
-        PostRepoModel postWithId = postRepository.save(post);
-        Post updatedPost = getPostById(postWithId.getId());
+        PostRepoModel postAfterUpdate = postRepository.save(post);
+        Post updatedPost = getPostById(postAfterUpdate.getId());
         //FIXME i can update too long
         postSearchRepository.upsertPost(updatedPost);
         return updatedPost;
+    }
+
+    void saveRawPost(PostRepoModel postRepoModel) {
+        postRepository.save(postRepoModel);
+    }
+
+    PostRepoModel getRawPost(long id) {
+        return postRepository.get(id);
     }
 
     private Post updateWithReindex(PostRepoModel post) {
@@ -79,8 +91,6 @@ public class PostService {
         PostRepoModel updatedRepoModel = new PostRepoModel(
                 postRepoModel.getId(),
                 name,
-                postRepoModel.getUps(),
-                postRepoModel.getDowns(),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
                 postRepoModel.getImages(),
@@ -89,7 +99,8 @@ public class PostService {
                 postRepoModel.getUserId(),
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
-                postRepoModel.getDescription()
+                postRepoModel.getDescription(),
+                postRepoModel.getComments()
         );
         updateWithReindex(updatedRepoModel);
         return makePost(updatedRepoModel);
@@ -100,8 +111,6 @@ public class PostService {
         PostRepoModel updatedRepoModel = new PostRepoModel(
                 postRepoModel.getId(),
                 postRepoModel.getName(),
-                postRepoModel.getUps(),
-                postRepoModel.getDowns(),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
                 postRepoModel.getImages(),
@@ -110,7 +119,8 @@ public class PostService {
                 postRepoModel.getUserId(),
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
-                description
+                description,
+                postRepoModel.getComments()
         );
         updateWithReindex(updatedRepoModel);
         return makePost(updatedRepoModel);
@@ -123,8 +133,6 @@ public class PostService {
         PostRepoModel updatedRepoModel = new PostRepoModel(
                 postRepoModel.getId(),
                 postRepoModel.getName(),
-                postRepoModel.getUps(),
-                postRepoModel.getDowns(),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
                 postRepoModel.getImages(),
@@ -133,7 +141,8 @@ public class PostService {
                 postRepoModel.getUserId(),
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
-                postRepoModel.getDescription()
+                postRepoModel.getDescription(),
+                postRepoModel.getComments()
         );
         // TODO Should to add them to statistic
         upsert(updatedRepoModel);
@@ -147,8 +156,6 @@ public class PostService {
         PostRepoModel updatedRepoModel = new PostRepoModel(
                 postRepoModel.getId(),
                 postRepoModel.getName(),
-                postRepoModel.getUps(),
-                postRepoModel.getDowns(),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
                 postRepoModel.getImages(),
@@ -157,7 +164,8 @@ public class PostService {
                 postRepoModel.getUserId(),
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
-                postRepoModel.getDescription()
+                postRepoModel.getDescription(),
+                postRepoModel.getComments()
         );
         // TODO Should to add them to statistic
         upsert(updatedRepoModel);
@@ -171,9 +179,25 @@ public class PostService {
     }
 
     private Post makePost(PostRepoModel postRepoModel) {
-        User user = userService.get(postRepoModel.getUserId());
+        //get Users
+        List<Long> commentUserIds = postRepoModel.getComments().values().stream().map(CommentRepoModel::getUserId).collect(Collectors.toList());
+        Set<Long> userIds = new HashSet<>(commentUserIds);
+        userIds.add(postRepoModel.getUserId());
+        List<User> users = userService.bulkGet(userIds);
+        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity()));
+        //make Comments
+        Map<Long, Comment> comments = postRepoModel.getComments().values().stream()
+                .map(commentRepoModel -> makeComment(commentRepoModel, userMap.get(commentRepoModel.getUserId())))
+                .collect(Collectors.toMap(Comment::getId, Function.identity()));
+        //get user images
         List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages());
-        return makePost(postRepoModel, user, new HashSet<>(userImages));
+        //make post
+        return makePost(
+                postRepoModel,
+                userMap.get(postRepoModel.getUserId()),
+                new HashSet<>(userImages),
+                comments
+        );
     }
 
     public List<Post> getMostViral(int page, SearchPeriod searchPeriod, SearchSort searchSort) {
@@ -238,7 +262,7 @@ public class PostService {
             throw new NotFoundHttpException("Post not found!");
         }
 
-        return bulkGetPosts(resultIds);
+        return bulkGetPreviewPosts(resultIds);
     }
 
     public List<Post> getUserPosts(int page, long userId, SearchPattern searchPattern) {
@@ -267,20 +291,20 @@ public class PostService {
             );
         }
 
-        return bulkGetPosts(resultIds);
+        return bulkGetPreviewPosts(resultIds);
     }
 
     public List<Post> getPostsByDate( final LocalDateTime dateTime) {
         final List<Long> postsIds = postSearchRepository.getPosts(dateTime, PAGE_SIZE);
-        return bulkGetPosts(postsIds);
+        return bulkGetPreviewPosts(postsIds);
     }
 
     public List<Post> getUserPostsByDate(final long userId, final LocalDateTime dateTime) {
         final List<Long> postsIds = postSearchRepository.getUserPosts(userId, dateTime, PAGE_SIZE);
-        return bulkGetPosts(postsIds);
+        return bulkGetPreviewPosts(postsIds);
     }
 
-    public void delete(long id) {
+    public void deletePost(long id) {
         postRepository.delete(id);
         //TODO add Elastic remove entity
     }
@@ -307,7 +331,7 @@ public class PostService {
         }
     }
 
-    private List<Post> bulkGetPosts(List<Long> postIds) {
+    private List<Post> bulkGetPreviewPosts(List<Long> postIds) {
         if (postIds.isEmpty()) return Collections.emptyList();
         List<PostRepoModel> postRepoModels = postRepository.bulkGet(postIds);
         Set<Long> userIds = postRepoModels.stream()
@@ -328,17 +352,15 @@ public class PostService {
                             User user = userMap.get(postRepoModel.getUserId());
                             Set<Long> repoImagesIds = postRepoModel.getImages();
                             Set<UserImage> postImageMap = repoImagesIds.stream().map(userImageMap::get).collect(Collectors.toSet());
-                            return makePost(postRepoModel, user, postImageMap);
+                    return makePost(postRepoModel, user, postImageMap, null);
                         }
                 ).collect(Collectors.toList());
     }
 
-    private Post makePost(PostRepoModel postRepoModel, User user, Set<UserImage> postUserImages) {
+    private Post makePost(PostRepoModel postRepoModel, User user, Set<UserImage> postUserImages, Map<Long, Comment> comments) {
         return new Post(
                 postRepoModel.getId(),
                 postRepoModel.getName(),
-                postRepoModel.getUps(),
-                postRepoModel.getDowns(),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
                 postUserImages,
@@ -347,7 +369,20 @@ public class PostService {
                 user,
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
-                postRepoModel.getDescription()
+                postRepoModel.getDescription(),
+                comments
+        );
+    }
+
+    private Comment makeComment(CommentRepoModel commentRepoModel, User user) {
+        return new Comment(
+                commentRepoModel.getId(),
+                user,
+                commentRepoModel.getReplyId(),
+                commentRepoModel.getDevice(),
+                commentRepoModel.getContent(),
+                commentRepoModel.getCreationDate(),
+                commentRepoModel.getRating()
         );
     }
 

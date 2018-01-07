@@ -2,15 +2,19 @@ package com.turbo.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.DeviceType;
+import com.turbo.model.Rating;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.util.EncryptionService;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 public class TransferPost {
 
     private Long id;
@@ -43,9 +47,7 @@ public class TransferPost {
         return new PostRepoModel(
                 id,
                 name,
-                0,
-                0,
-                0,
+                new Rating(),
                 0,
                 imageIds,
                 deviceType,
@@ -53,35 +55,9 @@ public class TransferPost {
                 userId,
                 LocalDateTime.now(),
                 visible,
-                description
+                description,
+                Collections.emptyMap()
         );
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Set<Long> getImageIds() {
-        return imageIds;
-    }
-
-    public DeviceType getDeviceType() {
-        return deviceType;
-    }
-
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

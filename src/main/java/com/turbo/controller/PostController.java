@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
+import com.turbo.model.dto.CommentModificationDTO;
 import com.turbo.model.dto.PostDto;
 import com.turbo.model.dto.PostPreviewDto;
 import com.turbo.model.dto.TransferPost;
@@ -20,8 +21,6 @@ import com.turbo.util.EncryptionService;
 import io.swagger.annotations.Api;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
@@ -154,20 +153,10 @@ public class PostController {
 
     @Secured(SecurityRole.USER)
     @DeleteMapping("/delete/post/{id}")
-    public void delete(@PathVariable("id") String id) {
-        postService.delete(
+    public void deletePost(@PathVariable("id") String id) {
+        postService.deletePost(
                 EncryptionService.decodeHashId(id)
         );
-    }
-
-    @PostMapping("/post/upvote")
-    public void upVote() {
-
-    }
-
-    @PostMapping("/post/downvote")
-    public void downVote() {
-
     }
 
     private static class PostEditDto {

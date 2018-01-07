@@ -74,9 +74,9 @@ public class PostSearchEntity {
         this.deviceType = post.getDeviceType();
         this.tags = post.getTags();
         this.userId = post.getUser().getId();
-        this.ups = post.getUps();
-        this.downs = post.getDowns();
-        this.rating = post.getRating();
+        this.ups = post.getRating().getUps();
+        this.downs = post.getRating().getDowns();
+        this.rating = post.getRating().getRating();
         this.views = post.getViews();
         this.creationDate = post.getCreateDate();
         this.isVisible = post.isVisible();

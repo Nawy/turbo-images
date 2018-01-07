@@ -1,5 +1,7 @@
 package com.turbo.util;
 
+import com.turbo.model.exception.InternalServerErrorHttpException;
+
 import java.time.LocalDateTime;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -11,6 +13,7 @@ public class IdGenerator {
     //ATTENTION!!! DON'T CHANGE THAT OR EVERYTHING WILL CRASH!!! When try to id generate
     private final static long CREATION_YEAR = 2017;
     private final static int MAX_LONG_LENGTH = String.valueOf(Long.MAX_VALUE).length();
+    public final static int ITERATIONS_TO_GENERATE_ID = 10;
 
 
     public static long generateRandomId() {

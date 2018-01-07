@@ -2,7 +2,6 @@ package com.turbo.config;
 
 import com.turbo.model.search.content.ImageSearchEntity;
 import com.turbo.model.search.content.PostSearchEntity;
-import com.turbo.model.search.field.CommentFieldNames;
 import com.turbo.model.search.field.ImageFieldNames;
 import com.turbo.model.search.field.PostFieldNames;
 import com.turbo.model.search.field.UserFieldNames;
@@ -43,9 +42,6 @@ public class ElasticsearchConfig {
 
     private String searchPostIndexName;
     private String searchPostTypeName;
-
-    private String searchCommentIndexName;
-    private String searchCommentTypeName;
 
     private String searchImageIndexName;
     private String searchImageTypeName;
@@ -101,7 +97,6 @@ public class ElasticsearchConfig {
         final boolean isPostExists = indices.exists(new IndicesExistsRequest(searchPostIndexName)).actionGet().isExists();
         final boolean isUserExists = indices.exists(new IndicesExistsRequest(searchUserIndexName)).actionGet().isExists();
         final boolean isImageExists = indices.exists(new IndicesExistsRequest(searchImageIndexName)).actionGet().isExists();
-        final boolean isCommentExists = indices.exists(new IndicesExistsRequest(searchCommentIndexName)).actionGet().isExists();
 
         if(!isPostExists) {
             indices.create(new CreateIndexRequest(searchPostIndexName)).actionGet();
@@ -112,17 +107,10 @@ public class ElasticsearchConfig {
         if(!isImageExists) {
             indices.create(new CreateIndexRequest(searchImageIndexName)).actionGet();
         }
-        if (!isCommentExists) {
-            indices.create(new CreateIndexRequest(searchCommentIndexName)).actionGet();
-        }
 
         //FIXME IS This required? Is This correct?
         if (!isPostExists) {
             createPostMapping(indices);
-        }
-        //FIXME IS This required? Is This correct?
-        if (!isCommentExists) {
-            createCommentMapping(indices);
         }
         if(!isImageExists) {
             createImageMapping(indices);
@@ -199,68 +187,6 @@ public class ElasticsearchConfig {
 
             indices.preparePutMapping(searchPostIndexName)
                     .setType(searchPostTypeName)
-                    .setSource(mapping)
-                    .execute().actionGet();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void createCommentMapping(IndicesAdminClient indices) {
-        try {
-            XContentBuilder mapping = jsonBuilder()
-                    .startObject()
-                    .startObject(searchCommentTypeName)
-                    .startObject("properties")
-
-                    .startObject(CommentFieldNames.ID)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.USER_ID)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.REPLY_ID)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.REPLY_TYPE)
-                    .field("type", "text")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.DEVICE)
-                    .field("type", "text")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.CONTENT)
-                    .field("type", "text")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.UPS)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.DOWNS)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(CommentFieldNames.RATING)
-                    .field("type", "long")
-                    .endObject()
-
-                    .startObject(PostFieldNames.CREATION_DATE)
-                    .field("type", "date")
-                    .field("format", PostSearchEntity.CREATION_DATE_PATTERN)
-                    .field("doc_values", true)
-                    .endObject()
-                    .endObject()
-                    .endObject()
-                    .endObject();
-
-            indices.preparePutMapping(searchCommentIndexName)
-                    .setType(searchCommentTypeName)
                     .setSource(mapping)
                     .execute().actionGet();
 

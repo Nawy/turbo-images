@@ -3,10 +3,15 @@ package com.turbo.model.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
+import com.turbo.model.Rating;
 import com.turbo.model.UserImage;
 import com.turbo.util.EncryptionService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -17,45 +22,20 @@ import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 /**
  * Created by ermolaev on 6/12/17.
  */
+@Getter
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PostPreviewDto {
 
     private String id;
     private String name;
     private String description;
-    private long ups;
-    private long downs;
-    private long rating;
+    private Rating rating;
     private long views;
     private String previewImage;
     private DeviceType deviceType;
     private Set<String> tags;
     private LocalDateTime createDate;
-
-    public PostPreviewDto(
-            String id,
-            String name,
-            String description,
-            long ups,
-            long downs,
-            long rating,
-            long views,
-            String previewImage,
-            DeviceType deviceType,
-            Set<String> tags,
-            LocalDateTime createDate
-    ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.ups = ups;
-        this.downs = downs;
-        this.rating = rating;
-        this.views = views;
-        this.previewImage = previewImage;
-        this.deviceType = deviceType;
-        this.tags = tags;
-        this.createDate = createDate;
-    }
 
     @JsonIgnore
     public static PostPreviewDto from(Post post) {
@@ -73,8 +53,6 @@ public class PostPreviewDto {
                         imageDescription,
                         ""
                 ),
-                post.getUps(),
-                post.getDowns(),
                 post.getRating(),
                 post.getViews(),
                 post.getImages().stream().findFirst().get().getImage().getThumbnail(),
@@ -82,48 +60,6 @@ public class PostPreviewDto {
                 post.getTags(),
                 post.getCreateDate()
         );
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public long getUps() {
-        return ups;
-    }
-
-    public long getDowns() {
-        return downs;
-    }
-
-    public long getRating() {
-        return rating;
-    }
-
-    public long getViews() {
-        return views;
-    }
-
-    @JsonProperty("preview_image")
-    public String getPreviewImage() {
-        return previewImage;
-    }
-
-    @JsonProperty("device_type")
-    public DeviceType getDeviceType() {
-        return deviceType;
-    }
-
-    public Set<String> getTags() {
-        return tags;
     }
 
     @JsonProperty("create_date")

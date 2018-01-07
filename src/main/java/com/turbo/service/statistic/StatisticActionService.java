@@ -1,39 +1,25 @@
 package com.turbo.service.statistic;
 
 import com.turbo.model.Post;
-import com.turbo.model.search.content.CommentSearchEntity;
-import com.turbo.model.search.stat.PostStatEntity;
+import com.turbo.model.Rating;
 import com.turbo.model.search.stat.UpdatePostStatistic;
-import com.turbo.model.statistic.ReindexCommentContent;
 import com.turbo.model.statistic.ReindexPost;
-import com.turbo.repository.elasticsearch.content.CommentSearchRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Objects;
+import java.util.stream.LongStream;
 
 @Service
 @AllArgsConstructor
 public class StatisticActionService {
 
-    private final CommentSearchRepository commentSearchRepository;
     private final PostService postService;
     private final PostSearchRepository postSearchRepository;
     private final PostStatisticService postStatisticService;
 
-    public void updateCommentContent(final ReindexCommentContent action) {
-        final CommentSearchEntity comment = commentSearchRepository.get(action.getId());
-        if(Objects.isNull(comment)) return;
-        comment.setContent(action.getContent());
-        commentSearchRepository.update(comment);
-    }
-
-    public void deleteComment(final Long id) {
-        commentSearchRepository.delete(id);
-    }
 
     public void deletePost(final Long id) {
         //TODO
@@ -58,23 +44,10 @@ public class StatisticActionService {
             post.setDescription(action.getDescription());
         }
 
-        long resultRating = 0;
-        long resultUps = 0;
-        long resultDowns = 0;
-
-        for (Long value : action.getRatings()) {
-            if (value > 0) {
-                resultUps += value;
-            } else {
-                resultDowns += value;
-            }
-            resultRating += value;
-        }
-
+        long ratingChangeAmount = action.getRatings().stream().mapToLong(rating -> rating).sum();
         post.setViews(post.getViews() + action.getViews());
-        post.setRating(resultRating + post.getRating());
-        post.setUps(resultUps + post.getRating());
-        post.setDowns(resultDowns + post.getDowns());
+        Rating rating = post.getRating();
+        rating.change(ratingChangeAmount);
 
         postSearchRepository.upsertPost(post);
         postStatisticService.updateStaticPost(
@@ -82,10 +55,10 @@ public class StatisticActionService {
                         .id(post.getId())
                         .name(post.getName())
                         .description(post.getDescription())
-                        .rating(resultRating)
+                        .rating(rating.getRating())
                         .views(action.getViews())
-                        .ups(resultUps)
-                        .downs(resultDowns)
+                        .ups(rating.getUps())
+                        .downs(rating.getDowns())
                         .build()
         );
     }
