@@ -1,11 +1,10 @@
 package com.turbo.service;
 
-import com.turbo.model.Comment;
-import com.turbo.model.Post;
-import com.turbo.model.User;
-import com.turbo.model.UserImage;
+import com.turbo.model.*;
 import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
+import com.turbo.model.dto.PostContentDto;
+import com.turbo.model.dto.PostRatingDto;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.search.SearchOrder;
@@ -28,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * Created by rakhmetov on 09.05.17.
@@ -75,24 +76,71 @@ public class PostService {
         return postRepository.get(id);
     }
 
-    private Post updateWithReindex(PostRepoModel post) {
+    private Post updateReindexContent(final PostRepoModel post) {
         PostRepoModel postWithId = postRepository.save(post);
         Post updatedPost = getPostById(postWithId.getId());
         statisticService.updatePostContent(
                 updatedPost.getId(),
                 updatedPost.getName(),
-                updatedPost.getDescription()
+                updatedPost.getDescription(),
+                updatedPost.getTags()
         );
         return updatedPost;
     }
 
-    public Post updatePostName(long postId, String name) {
-        PostRepoModel postRepoModel = postRepository.get(postId);
+    private void reindexContent(final PostRepoModel postWithId) {
+        Post updatedPost = getPostById(postWithId.getId());
+        statisticService.updatePostContent(
+                updatedPost.getId(),
+                updatedPost.getName(),
+                updatedPost.getDescription(),
+                updatedPost.getTags()
+        );
+    }
+
+    private void reindexRating(final PostRatingDto ratingDto) {
+        statisticService.updatePostRaiting(
+                ratingDto.getPostId(),
+                ratingDto.getRating(),
+                ratingDto.getViews()
+        );
+    }
+
+    public Post updatePostContent(final PostContentDto postContentDto) {
+        PostRepoModel postRepoModel = postRepository.get(postContentDto.getPostId());
         PostRepoModel updatedRepoModel = new PostRepoModel(
                 postRepoModel.getId(),
-                name,
+                firstNonNull(postContentDto.getName(), postRepoModel.getName()),
                 postRepoModel.getRating(),
                 postRepoModel.getViews(),
+                firstNonNull(postContentDto.getImageIds(), postRepoModel.getImages()),
+                postRepoModel.getDeviceType(),
+                firstNonNull(postContentDto.getTags(), postRepoModel.getTags()),
+                postRepoModel.getUserId(),
+                postRepoModel.getCreationDateTime(),
+                postRepoModel.isVisible(),
+                firstNonNull(postContentDto.getDescription(), postRepoModel.getDescription()),
+                postRepoModel.getComments()
+        );
+
+        PostRepoModel postWithId = postRepository.save(updatedRepoModel);
+        reindexContent(postWithId);
+        return makePost(updatedRepoModel);
+    }
+
+    public Post updatePostRating(PostRatingDto postRatingDto) {
+        PostRepoModel postRepoModel = postRepository.get(postRatingDto.getPostId());
+        final Rating current = postRepoModel.getRating();
+        final Rating rating = new Rating(
+                current.getUps() + (postRatingDto.getRating() > 0 ? 1 : 0),
+                current.getUps() + (postRatingDto.getRating() < 0 ? 1 : 0),
+                current.getRating() + postRatingDto.getRating()
+        );
+        PostRepoModel updatedRepoModel = new PostRepoModel(
+                postRepoModel.getId(),
+                postRepoModel.getName(),
+                rating,
+                postRepoModel.getViews() + postRatingDto.getViews(),
                 postRepoModel.getImages(),
                 postRepoModel.getDeviceType(),
                 postRepoModel.getTags(),
@@ -102,73 +150,8 @@ public class PostService {
                 postRepoModel.getDescription(),
                 postRepoModel.getComments()
         );
-        updateWithReindex(updatedRepoModel);
-        return makePost(updatedRepoModel);
-    }
-
-    public Post updatePostDescription(long postId, String description) {
-        PostRepoModel postRepoModel = postRepository.get(postId);
-        PostRepoModel updatedRepoModel = new PostRepoModel(
-                postRepoModel.getId(),
-                postRepoModel.getName(),
-                postRepoModel.getRating(),
-                postRepoModel.getViews(),
-                postRepoModel.getImages(),
-                postRepoModel.getDeviceType(),
-                postRepoModel.getTags(),
-                postRepoModel.getUserId(),
-                postRepoModel.getCreationDateTime(),
-                postRepoModel.isVisible(),
-                description,
-                postRepoModel.getComments()
-        );
-        updateWithReindex(updatedRepoModel);
-        return makePost(updatedRepoModel);
-    }
-
-    public Post addPostTag(long postId, String tag) {
-        PostRepoModel postRepoModel = postRepository.get(postId);
-        Set<String> updatedTags = new HashSet<>(postRepoModel.getTags());
-        updatedTags.add(tag);
-        PostRepoModel updatedRepoModel = new PostRepoModel(
-                postRepoModel.getId(),
-                postRepoModel.getName(),
-                postRepoModel.getRating(),
-                postRepoModel.getViews(),
-                postRepoModel.getImages(),
-                postRepoModel.getDeviceType(),
-                updatedTags,
-                postRepoModel.getUserId(),
-                postRepoModel.getCreationDateTime(),
-                postRepoModel.isVisible(),
-                postRepoModel.getDescription(),
-                postRepoModel.getComments()
-        );
-        // TODO Should to add them to statistic
-        upsert(updatedRepoModel);
-        return makePost(updatedRepoModel);
-    }
-
-    public Post removePostTag(long postId, String tag) {
-        PostRepoModel postRepoModel = postRepository.get(postId);
-        Set<String> updatedTags = new HashSet<>(postRepoModel.getTags());
-        updatedTags.remove(tag);
-        PostRepoModel updatedRepoModel = new PostRepoModel(
-                postRepoModel.getId(),
-                postRepoModel.getName(),
-                postRepoModel.getRating(),
-                postRepoModel.getViews(),
-                postRepoModel.getImages(),
-                postRepoModel.getDeviceType(),
-                updatedTags,
-                postRepoModel.getUserId(),
-                postRepoModel.getCreationDateTime(),
-                postRepoModel.isVisible(),
-                postRepoModel.getDescription(),
-                postRepoModel.getComments()
-        );
-        // TODO Should to add them to statistic
-        upsert(updatedRepoModel);
+        postRepository.save(updatedRepoModel);
+        reindexRating(postRatingDto);
         return makePost(updatedRepoModel);
     }
 

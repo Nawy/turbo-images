@@ -6,39 +6,34 @@ import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class StatisticService {
 
     private RabbitTemplate rabbitTemplate;
 
-    public void postUpvote(final long id) {
+    public void updatePostRaiting(
+            final long id,
+            final long rating,
+            final long views
+    ) {
         rabbitTemplate.convertAndSend(
-                ReindexPost.changeRating(id, 1L)
+                ReindexPost.changeRating(id, views, rating)
         );
     }
 
-    public void postDownvote(final long id) {
-        rabbitTemplate.convertAndSend(
-                ReindexPost.changeRating(id, -1L)
-        );
-    }
-
-    public void postView(final long id, final long count) {
-        rabbitTemplate.convertAndSend(
-                ReindexPost.changeViews(id, count)
-        );
-    }
-
-    public void updateCommentContent(final long id, final String content) {
-        rabbitTemplate.convertAndSend(new ReindexCommentContent(id, content));
-    }
-
-    public void updatePostContent(final long id, final String name, final String description) {
+    public void updatePostContent(
+            final long id,
+            final String name,
+            final String description,
+            final Set<String> tags
+    ) {
         rabbitTemplate.convertAndSend(
                 RabbitConfig.UPDATES_EXCHANGE_NAME,
                 null,
-                ReindexPost.changeContent(id, name, description)
+                ReindexPost.changeContent(id, name, description, tags)
         );
     }
 

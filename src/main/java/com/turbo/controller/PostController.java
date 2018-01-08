@@ -1,15 +1,10 @@
 package com.turbo.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.Post;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
-import com.turbo.model.dto.CommentModificationDTO;
-import com.turbo.model.dto.PostDto;
-import com.turbo.model.dto.PostPreviewDto;
-import com.turbo.model.dto.TransferPost;
+import com.turbo.model.dto.*;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
@@ -19,7 +14,6 @@ import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.util.EncryptionService;
 import io.swagger.annotations.Api;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -112,46 +106,6 @@ public class PostController {
     }
 
     @Secured(SecurityRole.USER)
-    @PostMapping("/edit/post/name")
-    public PostDto editPostName(@RequestBody PostContentEditDto postEditDto) {
-        Post updatePost = postService.updatePostName(
-                EncryptionService.decodeHashId(postEditDto.getPostId()),
-                postEditDto.getValue()
-        );
-        return PostDto.from(updatePost);
-    }
-
-    @Secured(SecurityRole.USER)
-    @PostMapping("/edit/post/description")
-    public PostDto editPostDescription(@RequestBody PostContentEditDto postEditDto) {
-        Post updatePost = postService.updatePostDescription(
-                EncryptionService.decodeHashId(postEditDto.getPostId()),
-                postEditDto.getValue()
-        );
-        return PostDto.from(updatePost);
-    }
-
-    @Secured(SecurityRole.USER)
-    @PostMapping("/add/post/tag")
-    public PostDto addPostTag(@RequestBody PostEditDto postEditDto) {
-        Post updatePost = postService.addPostTag(
-                postEditDto.getPostId(),
-                postEditDto.getField()
-        );
-        return PostDto.from(updatePost);
-    }
-
-    @Secured(SecurityRole.USER)
-    @PostMapping("/remove/post/tag")
-    public PostDto removePostTag(@RequestBody PostEditDto postEditDto) {
-        Post updatePost = postService.removePostTag(
-                postEditDto.getPostId(),
-                postEditDto.getField()
-        );
-        return PostDto.from(updatePost);
-    }
-
-    @Secured(SecurityRole.USER)
     @DeleteMapping("/delete/post/{id}")
     public void deletePost(@PathVariable("id") String id) {
         postService.deletePost(
@@ -159,11 +113,37 @@ public class PostController {
         );
     }
 
-    private static class PostEditDto {
+    @Secured(SecurityRole.USER)
+    @PostMapping("/post/content")
+    public PostDto updatePost(@RequestBody PostContentDto postContentDto) {
+        Post updatePost = postService.updatePostContent(postContentDto);
+        return PostDto.from(updatePost);
+    }
+
+    @PostMapping("/post/view")
+    public PostDto updatePostView(@RequestBody PostRatingDto postRatingDto) {
+        Post updatePost = postService.updatePostRating(
+                PostRatingDto.builder()
+                        .postId(postRatingDto.getPostId())
+                        .views(1L)
+                        .build()
+        );
+        return PostDto.from(updatePost);
+    }
+
+    @Secured(SecurityRole.USER)
+    @PostMapping("/post/rating")
+    public PostDto updatePostRating(@RequestBody PostRatingDto postRatingDto) {
+        Post updatePost = postService.updatePostRating(postRatingDto);
+        return PostDto.from(updatePost);
+    }
+
+
+    private static class PostMetaDto {
         private long postId;
         private String field;
 
-        public PostEditDto(
+        public PostMetaDto(
                 @JsonProperty(value = "post_id", required = true) long postId,
                 @JsonProperty(value = "field", required = true) String field
         ) {
@@ -180,10 +160,4 @@ public class PostController {
         }
     }
 
-    @Data
-    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    private static class PostContentEditDto {
-        private String postId;
-        private String value;
-    }
 }

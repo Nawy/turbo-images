@@ -3,8 +3,8 @@ package com.turbo.model.statistic;
 import com.turbo.util.CommonUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class ReindexPost extends ReindexAction {
     private String name;
     private String description;
     private List<Long> ratings;
-    private List<String> tags;
+    private Collection<String> tags;
     private Long views;
 
     public ReindexPost(
@@ -23,7 +23,7 @@ public class ReindexPost extends ReindexAction {
             String name,
             String description,
             List<Long> ratings,
-            List<String> tags,
+            Collection<String> tags,
             Long views
     ) {
         super(id);
@@ -61,31 +61,27 @@ public class ReindexPost extends ReindexAction {
         return ActionType.UPDATE_POST;
     }
 
-    public static ReindexPost changeContent(final long id, final String name, final String description) {
-        return new ReindexPost(id, name, description, null, null, null);
+    public static ReindexPost changeContent(
+            final long id,
+            final String name,
+            final String description,
+            final Collection<String> tags
+    ) {
+        return new ReindexPost(
+                id,
+                name,
+                description,
+                null,
+                tags,
+                null);
     }
 
-    public static ReindexPost changeTags(final long id, final List<String> tags) {
-        return new ReindexPost(id, null, null, null, tags, null);
-    }
-
-    public static ReindexPost changeRating(final long id, final Long rating) {
+    public static ReindexPost changeRating(final long id, final Long views, final Long rating) {
         return new ReindexPost(
                 id,
                 null,
                 null,
                 Collections.singletonList(rating),
-                null,
-                null
-        );
-    }
-
-    public static ReindexPost changeViews(final long id, final Long views) {
-        return new ReindexPost(
-                id,
-                null,
-                null,
-                null,
                 null,
                 views
         );
