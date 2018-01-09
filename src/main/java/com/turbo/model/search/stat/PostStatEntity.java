@@ -1,8 +1,10 @@
 package com.turbo.model.search.stat;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
+@Builder
 public class PostStatEntity {
 
     private long id;

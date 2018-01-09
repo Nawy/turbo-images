@@ -7,12 +7,14 @@ import com.turbo.model.statistic.ReindexPost;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.service.PostService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.stream.LongStream;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class StatisticActionService {
 
@@ -61,5 +63,6 @@ public class StatisticActionService {
                         .downs(rating.getDowns())
                         .build()
         );
+        log.info("REINDEX POST with id={}", post.getId());
     }
 }

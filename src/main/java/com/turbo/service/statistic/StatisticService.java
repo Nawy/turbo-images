@@ -14,12 +14,14 @@ public class StatisticService {
 
     private RabbitTemplate rabbitTemplate;
 
-    public void updatePostRaiting(
+    public void updatePostRating(
             final long id,
             final long rating,
             final long views
     ) {
         rabbitTemplate.convertAndSend(
+                RabbitConfig.UPDATES_QUEUE_NAME,
+                null,
                 ReindexPost.changeRating(id, views, rating)
         );
     }

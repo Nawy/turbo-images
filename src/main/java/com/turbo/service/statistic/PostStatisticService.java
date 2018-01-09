@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostStatisticService {
 
-    private PostStatisticRepository postStatisticRepository;
+    private final PostStatisticRepository postStatisticRepository;
+
     private static DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("MM-dd");
     private static DateTimeFormatter weekFormatter = DateTimeFormatter.ofPattern("ww");
     private static DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MM");
@@ -30,7 +32,20 @@ public class PostStatisticService {
 
     public void updateStaticPost(UpdatePostStatistic reindexPost) {
 
-        final PostStatEntity postStatEntity = postStatisticRepository.getById(reindexPost.getId());
+        PostStatEntity postStatEntity = postStatisticRepository.getById(reindexPost.getId());
+
+        //set empty
+        if(Objects.isNull(postStatEntity)) {
+            postStatEntity = PostStatEntity
+                    .builder()
+                    .id(reindexPost.getId())
+                    .days(new ArrayList<>())
+                    .weeks(new ArrayList<>())
+                    .months(new ArrayList<>())
+                    .tags(new ArrayList<>())
+                    .build();
+        }
+
         val updatedDays = updateDays(postStatEntity.getDays(), reindexPost);
         val updatedWeeks = updateWeek(postStatEntity.getWeeks(), reindexPost);
         val updatedMonth = updateMonth(postStatEntity.getMonths(), reindexPost);

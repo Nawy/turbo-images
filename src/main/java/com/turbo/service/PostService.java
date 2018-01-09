@@ -99,7 +99,7 @@ public class PostService {
     }
 
     private void reindexRating(final PostRatingDto ratingDto) {
-        statisticService.updatePostRaiting(
+        statisticService.updatePostRating(
                 ratingDto.getPostId(),
                 ratingDto.getRating(),
                 ratingDto.getViews()

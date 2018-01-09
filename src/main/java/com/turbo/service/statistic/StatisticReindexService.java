@@ -4,6 +4,8 @@ import com.turbo.config.RabbitConfig;
 import com.turbo.model.statistic.ActionType;
 import com.turbo.model.statistic.ReindexAction;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.Level;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 @Service
-@Log
+@Slf4j
 public class StatisticReindexService {
 
     private final Map<String, ReindexAction> updateActionMap = new ConcurrentHashMap<>();
@@ -64,16 +66,16 @@ public class StatisticReindexService {
     private void reindexStatistic() {
         final Set<String> values = new HashSet<>(updateActionMap.keySet());
 
-        values.forEach(key -> {
-                            final ReindexAction action = updateActionMap.remove(key);
-                            try {
-                                //main action for update
-                                reindexRoute(action);
-                            } catch (Exception e) {
-                                putUpdateActionToMap(action);
-                            }
-                        }
-                );
+        for(String key : values) {
+            final ReindexAction action = updateActionMap.remove(key);
+            try {
+                //main action for update
+                reindexRoute(action);
+            } catch (Exception e) {
+                putUpdateActionToMap(action);
+                throw new RuntimeException("Cannot save ", e);
+            }
+        }
     }
 
     private void reindexRoute(final ReindexAction action) {

@@ -85,7 +85,7 @@ public class PostStatisticRepository extends AbstractSearchRepository {
                         )
                 )
                 .setQuery(
-                        QueryBuilders.matchQuery(
+                        QueryBuilders.matchPhraseQuery(
                                 PostStatField.ID.getFieldName(),
                                 id
                         )
