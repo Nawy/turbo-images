@@ -59,20 +59,29 @@ public class PostStatisticRepository extends AbstractSearchRepository {
     public void updateById(PostStatEntity post) {
         final String elasticId = getElasticId(post.getId());
 
-        elasticClient.prepareUpdate(
-                config.getStatPostsIndexName(),
-                ElasticUtils.getTypePerYear(
-                        config.getStatPostsTypeName(),
-                        LocalDate.now()
-                ),
-                elasticId
-        ).setUpsert(
-                elasticClient.prepareIndex()
-                        .setSource(
-                                elasticUtils.writeAsJsonBytes(post),
-                                XContentType.JSON
-                        )
-        ).get();
+        final String type = ElasticUtils.getTypePerYear(
+                config.getStatPostsTypeName(),
+                LocalDate.now()
+        );
+
+        if(Objects.nonNull(elasticId)) {
+            elasticClient.prepareUpdate(
+                    config.getStatPostsIndexName(),
+                    type,
+                    elasticId
+            ).setDoc(
+                    elasticUtils.writeAsJsonBytes(post),
+                    XContentType.JSON
+            ).get();
+        } else {
+            elasticClient.prepareIndex(
+                    config.getStatPostsIndexName(),
+                    type
+            ).setSource(
+                    elasticUtils.writeAsJsonBytes(post),
+                    XContentType.JSON
+            ).get();
+        }
     }
 
     public PostStatEntity getById(final long id) {

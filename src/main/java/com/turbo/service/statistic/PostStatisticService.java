@@ -39,10 +39,14 @@ public class PostStatisticService {
             postStatEntity = PostStatEntity
                     .builder()
                     .id(reindexPost.getId())
+                    .name(postStatEntity.getName())
+                    .descriptions(postStatEntity.getDescriptions())
+                    .tags(postStatEntity.getTags())
                     .days(new ArrayList<>())
                     .weeks(new ArrayList<>())
                     .months(new ArrayList<>())
                     .tags(new ArrayList<>())
+                    .year(new DiffYear(0L, 0L, 0L))
                     .build();
         }
 
