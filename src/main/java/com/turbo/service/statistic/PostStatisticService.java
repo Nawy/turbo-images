@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,9 +36,9 @@ public class PostStatisticService {
             postStatEntity = PostStatEntity
                     .builder()
                     .id(reindexPost.getId())
-                    .name(postStatEntity.getName())
-                    .descriptions(postStatEntity.getDescriptions())
-                    .tags(postStatEntity.getTags())
+                    .name(reindexPost.getName())
+                    .descriptions(Collections.singletonList(reindexPost.getDescription()))
+                    .tags(reindexPost.getTags())
                     .days(new ArrayList<>())
                     .weeks(new ArrayList<>())
                     .months(new ArrayList<>())

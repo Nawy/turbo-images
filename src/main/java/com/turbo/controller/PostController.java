@@ -120,11 +120,11 @@ public class PostController {
         return PostDto.from(updatePost);
     }
 
-    @PostMapping("/post/view")
+    @PostMapping("/post/views")
     public PostDto updatePostView(@RequestBody PostRatingDto postRatingDto) {
         Post updatePost = postService.updatePostRating(
                 PostRatingDto.builder()
-                        .postId(postRatingDto.getPostId())
+                        .id(postRatingDto.getId())
                         .views(1L)
                         .build()
         );

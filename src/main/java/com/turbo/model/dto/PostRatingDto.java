@@ -20,7 +20,7 @@ import java.util.Objects;
 public class PostRatingDto {
 
     @JsonIgnore
-    private long postId;
+    private long id;
 
     @JsonIgnore
     private long views;
@@ -29,12 +29,12 @@ public class PostRatingDto {
     private long rating;
 
     public PostRatingDto(
-            @JsonProperty(value = "post_id", required = true) String postId,
+            @JsonProperty(value = "id", required = true) String id,
             @JsonProperty("views") Boolean views,
             @JsonProperty("up") Boolean up,
             @JsonProperty("down") Boolean down
     ) {
-        this.postId = EncryptionService.decodeHashId(postId);
+        this.id = EncryptionService.decodeHashId(id);
         this.views = Objects.nonNull(views) ? 1 : 0;
 
         if(Objects.nonNull(up) || Objects.nonNull(down)) {

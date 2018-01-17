@@ -100,7 +100,7 @@ public class PostService {
 
     private void reindexRating(final PostRatingDto ratingDto) {
         statisticService.updatePostRating(
-                ratingDto.getPostId(),
+                ratingDto.getId(),
                 ratingDto.getRating(),
                 ratingDto.getViews()
         );
@@ -129,7 +129,7 @@ public class PostService {
     }
 
     public Post updatePostRating(PostRatingDto postRatingDto) {
-        PostRepoModel postRepoModel = postRepository.get(postRatingDto.getPostId());
+        PostRepoModel postRepoModel = postRepository.get(postRatingDto.getId());
         final Rating current = postRepoModel.getRating();
         final Rating rating = new Rating(
                 current.getUps() + (postRatingDto.getRating() > 0 ? 1 : 0),
