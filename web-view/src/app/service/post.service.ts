@@ -6,6 +6,7 @@ import {SessionService} from "./session.service";
 import {PostPreview} from "../models/post/post-preview.model";
 import * as moment from 'moment';
 import {Post} from "../models/post/post.model";
+import {PostRatingModel} from "../models/post/post-rating.model";
 
 
 /**
@@ -64,5 +65,15 @@ export class PostService {
       .toPromise()
       .then(res => res.json() as Post)
       .catch(res => Promise.reject(res));
+  }
+
+  public increaseViews(id: string): Promise<Boolean> {
+    return this.http.post(
+      `${environment.host}${environment.requests.increaseViews}`,
+      new PostRatingModel(id, true),
+      null
+    ).toPromise()
+      .then(res => true)
+      .catch(res => false);
   }
 }

@@ -38,7 +38,8 @@ export const environment = {
     editPostName: "/edit/post/name",
     editPostDescription: "/edit/post/description",
     addPostTag: "/add/post/tag",
-    removePostTag: "/remove/post/tag"
+    removePostTag: "/remove/post/tag",
+    increaseViews: "/post/views"
   },
   tokenName: "SESSIONID",
   uploadPersonImage: {
