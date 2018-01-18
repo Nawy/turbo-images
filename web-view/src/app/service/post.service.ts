@@ -63,7 +63,15 @@ export class PostService {
   public getPost(id: string): Promise<Post> {
     return this.http.get(`${environment.host}${environment.requests.getPost}${id}`)
       .toPromise()
-      .then(res => res.json() as Post)
+      .then(res => {
+        let result = res.json() as Post;
+
+        this.increaseViews(result.id).catch(
+            res => console.error("Cannot update views!")
+          );
+
+        return result;
+      })
       .catch(res => Promise.reject(res));
   }
 
