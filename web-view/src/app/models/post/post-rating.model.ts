@@ -1,10 +1,14 @@
 
 export class PostRatingModel {
   id: string;
-  views: boolean;
+  up: boolean;
+  down: boolean;
+  view: boolean;
 
-  constructor(theId, theViews) {
+  constructor(theId, theUp, theDown, theView) {
     this.id = theId;
-    this.views = theViews;
+    this.up = theUp;
+    this.down = theDown;
+    this.view = theView;
   }
 }

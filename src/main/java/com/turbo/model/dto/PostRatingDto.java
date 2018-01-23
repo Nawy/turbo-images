@@ -30,7 +30,7 @@ public class PostRatingDto {
 
     public PostRatingDto(
             @JsonProperty(value = "id", required = true) String id,
-            @JsonProperty("views") Boolean views,
+            @JsonProperty("view") Boolean views,
             @JsonProperty("up") Boolean up,
             @JsonProperty("down") Boolean down
     ) {

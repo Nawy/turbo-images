@@ -66,7 +66,8 @@ export class PostService {
       .then(res => {
         let result = res.json() as Post;
 
-        this.increaseViews(result.id).catch(
+        this.increaseViews(result.id)
+          .catch(
             res => console.error("Cannot update views!")
           );
 
@@ -78,10 +79,40 @@ export class PostService {
   public increaseViews(id: string): Promise<Boolean> {
     return this.http.post(
       `${environment.host}${environment.requests.increaseViews}`,
-      new PostRatingModel(id, true),
+      new PostRatingModel(id, false, false, true),
       null
     ).toPromise()
       .then(res => true)
       .catch(res => false);
+  }
+
+  public upvote(id: string): Promise<Boolean> {
+    return this.sessionService.getUserSession()
+      .then(sessionID =>
+        this.http.post(
+          `${environment.host}${environment.requests.changeRating}`,
+          new PostRatingModel(id, true, false, false),
+          {
+            headers: new Headers({"session": sessionID})
+          }
+        ).toPromise()
+          .then(res => true)
+          .catch(res => false)
+      ).catch(res => Promise.reject(res));
+  }
+
+  public downvote(id: string): Promise<Boolean> {
+    return this.sessionService.getUserSession()
+      .then(sessionID =>
+        this.http.post(
+          `${environment.host}${environment.requests.changeRating}`,
+          new PostRatingModel(id, false, true, false),
+          {
+            headers: new Headers({"session": sessionID})
+          }
+        ).toPromise()
+          .then(res => true)
+          .catch(res => false)
+      ).catch(res => Promise.reject(res));
   }
 }

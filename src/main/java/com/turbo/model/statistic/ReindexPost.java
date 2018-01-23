@@ -3,6 +3,7 @@ package com.turbo.model.statistic;
 import com.turbo.util.CommonUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@ToString
 public class ReindexPost extends ReindexAction {
     private String name;
     private String description;

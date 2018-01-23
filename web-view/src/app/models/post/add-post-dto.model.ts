@@ -48,7 +48,7 @@ export class TransferPost {
       null,
       null,
       null,
-      null,
+      DeviceType.PC,
       null
     );
   }

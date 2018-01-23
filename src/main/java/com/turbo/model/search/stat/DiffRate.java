@@ -10,17 +10,17 @@ import java.time.LocalDate;
  * Created by ermolaev on 6/23/17.
  */
 @Data
-public class DiffWeek {
+public class DiffRate {
     private LocalDate date;
     private long ups;
     private long downs;
     private long rating;
 
-    public DiffWeek(
-            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "ww") LocalDate date,
+    public DiffRate(
+            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "dd-MM-yyyy") LocalDate date,
             @JsonProperty(value = "ups", required = true) long ups,
             @JsonProperty(value = "downs", required = true) long downs,
-            @JsonProperty(value = "ratings", required = true) long rating
+            @JsonProperty(value = "rating", required = true) long rating
     ) {
         this.date = date;
         this.ups = ups;
@@ -29,7 +29,7 @@ public class DiffWeek {
     }
 
     @JsonProperty(value = "date", required = true)
-    @JsonFormat(pattern = "ww")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     public LocalDate getDate() {
         return date;
     }

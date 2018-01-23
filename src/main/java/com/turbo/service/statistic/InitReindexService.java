@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor
-public class StatisticService {
+public class InitReindexService {
 
     private RabbitTemplate rabbitTemplate;
 

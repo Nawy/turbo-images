@@ -18,7 +18,7 @@ public class DiffMonth {
     private long rating;
 
     public DiffMonth(
-            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "MM") LocalDate date,
+            @JsonProperty(value = "date", required = true) @JsonFormat(pattern = "dd-MM-yyyy") LocalDate date,
             @JsonProperty(value = "ups", required = true) long ups,
             @JsonProperty(value = "downs", required = true) long downs,
             @JsonProperty(value = "rating", required = true) long rating
@@ -30,7 +30,7 @@ public class DiffMonth {
     }
 
     @JsonProperty(value = "date", required = true)
-    @JsonFormat(pattern = "MM")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     public LocalDate getDate() {
         return date;
     }

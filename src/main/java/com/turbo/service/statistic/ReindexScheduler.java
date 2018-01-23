@@ -3,9 +3,7 @@ package com.turbo.service.statistic;
 import com.turbo.config.RabbitConfig;
 import com.turbo.model.statistic.ActionType;
 import com.turbo.model.statistic.ReindexAction;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,18 +13,18 @@ import java.util.concurrent.*;
 
 @Service
 @Slf4j
-public class StatisticReindexService {
+public class ReindexScheduler {
 
     private final Map<String, ReindexAction> updateActionMap = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final StatisticActionService statisticActionService;
+    private final ReindexService reindexService;
 
-    public StatisticReindexService(
+    public ReindexScheduler(
             @Value("${statistic.initial-reindex-delay}") final Integer initReindexDelay,
             @Value("${statistic.reindex-delay}") final Integer reindexDelay,
-            StatisticActionService statisticActionService
+            ReindexService reindexService
     ) {
-        this.statisticActionService = statisticActionService;
+        this.reindexService = reindexService;
         Objects.requireNonNull(initReindexDelay);
         Objects.requireNonNull(reindexDelay);
 
@@ -73,7 +71,8 @@ public class StatisticReindexService {
                 reindexRoute(action);
             } catch (Exception e) {
                 putUpdateActionToMap(action);
-                throw new RuntimeException("Cannot save ", e);
+                log.error("Cannot save: ", e);
+                throw new RuntimeException( e);
             }
         }
     }
@@ -81,15 +80,15 @@ public class StatisticReindexService {
     private void reindexRoute(final ReindexAction action) {
         switch (action.getType()) {
             case ActionType.DELETE_POST : {
-                statisticActionService.deletePost(action.getId());
+                reindexService.deletePost(action.getId());
                 break;
             }
             case ActionType.DELETE_IMAGE : {
-                statisticActionService.deleteImage(action.getId());
+                reindexService.deleteImage(action.getId());
                 break;
             }
             case ActionType.UPDATE_POST: {
-                statisticActionService.updatePostContent(action.getOriginalValue());
+                reindexService.updatePostContent(action.getOriginalValue());
                 break;
             }
             default: {

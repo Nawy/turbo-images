@@ -12,6 +12,7 @@ import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.SearchSort;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
+import com.turbo.service.UserHistoryService;
 import com.turbo.util.EncryptionService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
+    private final UserHistoryService userHistoryService;
     private final AuthorizationService authorizationService;
 
     //FIXME NOT WORKING!!! STAT IS BAD!!!
@@ -134,6 +136,13 @@ public class PostController {
     @Secured(SecurityRole.USER)
     @PostMapping("/post/rating")
     public PostDto updatePostRating(@RequestBody PostRatingDto postRatingDto) {
+        final long userId = authorizationService.getCurrentUserId();
+        final boolean isPostHasLike = userHistoryService.isPostHasLike(userId, postRatingDto.getId());
+
+        if(isPostHasLike && postRatingDto.getRating() != 0) {
+            throw new BadRequestHttpException("Post already has your mark");
+        }
+
         Post updatePost = postService.updatePostRating(postRatingDto);
         return PostDto.from(updatePost);
     }

@@ -103,6 +103,22 @@ export class PostComponent implements OnInit {
     this.savePost(this.post);
   }
 
+  upvote() {
+    this.postService.upvote(this.post.id)
+      .then(value => this.post.rating = this.post.rating + 1)
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  downvote() {
+    this.postService.downvote(this.post.id)
+      .then(value => this.post.rating = this.post.rating - 1)
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
   canView(field: string): boolean {
     return (!isNullOrUndefined(field) && field.length > 0) || !this.isReadonly();
   }

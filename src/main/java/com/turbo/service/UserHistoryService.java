@@ -50,7 +50,7 @@ public class UserHistoryService {
         return userHistory.whenPostsWhereViewed(postId);
     }
 
-    public boolean isPostHaveLike(long userId, long postId) {
+    public boolean isPostHasLike(long userId, long postId) {
         UserHistory userHistory = get(userId);
         return userHistory.isPostHaveLike(postId);
     }

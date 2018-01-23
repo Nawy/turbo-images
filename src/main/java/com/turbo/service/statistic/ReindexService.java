@@ -10,17 +10,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.LongStream;
 
 @Service
 @Slf4j
 @AllArgsConstructor
-public class StatisticActionService {
+public class ReindexService {
 
     private final PostService postService;
     private final PostSearchRepository postSearchRepository;
-    private final PostStatisticService postStatisticService;
+    private final ReindexPostService postStatisticService;
 
 
     public void deletePost(final Long id) {
@@ -32,6 +32,7 @@ public class StatisticActionService {
     }
 
     public void updatePostContent(final ReindexPost action) {
+        log.debug("REINDEX MESSAGE: {}", action);
         final Post post = postService.getPostById(action.getId());
 
         if (Objects.isNull(post)) {
@@ -46,23 +47,21 @@ public class StatisticActionService {
             post.setDescription(action.getDescription());
         }
 
-        long ratingChangeAmount = action.getRatings().stream().mapToLong(rating -> rating).sum();
-        post.setViews(post.getViews() + action.getViews());
-        Rating rating = post.getRating();
-        rating.change(ratingChangeAmount);
+        final Rating newRating = new Rating();
+        action.getRatings().forEach(newRating::change);
 
         postSearchRepository.upsertPost(post);
-        postStatisticService.updateStaticPost(
+        postStatisticService.updateStatisticPost(
                 UpdatePostStatistic.builder()
                         .id(post.getId())
                         .name(post.getName())
                         .description(post.getDescription())
-                        .rating(rating.getRating())
+                        .rating(newRating.getRating())
                         .views(action.getViews())
-                        .ups(rating.getUps())
-                        .downs(rating.getDowns())
+                        .ups(newRating.getUps())
+                        .downs(newRating.getDowns())
                         .build()
         );
-        log.info("REINDEX POST with id={}", post.getId());
+        log.debug("REINDEX POST with id={}", post.getId());
     }
 }

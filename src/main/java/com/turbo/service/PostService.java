@@ -5,6 +5,7 @@ import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.dto.PostContentDto;
 import com.turbo.model.dto.PostRatingDto;
+import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.search.SearchOrder;
@@ -17,7 +18,7 @@ import com.turbo.model.search.field.stat.PostStatPeriod;
 import com.turbo.repository.aerospike.PostRepository;
 import com.turbo.repository.elasticsearch.content.PostSearchRepository;
 import com.turbo.repository.elasticsearch.statistic.PostStatisticRepository;
-import com.turbo.service.statistic.StatisticService;
+import com.turbo.service.statistic.InitReindexService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final UserImageService userImageService;
-    private final StatisticService statisticService;
+    private final InitReindexService initReindexService;
 
     public Post save(final PostRepoModel post) {
         return post.getId() != null ?
@@ -79,7 +80,7 @@ public class PostService {
     private Post updateReindexContent(final PostRepoModel post) {
         PostRepoModel postWithId = postRepository.save(post);
         Post updatedPost = getPostById(postWithId.getId());
-        statisticService.updatePostContent(
+        initReindexService.updatePostContent(
                 updatedPost.getId(),
                 updatedPost.getName(),
                 updatedPost.getDescription(),
@@ -90,7 +91,7 @@ public class PostService {
 
     private void reindexContent(final PostRepoModel postWithId) {
         Post updatedPost = getPostById(postWithId.getId());
-        statisticService.updatePostContent(
+        initReindexService.updatePostContent(
                 updatedPost.getId(),
                 updatedPost.getName(),
                 updatedPost.getDescription(),
@@ -99,7 +100,7 @@ public class PostService {
     }
 
     private void reindexRating(final PostRatingDto ratingDto) {
-        statisticService.updatePostRating(
+        initReindexService.updatePostRating(
                 ratingDto.getId(),
                 ratingDto.getRating(),
                 ratingDto.getViews()
@@ -129,11 +130,12 @@ public class PostService {
     }
 
     public Post updatePostRating(PostRatingDto postRatingDto) {
+
         PostRepoModel postRepoModel = postRepository.get(postRatingDto.getId());
         final Rating current = postRepoModel.getRating();
         final Rating rating = new Rating(
                 current.getUps() + (postRatingDto.getRating() > 0 ? 1 : 0),
-                current.getUps() + (postRatingDto.getRating() < 0 ? 1 : 0),
+                current.getDowns() + (postRatingDto.getRating() < 0 ? 1 : 0),
                 current.getRating() + postRatingDto.getRating()
         );
         PostRepoModel updatedRepoModel = new PostRepoModel(
