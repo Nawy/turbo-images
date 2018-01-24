@@ -12,6 +12,7 @@ import {UserService} from "../../service/user.service";
 import {TransferPost} from "../../models/post/add-post-dto.model";
 import {isNullOrUndefined} from "util";
 import {environment} from "../../../environments/environment";
+import {UserImage} from "../../models/user-image.model";
 
 @Component({
   selector: "s-post",
@@ -91,6 +92,10 @@ export class PostComponent implements OnInit {
         }
       });
     this.post.tags = tags;
+  }
+
+  getImageUrl(userImage : UserImage) : string {
+    return `http://${environment.imageHost}${userImage.image.source}`;
   }
 
   show() {
