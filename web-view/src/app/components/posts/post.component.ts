@@ -13,6 +13,7 @@ import {TransferPost} from "../../models/post/add-post-dto.model";
 import {isNullOrUndefined} from "util";
 import {environment} from "../../../environments/environment";
 import {UserImage} from "../../models/user-image.model";
+import * as moment from 'moment';
 
 @Component({
   selector: "s-post",
@@ -96,6 +97,10 @@ export class PostComponent implements OnInit {
 
   getImageUrl(userImage : UserImage) : string {
     return `http://${environment.imageHost}${userImage.image.source}`;
+  }
+
+  getPublishTime(value : string) : string {
+    return moment(value, "YYYY-MM-DD hh:mm:ss.SSS").fromNow();
   }
 
   show() {

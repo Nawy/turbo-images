@@ -16,15 +16,13 @@
                 [(ngModel)]="post.name"
                 [ngModelOptions]="{standalone: true}">
               <div class="turbo-small-text">
-                <span>by {{post.user_name}}</span>
-                <span class="turbo-small-info-margin">via {{post.device_type.toString().toLowerCase()}}</span>
-                <span class="turbo-small-info-margin">6 hr</span>
+                by <b>{{post.user_name}}</b> via {{post.device_type.toString().toLowerCase()}}, {{getPublishTime(post.create_date)}}
               </div>
             </div>
             <div class="col text-right">
               <div class="btn-block">
-                <button class="btn"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
-                <button (click)="goBack()" class="btn"><i class="fa fa-arrow-up" aria-hidden="true"></i>Back</button>
+                <button class="btn btn-outline-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+                <button (click)="goBack()" class="btn btn-outline-info"><i class="fa fa-arrow-up" aria-hidden="true"></i>Back</button>
                 <button class="btn btn-outline-info">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
               </div>
             </div>
@@ -49,10 +47,10 @@
           <div style="padding-bottom: 20px;">
             <hr class="split-pane-divider"/>
             <div>
-              <button class="btn btn-outline-info" (click)="upvote()">
+              <button class="btn btn-outline-success" (click)="upvote()">
                 <i class="fa fa-arrow-up" aria-hidden="true"></i>
               </button>
-              <button class="btn btn-outline-info" (click)="downvote()">
+              <button class="btn btn-outline-danger" (click)="downvote()">
                 <i class="fa fa-arrow-down" aria-hidden="true"></i>
               </button>
               <span class="fa fa-heart turbo-icons"></span>
