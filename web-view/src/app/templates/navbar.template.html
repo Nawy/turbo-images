@@ -3,12 +3,16 @@
   <div class=" navbar-collapse">
     <div class="container">
       <div class="row">
-        <div class="col-6">
+        <div class="col-3">
           <a class="navbar-brand logo-text" routerLink="/">
             TURBI
           </a>
         </div>
+        <div class="col-3 col-right">
+          <input type="text" class="form-control">
+        </div>
         <div class="col-6 col-right">
+          <button type="button" class="btn btn-success">Search</button>
           <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
           <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
 

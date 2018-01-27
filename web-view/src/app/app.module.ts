@@ -27,6 +27,7 @@ import {ImagePreviewComponent} from "./components/images/image-preview.component
 import {UploadPreviewComponent} from "./components/uploads/upload-preview.component";
 import {UploadModalComponent} from "./components/uploads/upload-modal.component";
 import {PersonalImageModalComponent} from "./components/images/personal-image-modal.component";
+import {PostRatingComponent} from "./components/posts/post-rating.component";
 import {PersonalHolderService} from "./service/personal-holder.service";
 import {ImagePageComponent} from "./components/images/image-page.component";
 import {SessionService} from "./service/session.service";
@@ -52,7 +53,8 @@ import {PostService} from "./service/post.service";
     UploadComponent,
     UploadModalComponent,
     PersonalImageModalComponent,
-    ImagePageComponent
+    ImagePageComponent,
+    PostRatingComponent
   ],
   imports: [
     BrowserModule,

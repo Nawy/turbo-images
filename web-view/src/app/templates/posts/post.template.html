@@ -53,10 +53,7 @@
               <button class="btn btn-outline-danger" (click)="downvote()">
                 <i class="fa fa-arrow-down" aria-hidden="true"></i>
               </button>
-              <span class="fa fa-heart turbo-icons"></span>
-              <span>{{post.rating.rating}} points</span>
-              <span class="fa fa-eye turbo-icons"></span>
-              <span>{{post.views}} views</span>
+              <s-post-rating [post]="post"></s-post-rating>
             </div>
           </div>
         </div>

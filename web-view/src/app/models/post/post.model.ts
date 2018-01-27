@@ -1,5 +1,6 @@
 import {DeviceType} from "../device-type.model";
 import {UserImage} from "../user-image.model";
+import {Rating} from "../rating.model";
 
 export class Post {
 
@@ -9,9 +10,7 @@ export class Post {
   visible:boolean;
   create_date: string;
 
-  ups: number;
-  downs: number;
-  rating: number;
+  rating: Rating;
   views: number;
 
   images : Array<UserImage>;

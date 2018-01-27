@@ -144,6 +144,7 @@ public class PostController {
         }
 
         Post updatePost = postService.updatePostRating(postRatingDto);
+        userHistoryService.setRatingChange(userId,postRatingDto.getId(), true);
         return PostDto.from(updatePost);
     }
 

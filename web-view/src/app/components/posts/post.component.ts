@@ -114,16 +114,19 @@ export class PostComponent implements OnInit {
   }
 
   upvote() {
+    console.info(this.post);
+    this.post.rating.rating += 1;
+    console.info(this.post);
     this.postService.upvote(this.post.id)
-      .then(value => this.post.rating = this.post.rating + 1)
       .catch(err => {
+        this.post.rating.rating -= 1;
         console.error(err);
       });
   }
 
   downvote() {
     this.postService.downvote(this.post.id)
-      .then(value => this.post.rating = this.post.rating - 1)
+      .then(value => this.post.rating.rating = this.post.rating.rating - 1)
       .catch(err => {
         console.error(err);
       });
