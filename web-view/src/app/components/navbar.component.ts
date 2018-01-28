@@ -19,6 +19,7 @@ export class NavbarComponent {
 
   userInfo : UserInfo;
   uploadModal : NgbModalRef;
+  isLoading : boolean = true;
 
   constructor(
     private userService : UserService,
@@ -29,7 +30,10 @@ export class NavbarComponent {
     console.info("# navbar loaded!");
     this.userService.updateUserInfo();
     this.userService.userInfoSource.subscribe(
-      userInfo => this.userInfo = userInfo
+      userInfo => {
+        this.userInfo = userInfo;
+        this.isLoading = false;
+      }
     )
   }
 

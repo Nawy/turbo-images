@@ -1,9 +1,14 @@
 @import 'variables';
 @import '../node_modules/bootstrap/scss/bootstrap';
-@import url('https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister');
+@import url('https://fonts.googleapis.com/css?family=Bangers');
 
 .col-right {
   text-align: right;
+  align-content: flex-end;
+}
+
+.col-left {
+  text-align: left;
   align-content: flex-end;
 }
 
@@ -142,7 +147,9 @@ textarea.focus, .description:focus, .input-group:focus, .post-description:focus 
 }
 
 .logo-text {
-  font-family: 'Love Ya Like A Sister', cursive;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 5px;
+  font-size: 1.4em;
 }
 
 .without-side-space {

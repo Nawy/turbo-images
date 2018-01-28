@@ -3,31 +3,44 @@
   <div class=" navbar-collapse">
     <div class="container">
       <div class="row">
-        <div class="col-3">
+        <div class="col-2">
           <a class="navbar-brand logo-text" routerLink="/">
-            TURBI
+            Turbi
           </a>
         </div>
-        <div class="col-3 col-right">
-          <input type="text" class="form-control">
-        </div>
-        <div class="col-6 col-right">
-          <button type="button" class="btn btn-success">Search</button>
-          <button type="button" *ngIf="userInfo == null" routerLink="/signin" class="btn btn-info">Sign in</button>
-          <button type="button" *ngIf="userInfo" class="btn btn-success" (click)="addImage()">Add Images</button>
-
-          <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" *ngIf="userInfo" role="group">
-            <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
-              @{{userInfo.name}} <span class="caret"></span>
-            </button>
-            <div ngbDropdownMenu aria-labelledby="dropdownManual">
-              <a class="dropdown-item" routerLink="/my-images">My Images</a>
-              <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
-              <a class="dropdown-item" routerLink="/settings">Settings</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" (click)="logout()">Log Out</a>
+        <div class="col-7 col-right">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Awasome image" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button">Search</button>
             </div>
           </div>
+        </div>
+
+        <div class="col-3 col-right">
+          <!--  LOADER -->
+          <img src="/assets/loader.svg" *ngIf="isLoading" class="navbar-loader">
+
+          <!-- NOT AUTHORIZED -->
+          <button type="button" *ngIf="userInfo == null && !isLoading" routerLink="/signin" class="btn btn-info">Sign in</button>
+
+          <!-- AUTHORIZED -->
+          <span *ngIf="userInfo && !isLoading">
+            <button type="button" class="btn btn-success" (click)="addImage()">Add Images</button>
+
+            <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" role="group">
+              <button type="button" class="btn btn-primary" id="dropdownManual" ngbDropdownToggle>
+                @{{userInfo.name}} <span class="caret"></span>
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownManual">
+                <a class="dropdown-item" routerLink="/my-images">My Images</a>
+                <a class="dropdown-item" routerLink="/my-posts">My Posts</a>
+                <a class="dropdown-item" routerLink="/settings">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" (click)="logout()">Log Out</a>
+              </div>
+            </div>
+          </span>
         </div>
       </div>
     </div>
