@@ -8,6 +8,7 @@ import com.turbo.model.dto.PostRatingDto;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
+import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
@@ -183,6 +184,11 @@ public class PostService {
                 new HashSet<>(userImages),
                 comments
         );
+    }
+
+    public List<Post> getPost(final String value, final Page page) {
+        final List<Long> postIds = postSearchRepository.getPost(value, page);
+        return bulkGetPreviewPosts(postIds);
     }
 
     public List<Post> getMostViral(int page, SearchPeriod searchPeriod, SearchSort searchSort) {

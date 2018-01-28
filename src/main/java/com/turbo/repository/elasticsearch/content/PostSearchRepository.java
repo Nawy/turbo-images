@@ -10,6 +10,7 @@ import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPeriod;
 import com.turbo.model.search.content.PostSearchEntity;
 import com.turbo.model.search.field.PostField;
+import com.turbo.model.search.field.PostFieldNames;
 import com.turbo.repository.elasticsearch.AbstractSearchRepository;
 import com.turbo.repository.elasticsearch.ElasticId;
 import com.turbo.util.ElasticUtils;
@@ -168,6 +169,28 @@ public class PostSearchRepository extends AbstractSearchRepository {
                                 )
                 )
                 .setSize(pageSize)
+                .get();
+
+        return elasticUtils.parseSearchResponse(response, ElasticId.class)
+                .stream()
+                .map(ElasticId::getId)
+                .collect(Collectors.toList());
+    }
+
+    public List<Long> getPost(final String value, final Page page) {
+        final SearchResponse response = elasticClient
+                .prepareSearch(config.getSearchPostIndexName())
+                .setTypes(config.getSearchPostTypeName())
+                .setQuery(
+                        QueryBuilders.multiMatchQuery(
+                                value,
+                                PostFieldNames.NAME,
+                                PostFieldNames.DESCRIPTIONS,
+                                PostFieldNames.TAGS
+                        )
+                )
+                .setSize(page.getSize())
+                .setFrom(page.getOffset())
                 .get();
 
         return elasticUtils.parseSearchResponse(response, ElasticId.class)

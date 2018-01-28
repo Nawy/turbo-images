@@ -6,6 +6,7 @@ import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.dto.*;
 import com.turbo.model.exception.BadRequestHttpException;
+import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
 import com.turbo.model.search.SearchPattern;
 import com.turbo.model.search.SearchPeriod;
@@ -37,6 +38,17 @@ public class PostController {
     private final PostService postService;
     private final UserHistoryService userHistoryService;
     private final AuthorizationService authorizationService;
+
+
+    @GetMapping("/post")
+    public List<PostPreviewDto> getPost(
+            @RequestParam("value") String value,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ) {
+        return toPostSearchDtos(
+                postService.getPost(value, new Page(page))
+        );
+    }
 
     //FIXME NOT WORKING!!! STAT IS BAD!!!
     @GetMapping("/get/viral/post")
