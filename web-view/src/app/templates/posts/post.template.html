@@ -29,9 +29,12 @@
           </div>
 
 
-          <div style="padding-top: 0px" class="card-body without-side-space">
-            <div class="image-placeholder" *ngFor="let userImage of post.images">
+          <div class="card-body without-side-space" *ngFor="let userImage of post.images">
+            <div class="image-placeholder">
               <img src="{{getImageUrl(userImage)}}" class="img-fluid-flex" alt="Responsive image">
+            </div>
+            <div class="image-description-padding">
+              <p class="lead">{{userImage.description}}</p>
             </div>
           </div>
 

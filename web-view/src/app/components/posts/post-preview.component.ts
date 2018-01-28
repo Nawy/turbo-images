@@ -32,7 +32,7 @@ export class PostPreviewComponent {
   }
 
   getHeaderString(): string {
-    return "Rating " + this.post.rating;
+    return "Rating " + this.post.rating.rating;
   }
 
   onMouseOver(): void {

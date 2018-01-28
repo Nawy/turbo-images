@@ -2,15 +2,14 @@
  * Created by ermolaev on 5/9/17.
  */
 import {DeviceType} from "../device-type.model";
+import {Rating} from "../rating.model";
 
 export class PostPreview {
 
   id: string;
   name: string;
   description: string;
-  ups: number;
-  downs: number;
-  rating: number;
+  rating: Rating;
   views: number;
   preview_image: string;
   device_type: DeviceType;
