@@ -42,11 +42,11 @@ public class PostController {
 
     @GetMapping("/post")
     public List<PostPreviewDto> getPost(
-            @RequestParam("value") String value,
+            @RequestParam("query") String query,
             @RequestParam(value = "page", defaultValue = "0") int page
     ) {
         return toPostSearchDtos(
-                postService.getPost(value, new Page(page))
+                postService.getPost(query, new Page(page))
         );
     }
 

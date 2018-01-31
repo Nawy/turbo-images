@@ -10,9 +10,14 @@
         </div>
         <div class="col-7 col-right">
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Awasome image" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <input
+              #searchInput
+              type="text"
+              class="form-control"
+              placeholder="Find awasome image..."
+              (keyup.enter)="findPost(searchInput.value)" aria-describedby="basic-addon2">
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button">Search</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="findPost(searchInput.value)">Search</button>
             </div>
           </div>
         </div>

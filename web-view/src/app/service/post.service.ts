@@ -115,4 +115,17 @@ export class PostService {
           .catch(res => false)
       ).catch(res => Promise.reject(res));
   }
+
+  public findPost(value: string): Promise<Array<PostPreview>> {
+    return this.http.get(
+      `${environment.host}${environment.requests.findPost}`,
+      {
+        params: {
+          query: value
+        }
+      }
+    ).toPromise()
+      .then(res => res.json() as Array<PostPreview>)
+      .catch(res => Promise.reject(res));
+  }
 }

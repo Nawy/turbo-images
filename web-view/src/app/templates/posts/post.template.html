@@ -40,7 +40,7 @@
 
           <textarea
             *ngIf="post && canView(post.description)"
-            class="form-control post-description no-border"
+            class="post-description no-border lead"
             [readonly]="isReadonly()"
             (input)="autoGrow();deferredPostUpdate();"
             [(ngModel)]="post.description"

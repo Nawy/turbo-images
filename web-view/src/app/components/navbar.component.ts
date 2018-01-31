@@ -41,6 +41,10 @@ export class NavbarComponent {
     this.uploadModal = this.modalService.open(UploadModalComponent, { size: "lg" });
   }
 
+  findPost(query: string) {
+    console.info(query);
+  }
+
   logout() {
     this.authorizedService.logout()
       .then(res => {
