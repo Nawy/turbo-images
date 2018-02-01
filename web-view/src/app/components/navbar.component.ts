@@ -42,7 +42,7 @@ export class NavbarComponent {
   }
 
   findPost(query: string) {
-    console.info(query);
+    this.router.navigate(['/search'], { queryParams: { q: query } });
   }
 
   logout() {

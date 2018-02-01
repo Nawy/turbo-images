@@ -32,6 +32,7 @@ import {PersonalHolderService} from "./service/personal-holder.service";
 import {ImagePageComponent} from "./components/images/image-page.component";
 import {SessionService} from "./service/session.service";
 import {PostService} from "./service/post.service";
+import {PostSearchComponent} from "./components/search/post-search.component";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {PostService} from "./service/post.service";
     UploadModalComponent,
     PersonalImageModalComponent,
     ImagePageComponent,
-    PostRatingComponent
+    PostRatingComponent,
+    PostSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -98,6 +100,10 @@ import {PostService} from "./service/post.service";
       {
         path: 'img/:id',
         component: ImagePageComponent
+      },
+      {
+        path: 'search',
+        component: PostSearchComponent
       },
       {
         path: 'uploads',

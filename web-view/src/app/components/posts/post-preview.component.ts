@@ -47,7 +47,7 @@ export class PostPreviewComponent {
     return `http://${environment.imageHost}${this.post.preview_image}`
   }
 
-  showPost() {
+    showPost() {
     this.router.navigateByUrl("post/" + this.post.id);
   }
 }

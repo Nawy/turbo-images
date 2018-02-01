@@ -1,0 +1,33 @@
+<div class="container space-top">
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">Result {{query}}</h3>
+
+      <div>
+        <div class="card-body medium-margin">
+          <div class="row justify-content-center">
+            <div class="col-auto small-preview-image" *ngFor="let post of posts">
+              <s-postpreview [post]="post"></s-postpreview>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- loader -->
+      <div class="row justify-content-md-center" *ngIf="isLoaderVisible">
+        <img src="/assets/loader.svg">
+      </div>
+
+    </div>
+
+    <!-- ALL UPLOADED -->
+    <div class="card-footer text-muted">
+      <div class="row justify-content-md-center">
+        All posts uploaded
+      </div>
+    </div>
+
+  </div>
+
+</div>
