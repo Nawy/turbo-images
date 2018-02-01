@@ -18,12 +18,18 @@ export class PostSearchComponent implements OnInit {
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    const query = this.route.snapshot.queryParams['q'];
-    console.info("VALUE: " + query);
+    this.route.queryParams.subscribe(params => this.findPost(params['q']));
+  }
+
+  findPost(query : string) {
     this.query = query;
-    this.postService.findPost(query)
-      .then(posts => {
-        this.posts = posts;
-      });
+    console.info("QUERY: " + query);
+    if(query) {
+      this.postService
+        .findPost(query)
+        .then(posts => {
+          this.posts = posts;
+        });
+    }
   }
 }

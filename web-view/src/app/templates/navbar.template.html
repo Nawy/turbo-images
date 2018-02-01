@@ -15,9 +15,10 @@
               type="text"
               class="form-control"
               placeholder="Find awasome image..."
+              [(ngModel)]="searchQuery"
               (keyup.enter)="findPost(searchInput.value)" aria-describedby="basic-addon2">
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" (click)="findPost(searchInput.value)">Search</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="findPost()">Search</button>
             </div>
           </div>
         </div>
