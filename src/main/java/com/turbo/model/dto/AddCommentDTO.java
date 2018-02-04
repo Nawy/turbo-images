@@ -1,6 +1,5 @@
 package com.turbo.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.DeviceType;
@@ -16,29 +15,22 @@ import java.time.LocalDateTime;
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @AllArgsConstructor
-public class CommentModificationDTO {
+public class AddCommentDTO {
 
-    private String id;
     private String postId;
-    private String userId;
     private String replyId;
     private DeviceType device; // from what was posted
     private String content;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private LocalDateTime creationDate;
-    private long ups;
-    private long downs;
-    private long rating; // upvotes - downvotes
 
-    public CommentRepoModel toRepoModel() {
+    public CommentRepoModel toRepoModel(long userId) {
         return new CommentRepoModel(
-                StringUtils.isBlank(this.id) ? null : EncryptionService.decodeHashId(this.id),
-                StringUtils.isBlank(this.userId) ? null : EncryptionService.decodeHashId(this.userId),
+                null,
+                userId,
                 StringUtils.isBlank(this.replyId) ? null :  EncryptionService.decodeHashId(this.replyId),
                 this.device,
                 this.content,
-                this.creationDate,
-                new Rating(ups, downs, rating)
+                LocalDateTime.now(),
+                new Rating()
         );
     }
 

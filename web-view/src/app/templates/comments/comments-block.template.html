@@ -1,0 +1,44 @@
+
+
+<!--add comment-->
+<div style="margin-top: 20px" class="card main-part-color" *ngIf="userInfo">
+  <div class="card-body" style="padding: 10px">
+    <div>
+              <textarea
+                placeholder="Write a comment"
+                class="form-control post-description no-border"
+                (input)="autoGrow();"
+                [(ngModel)]="newComment"
+                [ngModelOptions]="{standalone: true}"></textarea>
+    </div>
+    <div class="row">
+      <div class="col text-right">
+        <button *ngIf="newComment.length < 1" class="btn" style="cursor: not-allowed;">Post</button>
+        <button (click)="addComment()" *ngIf="newComment.length > 0" class="btn btn-outline-success">Post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--show comments-->
+<div class="card-body without-side-space">
+  <div class="row">
+
+    <header style="margin-left: 20px" class="col">{{sortedByDateCommentList.length}} Comments</header>
+
+    <div *ngIf="sortedByDateCommentList.length > 0" class="col text-right">
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn button-with-border" id="dropdownBasic2" ngbDropdownToggle>{{timeSort? "New" : "Best"}}</button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+          <button (click)="resetTimeSort()" class="dropdown-item">Best</button>
+          <button (click)="setTimeSort()" class="dropdown-item">New</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngFor="let comment of sortedByDateCommentList">
+    <s-comment [comment]="comment"></s-comment>
+  </div>
+</div>

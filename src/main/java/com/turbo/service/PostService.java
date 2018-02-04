@@ -22,6 +22,7 @@ import com.turbo.repository.elasticsearch.statistic.PostStatisticRepository;
 import com.turbo.service.statistic.InitReindexService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -48,6 +49,7 @@ public class PostService {
     private final UserService userService;
     private final UserImageService userImageService;
     private final InitReindexService initReindexService;
+    private final CommentService commentService;
 
     public Post save(final PostRepoModel post) {
         return post.getId() != null ?
@@ -172,9 +174,7 @@ public class PostService {
         List<User> users = userService.bulkGet(userIds);
         Map<Long, User> userMap = users.stream().collect(Collectors.toMap(User::getId, Function.identity()));
         //make Comments
-        Map<Long, Comment> comments = postRepoModel.getComments().values().stream()
-                .map(commentRepoModel -> makeComment(commentRepoModel, userMap.get(commentRepoModel.getUserId())))
-                .collect(Collectors.toMap(Comment::getId, Function.identity()));
+        Map<Long, Comment> comments = commentService.bulkMakeComments(postRepoModel, userMap);
         //get user images
         List<UserImage> userImages = userImageService.getUserImages(postRepoModel.getImages());
         //make post
@@ -364,17 +364,4 @@ public class PostService {
                 comments
         );
     }
-
-    private Comment makeComment(CommentRepoModel commentRepoModel, User user) {
-        return new Comment(
-                commentRepoModel.getId(),
-                user,
-                commentRepoModel.getReplyId(),
-                commentRepoModel.getDevice(),
-                commentRepoModel.getContent(),
-                commentRepoModel.getCreationDate(),
-                commentRepoModel.getRating()
-        );
-    }
-
 }

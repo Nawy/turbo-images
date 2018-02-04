@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   host: "http://localhost:8030/api",
-  imageHost: "192.168.1.64", // should be port 80
+  imageHost: "192.168.200.1", // should be port 80
   clientType: "BROWSER",
   requests: {
 
@@ -41,7 +41,14 @@ export const environment = {
     removePostTag: "/remove/post/tag",
     increaseViews: "/post/views",
     changeRating: "/post/rating",
-    findPost: "/post"
+    findPost: "/post",
+
+    //comments
+    addComment: "/add/comment",
+    deleteComment: "/delete/comment",
+    changeCommentRating: "/change/comment/rating",
+    getComments: "/get/comments"
+
   },
   tokenName: "SESSIONID",
   uploadPersonImage: {

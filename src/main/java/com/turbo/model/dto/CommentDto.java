@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,11 +30,11 @@ public class CommentDto {
     private DeviceType device; // from what was posted
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private LocalDateTime postTime;
+    private LocalDateTime createDate;
     private Rating rating;
-    private List<CommentDto> commentDtos;
 
-    public static CommentDto from(Comment comment, Map<Long, List<Comment>> allComments) {
+
+    public static CommentDto from(Comment comment) {
         return new CommentDto(
                 EncryptionService.encodeHashId(comment.getId()),
                 EncryptionService.encodeHashId(comment.getUser().getId()),
@@ -44,18 +43,18 @@ public class CommentDto {
                 comment.getDevice(),
                 comment.getContent(),
                 comment.getCreationDate(),
-                comment.getRating(),
-                from(
-                        allComments.get(comment.getId()),
-                        allComments
-                )
+                comment.getRating()
         );
     }
 
-    public static List<CommentDto> from(List<Comment> comments, Map<Long, List<Comment>> allComments){
+    public static Map<String, CommentDto> from(Map<Long, Comment> comments) {
         if(Objects.isNull(comments)) {
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
-        return comments.stream().map(comment -> from(comment, allComments)).collect(Collectors.toList());
+        return comments.entrySet().stream().collect(
+                Collectors.toMap(
+                        entry -> EncryptionService.encodeHashId(entry.getKey()),
+                        entry -> from(entry.getValue()))
+        );
     }
 }

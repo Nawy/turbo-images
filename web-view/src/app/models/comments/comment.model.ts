@@ -1,15 +1,15 @@
+import {DeviceType} from "../device-type.model";
+import {Rating} from "../rating.model";
+
 export class Comment {
-  text : string;
-  ups : number;
-  downs : number;
 
-  replies : Array<Comment>;
+  id: string;
+  user_id: string;
+  user_name: string;
+  reply_id: string;
+  device: DeviceType = DeviceType.UNKNOWN;
+  content: string;
+  create_date: string;
+  rating: Rating;
 
-
-  constructor(_text: string, _ups: number, _downs: number, _replies : Array<Comment>) {
-    this.text = _text;
-    this.ups = _ups;
-    this.downs = _downs;
-    this.replies = _replies;
-  }
 }

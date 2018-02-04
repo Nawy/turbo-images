@@ -62,28 +62,7 @@
         </div>
 
         <!--comments-->
-        <div style="margin-top: 20px" class="card main-part-color">
-          <div class="card-body" style="padding: 10px">
-            <div>
-              <textarea
-                *ngIf="post"
-                placeholder="Write a comment"
-                class="form-control post-description no-border"
-                [readonly]="isReadonly()"
-                (input)="autoGrow();"
-                [(ngModel)]="comment"
-                [ngModelOptions]="{standalone: true}"></textarea>
-            </div>
-            <div class="row">
-              <div class="col text-right">
-                <button class="btn">Post</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <s-comments-list></s-comments-list>
+        <comments-block [postId]="post.id" [comments]="post.comments"></comments-block>
       </div>
 
 

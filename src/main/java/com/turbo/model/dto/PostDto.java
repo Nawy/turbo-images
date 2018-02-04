@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.turbo.model.Comment;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.Rating;
@@ -15,8 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,19 +43,13 @@ public class PostDto {
     private String userId;
     private String userName;
 
-    private List<CommentDto> comments;
+    private Map<String, CommentDto> comments;
 
     @JsonIgnore
     public static PostDto from(Post post) {
         Set<UserImageDto> userImageDtos = post.getImages().stream()
                 .map(UserImageDto::from)
                 .collect(Collectors.toSet());
-
-        Map<Long, List<Comment>> commentsGrouppedByReply = post.getComments().values().stream().collect(Collectors.groupingBy(Comment::getReplyId));
-        List<CommentDto> comments = CommentDto.from(
-                commentsGrouppedByReply.get(null), // if replyId is null it's Post root comment
-                commentsGrouppedByReply
-        );
 
         return new PostDto(
                 EncryptionService.encodeHashId(post.getId()),
@@ -73,7 +64,7 @@ public class PostDto {
                 post.isVisible(),
                 EncryptionService.encodeHashId(post.getUser().getId()),
                 post.getUser().getName(),
-                comments
+                CommentDto.from(post.getComments())
         );
     }
 

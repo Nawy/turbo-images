@@ -3,7 +3,8 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {Comment} from './../../models/comments/comment.model'
+import {ViewComment} from "../../models/comments/comment.view.model";
+import * as moment from 'moment';
 
 @Component({
   selector: "s-comment",
@@ -11,10 +12,23 @@ import {Comment} from './../../models/comments/comment.model'
   styleUrls: ['../../css/comment.style.css']
 })
 export class CommentComponent {
-  @Input("value") currentComment : Comment;
-  repliesIsVisible: boolean;
+  @Input("comment") currentComment: ViewComment;
+  @Input("reply") reply: boolean = false;
 
-  changeRepliesVisibility(){
-    this.repliesIsVisible = !this.repliesIsVisible;
+  diffDays: number;
+  diffHours: number;
+  diffMinutes:number;
+  diffSeconds: number;
+
+
+  ngOnInit(): void {
+    let momentNow = moment(new Date());
+    let momentCreateDate = moment(this.currentComment.create_date);
+
+    this.diffDays = momentNow.dayOfYear() - momentCreateDate.dayOfYear();
+    this.diffHours = momentNow.hours() - momentCreateDate.hours();
+    this.diffMinutes = momentNow.minutes() - momentCreateDate.minutes();
+    this.diffSeconds = momentNow.seconds() - momentNow.seconds();
   }
+
 }

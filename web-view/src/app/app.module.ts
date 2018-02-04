@@ -12,7 +12,7 @@ import {PostComponent} from "./components/posts/post.component";
 import {NavbarComponent} from "./components/navbar.component";
 import {AllPostsComponent} from "./components/posts/all-posts.component";
 import {CommentComponent} from "./components/comments/comment.component";
-import {CommentsListComponent} from "./components/comments/comments-list.component";
+import {CommentsBlockComponent} from "./components/comments/comments-block.component";
 import {SettingsComponent} from "./components/settings.component";
 import {PersonalPostsComponent} from "./components/posts/personal-posts.component";
 import {PostPreviewComponent} from "./components/posts/post-preview.component";
@@ -33,6 +33,7 @@ import {ImagePageComponent} from "./components/images/image-page.component";
 import {SessionService} from "./service/session.service";
 import {PostService} from "./service/post.service";
 import {PostSearchComponent} from "./components/search/post-search.component";
+import {CommentService} from "./service/comment.service";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import {PostSearchComponent} from "./components/search/post-search.component";
     NavbarComponent,
     AllPostsComponent,
     CommentComponent,
-    CommentsListComponent,
+    CommentsBlockComponent,
     SettingsComponent,
     PersonalPostsComponent,
     PersonalImagesComponent,
@@ -120,6 +121,7 @@ import {PostSearchComponent} from "./components/search/post-search.component";
     NotLoggedGuard,
     SessionService,
     PostService,
+    CommentService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
