@@ -34,6 +34,7 @@ import {SessionService} from "./service/session.service";
 import {PostService} from "./service/post.service";
 import {PostSearchComponent} from "./components/search/post-search.component";
 import {CommentService} from "./service/comment.service";
+import {TextInputComponent} from "./components/custom/text-input.component";
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import {CommentService} from "./service/comment.service";
     PersonalImageModalComponent,
     ImagePageComponent,
     PostRatingComponent,
-    PostSearchComponent
+    PostSearchComponent,
+    TextInputComponent
   ],
   imports: [
     BrowserModule,
