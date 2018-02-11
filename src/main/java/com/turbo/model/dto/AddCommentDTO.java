@@ -11,6 +11,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Getter
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
@@ -31,7 +32,8 @@ public class AddCommentDTO {
                 this.content,
                 LocalDateTime.now(),
                 new Rating(),
-                false
+                false,
+                new HashMap<>()
         );
     }
 

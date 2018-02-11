@@ -3,6 +3,7 @@ package com.turbo.model.aerospike;
 import com.turbo.model.DeviceType;
 import com.turbo.model.IdHolder;
 import com.turbo.model.Rating;
+import com.turbo.model.RatingStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +27,9 @@ public class PostRepoModel implements Serializable, IdHolder {
     @Setter
     private Long id;
     private String name;
-    private Rating rating;
+    @Setter
+    private Rating rating = new Rating();
+    @Setter
     private long views;
     private Set<Long> images; // key is UserImage_ID, value is description
     private DeviceType deviceType;
@@ -36,6 +40,10 @@ public class PostRepoModel implements Serializable, IdHolder {
     private String description;
     @Setter
     private Map<Long, CommentRepoModel> comments; // key is id
+
+    // key is userId
+    @Setter
+    private Map<Long, RatingStatus> ratingHistory = new HashMap<>(); //who changed history and how
 
     public PostRepoModel(
             Long id,
@@ -53,16 +61,17 @@ public class PostRepoModel implements Serializable, IdHolder {
     ) {
         this.id = id;
         this.name = name;
-        this.rating = rating;
+        this.rating = firstNonNull(rating, new Rating());
         this.views = views;
-        this.images = images == null ? Collections.emptySet() : Collections.unmodifiableSet(images);
-        this.deviceType = deviceType;
-        this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
+        this.images = firstNonNull(images, Collections.emptySet());
+        this.deviceType = firstNonNull(deviceType, DeviceType.UNKNOWN);
+        this.tags = firstNonNull(tags, Collections.emptySet());
         this.userId = userId;
         this.visible = visible;
         this.description = description;
         this.creationDateTime = firstNonNull(creationDateTime, LocalDateTime.now());
-        this.comments = comments == null ? Collections.emptyMap() : Collections.unmodifiableMap(comments);
+        this.comments = firstNonNull(comments, Collections.emptyMap());
+        this.ratingHistory = firstNonNull(ratingHistory, Collections.emptyMap());
     }
 
 }

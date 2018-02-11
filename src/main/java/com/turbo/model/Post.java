@@ -1,12 +1,11 @@
 package com.turbo.model;
 
-import com.turbo.model.aerospike.CommentRepoModel;
 import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +32,8 @@ public class Post {
     private User user;
     private String description;
     private Map<Long, Comment> comments;
+    // key is userId
+    private Map<Long, RatingStatus> ratingHistory = new HashMap<>(); //who changed history and how
 
     public Post(
             Long id,
@@ -46,19 +47,21 @@ public class Post {
             LocalDateTime createDate,
             boolean visible,
             String description,
-            Map<Long, Comment> comments
+            Map<Long, Comment> comments,
+            Map<Long, RatingStatus> ratingHistory
     ) {
         this.id = id;
         this.name = name;
-        this.rating = rating;
+        this.rating = firstNonNull(rating, new Rating());
         this.views = views;
-        this.images = images == null ? Collections.emptySet() : Collections.unmodifiableSet(images);
-        this.deviceType = deviceType;
-        this.tags = tags == null ? Collections.emptySet() : Collections.unmodifiableSet(tags);
+        this.images = firstNonNull(images, Collections.emptySet());
+        this.deviceType = firstNonNull(deviceType, DeviceType.UNKNOWN);
+        this.tags = firstNonNull(tags, Collections.emptySet());
         this.user = user;
         this.visible = visible;
         this.description = description;
         this.createDate = firstNonNull(createDate, LocalDateTime.now());
-        this.comments = comments == null? Collections.emptyMap() : Collections.unmodifiableMap(comments);
+        this.comments = firstNonNull(comments, Collections.emptyMap());
+        this.ratingHistory = firstNonNull(ratingHistory, Collections.emptyMap());
     }
 }

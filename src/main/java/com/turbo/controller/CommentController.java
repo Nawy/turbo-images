@@ -1,6 +1,7 @@
 package com.turbo.controller;
 
 import com.turbo.model.Comment;
+import com.turbo.model.RatingStatus;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.dto.AddCommentDTO;
 import com.turbo.model.dto.CommentDto;
@@ -68,7 +69,7 @@ public class CommentController {
     public void changeCommentRating(
             @RequestParam("comment_id") String commentId,
             @RequestParam("post_id") String postId,
-            @RequestParam(value = "rating", required = false) Boolean rating
+            @RequestParam(value = "rating") RatingStatus rating
     ) {
         commentService.changeCommentRating(
                 authorizationService.getCurrentUserId(),

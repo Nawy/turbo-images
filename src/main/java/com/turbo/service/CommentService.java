@@ -2,14 +2,15 @@ package com.turbo.service;
 
 import com.turbo.model.Comment;
 import com.turbo.model.Rating;
+import com.turbo.model.RatingStatus;
 import com.turbo.model.User;
 import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.util.IdGenerator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,17 +25,11 @@ import static com.turbo.util.IdGenerator.ITERATIONS_TO_GENERATE_ID;
 
 @Log
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
     private final PostService postService;
-    private final UserHistoryService userHistoryService;
     private final UserService userService;
-
-    public CommentService(@Lazy PostService postService, UserHistoryService userHistoryService, UserService userService) {
-        this.postService = postService;
-        this.userHistoryService = userHistoryService;
-        this.userService = userService;
-    }
 
     public Map<Long, Comment> getComments(long postId) {
         PostRepoModel postRepoModel = postService.getRawPost(postId);
@@ -91,32 +86,26 @@ public class CommentService {
         postService.saveRawPost(post);
     }
 
-    public void changeCommentRating(long userId, long postId, long commentId, Boolean rating) {
+    public void changeCommentRating(long userId, long postId, long commentId, RatingStatus ratingChange) {
         PostRepoModel post = postService.getRawPost(postId);
         CommentRepoModel comment = post.getComments().get(commentId);
-        Rating commentRating = comment.getRating();
-        if (commentRating == null) {
-            if (rating == null) return; // comment don't have rating, nothing reset
-            Rating newCommentRating = new Rating();
-            newCommentRating.changeRating(rating);
-            comment.setRating(newCommentRating);
-        } else {
+        Map<Long, RatingStatus> newRatingHistory = new HashMap<>(comment.getRatingHistory());
+        RatingStatus userRatingHistory = newRatingHistory.getOrDefault(userId, RatingStatus.EMPTY);
 
-            if (rating == null) {
-                Boolean ratingHistory = userHistoryService.getCommentRatingChange(userId, postId, commentId);
-                if (ratingHistory == null) return; // rating should not be reset
-                commentRating.resetOneRating(ratingHistory);
-            } else {
-                Boolean ratingHistory = userHistoryService.getCommentRatingChange(userId, postId, commentId);
-                if (ratingHistory != null){
-                    commentRating.resetOneRating(ratingHistory);
-                }
-                commentRating.changeRating(rating);
-            }
+        //process rating
+        Rating currentRating = comment.getRating();
+        if (userRatingHistory == RatingStatus.EMPTY && ratingChange == RatingStatus.EMPTY) return; //nothing reset
+        if (userRatingHistory != RatingStatus.EMPTY) {
+            currentRating.resetOneRating(userRatingHistory == RatingStatus.UP);
+            newRatingHistory.remove(userId);
+        }
+        if (ratingChange != RatingStatus.EMPTY) {
+            currentRating.changeRating(ratingChange == RatingStatus.UP);
+            newRatingHistory.put(userId, ratingChange);
         }
 
+        comment.setRatingHistory(newRatingHistory);
         postService.saveRawPost(post);
-        userHistoryService.setCommentRatingChange(userId, postId, commentId, rating);
     }
 
     private Long generateCommentId(Map<Long, CommentRepoModel> comments) {
@@ -132,20 +121,9 @@ public class CommentService {
 
     public Map<Long, Comment> bulkMakeComments(PostRepoModel postRepoModel, Map<Long, User> userMap) {
         return postRepoModel.getComments().values().stream()
-                .map(commentRepoModel -> makeComment(commentRepoModel, userMap.get(commentRepoModel.getUserId())))
+                .map(commentRepoModel -> new Comment(commentRepoModel, userMap.get(commentRepoModel.getUserId())))
                 .collect(Collectors.toMap(Comment::getId, Function.identity()));
     }
 
-    public Comment makeComment(CommentRepoModel commentRepoModel, User user) {
-        return new Comment(
-                commentRepoModel.getId(),
-                user,
-                commentRepoModel.getReplyId(),
-                commentRepoModel.getDevice(),
-                commentRepoModel.getContent(),
-                commentRepoModel.getCreationDate(),
-                commentRepoModel.getRating(),
-                commentRepoModel.isDeleted()
-        );
-    }
+
 }

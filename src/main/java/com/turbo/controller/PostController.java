@@ -1,10 +1,13 @@
 package com.turbo.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.turbo.model.Post;
+import com.turbo.model.RatingStatus;
 import com.turbo.model.SecurityRole;
 import com.turbo.model.aerospike.PostRepoModel;
-import com.turbo.model.dto.*;
+import com.turbo.model.dto.PostContentDto;
+import com.turbo.model.dto.PostDto;
+import com.turbo.model.dto.PostPreviewDto;
+import com.turbo.model.dto.TransferPost;
 import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.page.Page;
 import com.turbo.model.search.SearchOrder;
@@ -15,7 +18,6 @@ import com.turbo.service.AuthorizationService;
 import com.turbo.service.PostService;
 import com.turbo.service.UserHistoryService;
 import com.turbo.util.EncryptionService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,9 +37,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
-    private final UserHistoryService userHistoryService;
     private final AuthorizationService authorizationService;
-
 
     @GetMapping("/post")
     public List<PostPreviewDto> getPost(
@@ -133,52 +133,26 @@ public class PostController {
         return PostDto.from(updatePost);
     }
 
-    @PostMapping("/post/views")
-    public PostDto updatePostView(@RequestBody PostRatingDto postRatingDto) {
-        Post updatePost = postService.updatePostRating(
-                PostRatingDto.builder()
-                        .id(postRatingDto.getId())
-                        .views(1L)
-                        .build()
+    @Secured(SecurityRole.USER)
+    @PostMapping("/post/add/views")
+    public PostDto updatePostView(@RequestParam("post_id") String postId) {
+        Post updatePost = postService.addPostViews(
+                EncryptionService.decodeHashId(postId)
         );
         return PostDto.from(updatePost);
     }
 
     @Secured(SecurityRole.USER)
     @PostMapping("/post/rating")
-    public PostDto updatePostRating(@RequestBody PostRatingDto postRatingDto) {
-        final long userId = authorizationService.getCurrentUserId();
-        final boolean isPostHasLike = userHistoryService.isPostHasLike(userId, postRatingDto.getId());
-
-        if(isPostHasLike && postRatingDto.getRating() != 0) {
-            throw new BadRequestHttpException("Post already has your mark");
-        }
-
-        Post updatePost = postService.updatePostRating(postRatingDto);
-        userHistoryService.setRatingChange(userId,postRatingDto.getId(), true);
+    public PostDto updatePostRating(
+            @RequestParam("post_id") String postId,
+            @RequestParam("rating_status") RatingStatus ratingStatus
+    ) {
+        Post updatePost = postService.updatePostRating(
+                EncryptionService.decodeHashId(postId),
+                authorizationService.getCurrentUserId(),
+                ratingStatus
+        );
         return PostDto.from(updatePost);
     }
-
-
-    private static class PostMetaDto {
-        private long postId;
-        private String field;
-
-        public PostMetaDto(
-                @JsonProperty(value = "post_id", required = true) long postId,
-                @JsonProperty(value = "field", required = true) String field
-        ) {
-            this.postId = postId;
-            this.field = field;
-        }
-
-        public long getPostId() {
-            return postId;
-        }
-
-        public String getField() {
-            return field;
-        }
-    }
-
 }

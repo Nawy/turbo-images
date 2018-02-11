@@ -8,12 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.DeviceType;
 import com.turbo.model.Post;
 import com.turbo.model.Rating;
+import com.turbo.model.RatingStatus;
 import com.turbo.util.EncryptionService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,8 +46,16 @@ public class PostDto {
     private String userName;
 
     private Map<String, CommentDto> comments;
+    // key is userId
+    private Map<String, RatingStatus> ratingHistory = new HashMap<>(); //who changed history and how
 
-    @JsonIgnore
+    @JsonProperty("create_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+
     public static PostDto from(Post post) {
         Set<UserImageDto> userImageDtos = post.getImages().stream()
                 .map(UserImageDto::from)
@@ -64,14 +74,19 @@ public class PostDto {
                 post.isVisible(),
                 EncryptionService.encodeHashId(post.getUser().getId()),
                 post.getUser().getName(),
-                CommentDto.from(post.getComments())
+                CommentDto.from(post.getComments()),
+                fromRatingHistory(post.getRatingHistory())
         );
     }
 
-    @JsonProperty("create_date")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    private static Map<String, RatingStatus> fromRatingHistory(Map<Long, RatingStatus> ratingHistory) {
+        return ratingHistory.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> EncryptionService.encodeHashId(entry.getKey()),
+                                Map.Entry::getValue
+                        )
+                );
     }
 
 }

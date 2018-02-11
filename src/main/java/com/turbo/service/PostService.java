@@ -5,7 +5,6 @@ import com.turbo.model.aerospike.CommentRepoModel;
 import com.turbo.model.aerospike.PostRepoModel;
 import com.turbo.model.dto.PostContentDto;
 import com.turbo.model.dto.PostRatingDto;
-import com.turbo.model.exception.BadRequestHttpException;
 import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.model.exception.NotFoundHttpException;
 import com.turbo.model.page.Page;
@@ -22,7 +21,6 @@ import com.turbo.repository.elasticsearch.statistic.PostStatisticRepository;
 import com.turbo.service.statistic.InitReindexService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -76,7 +74,7 @@ public class PostService {
         postRepository.save(postRepoModel);
     }
 
-    PostRepoModel getRawPost(long id) {
+    public PostRepoModel getRawPost(long id) {
         return postRepository.get(id);
     }
 
@@ -132,32 +130,51 @@ public class PostService {
         return makePost(updatedRepoModel);
     }
 
-    public Post updatePostRating(PostRatingDto postRatingDto) {
 
-        PostRepoModel postRepoModel = postRepository.get(postRatingDto.getId());
-        final Rating current = postRepoModel.getRating();
-        final Rating rating = new Rating(
-                current.getUps() + (postRatingDto.getRating() > 0 ? 1 : 0),
-                current.getDowns() + (postRatingDto.getRating() < 0 ? 1 : 0),
-                current.getRating() + postRatingDto.getRating()
+    public Post updatePostRating(long postId, long userId, RatingStatus ratingChange) {
+
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        Map<Long, RatingStatus> newRatingHistory = new HashMap<>(postRepoModel.getRatingHistory());
+        RatingStatus userRatingHistory = newRatingHistory.getOrDefault(userId, RatingStatus.EMPTY);
+
+        //process rating
+        Rating currentRating = postRepoModel.getRating();
+        long oldRatingScore = currentRating.getRating();
+        if (userRatingHistory == RatingStatus.EMPTY && ratingChange == RatingStatus.EMPTY) getPostById(postId); //nothing reset
+        if (userRatingHistory != RatingStatus.EMPTY) {
+            currentRating.resetOneRating(userRatingHistory == RatingStatus.UP);
+            newRatingHistory.remove(userId);
+        }
+        if (ratingChange != RatingStatus.EMPTY) {
+            currentRating.changeRating(ratingChange == RatingStatus.UP);
+            newRatingHistory.put(userId, ratingChange);
+        }
+
+        postRepoModel.setRatingHistory(newRatingHistory);
+        long ratingScoreChange = currentRating.getRating() - oldRatingScore;
+        postRepository.save(postRepoModel);
+        reindexRating(
+                PostRatingDto.builder()
+                        .id(postId)
+                        .rating(ratingScoreChange) //FIXME is this correct?
+                        .build()
         );
-        PostRepoModel updatedRepoModel = new PostRepoModel(
-                postRepoModel.getId(),
-                postRepoModel.getName(),
-                rating,
-                postRepoModel.getViews() + postRatingDto.getViews(),
-                postRepoModel.getImages(),
-                postRepoModel.getDeviceType(),
-                postRepoModel.getTags(),
-                postRepoModel.getUserId(),
-                postRepoModel.getCreationDateTime(),
-                postRepoModel.isVisible(),
-                postRepoModel.getDescription(),
-                postRepoModel.getComments()
+        return makePost(postRepoModel);
+    }
+
+    public Post addPostViews(long postId) {
+
+        PostRepoModel postRepoModel = postRepository.get(postId);
+        postRepoModel.setViews(postRepoModel.getViews() + 1);
+
+        postRepository.save(postRepoModel);
+        reindexRating(
+                PostRatingDto.builder()
+                        .id(postId)
+                        .views(1) //FIXME is this correct?
+                        .build()
         );
-        postRepository.save(updatedRepoModel);
-        reindexRating(postRatingDto);
-        return makePost(updatedRepoModel);
+        return makePost(postRepoModel);
     }
 
     public Post getPostById(final long id) {
@@ -361,7 +378,8 @@ public class PostService {
                 postRepoModel.getCreationDateTime(),
                 postRepoModel.isVisible(),
                 postRepoModel.getDescription(),
-                comments
+                comments,
+                postRepoModel.getRatingHistory()
         );
     }
 }
