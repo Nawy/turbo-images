@@ -32,6 +32,7 @@ public class CommentDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime createDate;
     private Rating rating;
+    private boolean deleted;
 
 
     public static CommentDto from(Comment comment) {
@@ -43,7 +44,8 @@ public class CommentDto {
                 comment.getDevice(),
                 comment.getContent(),
                 comment.getCreationDate(),
-                comment.getRating()
+                comment.getRating(),
+                comment.isDeleted()
         );
     }
 

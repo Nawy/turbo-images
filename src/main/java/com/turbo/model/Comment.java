@@ -20,5 +20,6 @@ public class Comment {
     private String content;
     private final LocalDateTime creationDate;
     private Rating rating;
+    private boolean deleted;
 
 }

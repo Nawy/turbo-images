@@ -23,7 +23,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+                .apis(RequestHandlerSelectors.basePackage("com.turbo.controller")) // don't touch this!
                 .paths(Predicates.not(PathSelectors.regex("/error")))
                 .build();
     }

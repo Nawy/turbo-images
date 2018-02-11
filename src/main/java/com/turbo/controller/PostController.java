@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 /**
  * Created by rakhmetov on 09.05.17.
  */
-@Api
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")

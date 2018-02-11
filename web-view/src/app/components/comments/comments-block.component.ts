@@ -24,10 +24,16 @@ export class CommentsBlockComponent {
   sortedByDateCommentList: Array<ViewComment> = [];
   timeSort: boolean = true;
 
+  boundDeleteFunction: Function;
+  boundReplyFunction: Function;
+
   constructor(private userService: UserService, private commentService: CommentService) {
   }
 
   ngOnInit(): void {
+    this.boundDeleteFunction = this.deleteComment.bind(this);
+    this.boundReplyFunction = this.replyComment.bind(this);
+
     this.userService.userInfoSource.subscribe(userInfo => {
       this.userInfo = userInfo;
       // this required because autogrow work only if window component is loaded and filled with data
@@ -67,7 +73,9 @@ export class CommentsBlockComponent {
           comment,
           this.comments[comment.reply_id]
         )
-      ).sort(sorting);
+      )
+      .filter(viewComment => !viewComment.deleted)
+      .sort(sorting);
   }
 
   autoGrow() {
@@ -87,9 +95,9 @@ export class CommentsBlockComponent {
       .then(() => this.refreshComments());
   }
 
-  addReplyComment(replyCommentId: string) {
+  replyComment(content: string, replyCommentId: string) {
     let addCommentDto: AddCommentDto = new AddCommentDto();
-    addCommentDto.content = this.newComment;
+    addCommentDto.content = content;
     addCommentDto.post_id = this.postId;
     addCommentDto.reply_id = replyCommentId;
     this.commentService.addComment(addCommentDto)
@@ -98,6 +106,11 @@ export class CommentsBlockComponent {
 
   deleteComment(commentId: string) {
     this.commentService.deleteComment(this.postId, commentId)
+      .then(() => this.refreshComments());
+  }
+
+  changeCommentRating(commentId: string, rating: boolean) {
+    this.commentService.changeCommentRating(this.postId, commentId, rating)
       .then(() => this.refreshComments());
   }
 

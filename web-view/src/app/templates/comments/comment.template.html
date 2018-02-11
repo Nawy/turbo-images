@@ -26,25 +26,43 @@
                 diffSeconds != 0? diffSeconds + " Sec":
                 1 + " Sec"
                 }} ago</span>
+              <i *ngIf="!reply" (click)="changeReplyStatus()" class="fa fa-reply comment-icons"></i>
+              <i *ngIf="!reply" (click)="deleteComment()" class="fa fa-times"></i>
             </div>
 
-            <div>{{currentComment.content}}</div>
+            <div>{{currentComment.deleted? "DELETED" : currentComment.content}}</div>
+
+            <div *ngIf="startReplyCreating" style="margin-top: 20px" class="card main-part-color">
+              <div class="card-body" style="padding: 10px">
+                <div>
+              <textarea
+                placeholder="Write a comment"
+                class="form-control post-description no-border"
+                (input)="autoGrow();"
+                [(ngModel)]="replyCommentContent"
+                [ngModelOptions]="{standalone: true}"></textarea>
+                </div>
+                <div class="row">
+                  <div class="col text-right">
+                    <i (click)="changeReplyStatus()" class="fa fa-times"></i>
+                    <button *ngIf="replyCommentContent.length < 1" class="btn" style="cursor: not-allowed;">Post
+                    </button>
+                    <button (click)="replyComment()" *ngIf="replyCommentContent.length > 0"
+                            class="btn btn-outline-success">
+                      Post
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div *ngIf="currentComment.reply">
-
-              <div style="margin-left: 40px">
-                <s-comment [comment]="currentComment.reply" [reply]="true"></s-comment>
-              </div>
-
+              <s-comment style="margin-left: 40px" [comment]="currentComment.reply" [reply]="true"></s-comment>
             </div>
+
           </div>
 
         </div>
-      </div>
-
-      <div *ngIf="!reply" class="col-1 text-center">
-        <i class="fa fa-reply comment-icons"></i>
-        <div style="font-size: small">Reply</div>
       </div>
 
     </div>

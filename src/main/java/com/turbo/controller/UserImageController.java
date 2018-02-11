@@ -1,6 +1,5 @@
 package com.turbo.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.turbo.model.SecurityRole;
@@ -11,13 +10,9 @@ import com.turbo.model.exception.InternalServerErrorHttpException;
 import com.turbo.service.AuthorizationService;
 import com.turbo.service.UserImageService;
 import com.turbo.util.EncryptionService;
-import io.swagger.annotations.Api;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +26,6 @@ import java.util.stream.Collectors;
 /**
  * Created by rakhmetov on 01.05.17.
  */
-@Api
 @RestController
 @Slf4j
 @RequestMapping("/api")

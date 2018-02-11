@@ -23,9 +23,12 @@ public class CommentRepoModel implements Serializable, IdHolder {
     private Long userId;
     private Long replyId; // parent comment id
     private DeviceType device; // from what was posted
+    @Setter
     private String content;
     private LocalDateTime creationDate;
     @Setter
     private Rating rating;
+    @Setter
+    private boolean deleted;
 
 }

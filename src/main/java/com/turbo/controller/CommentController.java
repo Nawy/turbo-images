@@ -10,7 +10,6 @@ import com.turbo.service.CommentService;
 import com.turbo.util.EncryptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -47,6 +46,20 @@ public class CommentController {
         commentService.deleteComment(
                 EncryptionService.decodeHashId(postId),
                 EncryptionService.decodeHashId(commentId)
+        );
+    }
+
+    @Secured(SecurityRole.USER)
+    @DeleteMapping("/edit/comment")
+    public void editComment(
+            @RequestParam("comment_id") String commentId,
+            @RequestParam("post_id") String postId,
+            @RequestParam("content") String content
+    ) {
+        commentService.editComment(
+                EncryptionService.decodeHashId(postId),
+                EncryptionService.decodeHashId(commentId),
+                content
         );
     }
 

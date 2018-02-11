@@ -47,7 +47,8 @@ export const environment = {
     addComment: "/add/comment",
     deleteComment: "/delete/comment",
     changeCommentRating: "/change/comment/rating",
-    getComments: "/get/comments"
+    getComments: "/get/comments",
+    editComment: "/edit/comment"
 
   },
   tokenName: "SESSIONID",

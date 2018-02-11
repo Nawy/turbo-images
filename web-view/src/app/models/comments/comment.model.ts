@@ -11,5 +11,6 @@ export class Comment {
   content: string;
   create_date: string;
   rating: Rating;
+  deleted: boolean;
 
 }

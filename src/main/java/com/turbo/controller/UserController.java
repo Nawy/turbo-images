@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * Created by rakhmetov on 24.05.17.
  */
-@Api
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

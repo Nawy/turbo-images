@@ -15,10 +15,16 @@ export class CommentComponent {
   @Input("comment") currentComment: ViewComment;
   @Input("reply") reply: boolean = false;
 
+  @Input("reply_function") replyFunction: Function;
+  @Input("delete_function") deleteFunction: Function;
+
   diffDays: number;
   diffHours: number;
   diffMinutes:number;
   diffSeconds: number;
+
+  startReplyCreating: boolean = false;
+  replyCommentContent: string = "";
 
 
   ngOnInit(): void {
@@ -29,6 +35,28 @@ export class CommentComponent {
     this.diffHours = momentNow.hours() - momentCreateDate.hours();
     this.diffMinutes = momentNow.minutes() - momentCreateDate.minutes();
     this.diffSeconds = momentNow.seconds() - momentNow.seconds();
+  }
+
+  replyComment() {
+    this.replyFunction(this.replyCommentContent, this.currentComment.id);
+    this.replyCommentContent = "";
+  }
+
+  deleteComment() {
+    this.deleteFunction(this.currentComment.id);
+  }
+
+  autoGrow() {
+    let elements: any = document.getElementsByClassName("post-description");
+
+    for (let element of elements) {
+      element.style.height = "5px";
+      element.style.height = (element.scrollHeight) + "px";
+    }
+  }
+
+  changeReplyStatus(){
+    this.startReplyCreating = !this.startReplyCreating;
   }
 
 }

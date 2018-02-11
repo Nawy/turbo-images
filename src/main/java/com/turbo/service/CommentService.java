@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,10 +57,36 @@ public class CommentService {
     }
 
     public void deleteComment(long postId, long commentId) {
+        editComment(
+                postId,
+                (comments) -> {
+                    CommentRepoModel comment = comments.get(commentId);
+                    nullCommentCheck(comment, postId, commentId);
+                    comment.setDeleted(true);
+                }
+        );
+    }
+
+    public void editComment(long postId, long commentId, String content) {
+        editComment(
+                postId,
+                (comments) -> {
+                    CommentRepoModel comment = comments.get(commentId);
+                    nullCommentCheck(comment, postId, commentId);
+                    comment.setContent(content);
+                }
+        );
+    }
+
+    private void nullCommentCheck(CommentRepoModel comment, long postId, long commentId) {
+        if (comment == null)
+            throw new NotFoundHttpException(String.format("No comment found in post:%s with comment_id:%s", postId, commentId));
+    }
+
+    private void editComment(long postId, Consumer<Map<Long, CommentRepoModel>> consumerFunction) {
         PostRepoModel post = postService.getRawPost(postId);
-        Map<Long,CommentRepoModel> newComments = new HashMap<>(post.getComments());
-        CommentRepoModel deletedComment = newComments.remove(commentId);
-        if (deletedComment == null) throw new NotFoundHttpException("No such comment found");
+        Map<Long, CommentRepoModel> newComments = new HashMap<>(post.getComments());
+        consumerFunction.accept(newComments);
         post.setComments(newComments);
         postService.saveRawPost(post);
     }
@@ -117,7 +144,8 @@ public class CommentService {
                 commentRepoModel.getDevice(),
                 commentRepoModel.getContent(),
                 commentRepoModel.getCreationDate(),
-                commentRepoModel.getRating()
+                commentRepoModel.getRating(),
+                commentRepoModel.isDeleted()
         );
     }
 }

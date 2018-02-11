@@ -14,7 +14,10 @@ export class CommentService {
     const url = `${environment.host}${environment.requests.getComments}/${postId}`;
     return this.http.get(url).toPromise()
       .then(value => value.json() as Object)
-      .catch(error => console.log(error))
+      .catch(error => {
+        if (error.status == 404) console.log(error);
+        return {};
+      })
   }
 
   addComment(commentAddDto: AddCommentDto): Promise<Object> {
@@ -39,15 +42,28 @@ export class CommentService {
       });
   }
 
+  editComment(postId: string, commentId: string, content: string): Promise<Object> {
+    return this.sessionService.getUserSession()
+      .then(sessionID => {
+        const url = `${environment.host}${environment.requests.editComment}`;
+        return this.http.delete(url, {
+          headers: new Headers({"session": sessionID}),
+          params: {comment_id: commentId, post_id: postId, content: content}
+        }).toPromise()
+          .catch(error => console.log(error))
+      });
+  }
+
   //rating = null then reset rating from user, rating = true rating up, rating = false then rating down
-  changeCommentRating(postId: string, commentId: string, rating: boolean) {
-    this.sessionService.getUserSession()
+  changeCommentRating(postId: string, commentId: string, rating: boolean): Promise<Object> {
+    return this.sessionService.getUserSession()
       .then(sessionID => {
         const url = `${environment.host}${environment.requests.changeCommentRating}`;
-        this.http.post(url, null, {
+        return this.http.post(url, null, {
           headers: new Headers({"session": sessionID}),
           params: {comment_id: commentId, post_id: postId, rating: rating}
-        })
+        }).toPromise()
+          .catch(error => console.log(error))
       });
   }
 

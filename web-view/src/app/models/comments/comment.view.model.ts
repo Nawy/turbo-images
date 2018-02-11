@@ -13,6 +13,7 @@ export class ViewComment {
   content: string;
   create_date: Date;
   rating: Rating;
+  deleted: boolean;
 
   constructor(comment: Comment, parentComment: Comment) {
     this.id = comment.id;
@@ -24,6 +25,7 @@ export class ViewComment {
     this.content = comment.content;
     this.create_date = moment(comment.create_date, "YYYY-MM-DD HH:mm:ss.SSS").toDate();
     this.rating = comment.rating ? comment.rating : new Rating();
+    this.deleted = comment.deleted;
   }
 
 }

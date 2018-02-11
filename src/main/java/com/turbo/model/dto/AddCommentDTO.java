@@ -30,7 +30,8 @@ public class AddCommentDTO {
                 this.device,
                 this.content,
                 LocalDateTime.now(),
-                new Rating()
+                new Rating(),
+                false
         );
     }
 
