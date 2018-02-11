@@ -5,6 +5,8 @@
 import {Component, Input} from '@angular/core';
 import {ViewComment} from "../../models/comments/comment.view.model";
 import * as moment from 'moment';
+import {UserInfo} from "../../models/user-info.model";
+import {UserService} from "../../service/user.service";
 
 @Component({
   selector: "s-comment",
@@ -13,7 +15,8 @@ import * as moment from 'moment';
 })
 export class CommentComponent {
   @Input("comment") currentComment: ViewComment;
-  @Input("reply") reply: boolean = false;
+  @Input("canEdit") canEdit: boolean = false;
+  userInfo:UserInfo;
 
   @Input("reply_function") replyFunction: Function;
   @Input("delete_function") deleteFunction: Function;
@@ -26,6 +29,8 @@ export class CommentComponent {
   startReplyCreating: boolean = false;
   replyCommentContent: string = "";
 
+  constructor(private userService: UserService) {
+  }
 
   ngOnInit(): void {
     let momentNow = moment(new Date());
@@ -35,6 +40,13 @@ export class CommentComponent {
     this.diffHours = momentNow.hours() - momentCreateDate.hours();
     this.diffMinutes = momentNow.minutes() - momentCreateDate.minutes();
     this.diffSeconds = momentNow.seconds() - momentNow.seconds();
+
+    this.userService.userInfoSource.subscribe(userInfo => {
+      this.userInfo = userInfo;
+      // this required because autogrow work only if window component is loaded and filled with data
+      setTimeout(() => this.autoGrow(), 20);
+    });
+    if (this.userInfo == null) this.userService.updateUserInfo();
   }
 
   replyComment() {
@@ -57,6 +69,12 @@ export class CommentComponent {
 
   changeReplyStatus(){
     this.startReplyCreating = !this.startReplyCreating;
+  }
+
+  canEditFunction():boolean{
+    if (!this.canEdit) return false;
+    if (!this.userInfo) return false;
+    return this.currentComment.user_id === this.userInfo.id;
   }
 
 }

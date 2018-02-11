@@ -1,6 +1,4 @@
-<div *ngIf="userInfo">
-
-  <!--add comment-->
+<!--add comment-->
   <div style="margin-top: 20px" class="card main-part-color">
   <div class="card-body" style="padding: 10px">
     <div>
@@ -43,7 +41,7 @@
                  [comment]="comment"
                  [reply_function]="boundReplyFunction"
                  [delete_function]="boundDeleteFunction"
+                 [canEdit]="userInfo"
       ></s-comment>
     </div>
   </div>
-</div>

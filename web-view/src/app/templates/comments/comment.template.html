@@ -26,8 +26,8 @@
                 diffSeconds != 0? diffSeconds + " Sec":
                 1 + " Sec"
                 }} ago</span>
-              <i *ngIf="!reply" (click)="changeReplyStatus()" class="fa fa-reply comment-icons"></i>
-              <i *ngIf="!reply" (click)="deleteComment()" class="fa fa-times"></i>
+              <i *ngIf="canEditFunction()" (click)="changeReplyStatus()" class="fa fa-reply comment-icons"></i>
+              <i *ngIf="canEditFunction()" (click)="deleteComment()" class="fa fa-times"></i>
             </div>
 
             <div>{{currentComment.deleted? "DELETED" : currentComment.content}}</div>
@@ -57,7 +57,7 @@
             </div>
 
             <div *ngIf="currentComment.reply">
-              <s-comment style="margin-left: 40px" [comment]="currentComment.reply" [reply]="true"></s-comment>
+              <s-comment style="margin-left: 40px" [comment]="currentComment.reply" [canEdit]="false"></s-comment>
             </div>
 
           </div>
