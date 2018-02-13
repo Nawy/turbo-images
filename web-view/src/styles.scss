@@ -1,6 +1,7 @@
 @import 'variables';
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import url('https://fonts.googleapis.com/css?family=Bangers');
+@import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700&subset=cyrillic,latin-ext,vietnamese');
 
 .col-right {
   text-align: right;
@@ -147,8 +148,8 @@ textarea[readonly].post-description, textarea[readonly].description, input[reado
 }
 
 textarea.focus, .description:focus, .input-group:focus, .post-description:focus {
-  outline: none !important;
-}
+   outline: none !important;
+ }
 
 .logo-text {
   font-family: 'Bangers', cursive;
@@ -189,4 +190,12 @@ textarea.focus, .description:focus, .input-group:focus, .post-description:focus 
 
 .turbo-small-info-margin {
   margin-left: 10px;
+}
+
+.badge {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+.text-header {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
 }

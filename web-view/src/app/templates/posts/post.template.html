@@ -4,26 +4,28 @@
     <div class="row justify-content-md-center">
 
       <div class="col-9">
-
-        <div style="padding-top: 10px" class="card main-part main-part-color">
-          <div class="row">
-            <div class="col-8">
-              <input
-                class="form-control input-header main-part-color"
-                id="nameInput"
-                maxlength="100"
-                [readonly]="isReadonly()"
-                [(ngModel)]="post.name"
-                [ngModelOptions]="{standalone: true}">
-              <div class="turbo-small-text">
-                by <b>{{post.user_name}}</b> via {{post.device_type.toString().toLowerCase()}}, {{getPublishTime(post.create_date)}}
-              </div>
-            </div>
-            <div class="col text-right">
+        <div class="row">
+            <div class="col-12">
               <div class="btn-block">
                 <button class="btn btn-outline-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
                 <button (click)="goBack()" class="btn btn-outline-info"><i class="fa fa-arrow-up" aria-hidden="true"></i>Back</button>
                 <button class="btn btn-outline-info">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+              </div>
+            </div>
+        </div>
+
+        <div style="padding-top: 10px" class="card main-part main-part-color">
+          <div class="row">
+            <div class="col-12">
+              <textarea
+                *ngIf="post && canView(post.name)"
+                class="post-description no-border text-header lead"
+                [readonly]="isReadonly()"
+                [(ngModel)]="post.name"
+                [ngModelOptions]="{standalone: true}">
+              </textarea>
+              <div class="turbo-small-text">
+                by <b>{{post.user_name}}</b> via {{post.device_type.toString().toLowerCase()}}, {{getPublishTime(post.create_date)}}
               </div>
             </div>
           </div>

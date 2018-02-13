@@ -14,6 +14,8 @@ import {Router} from "@angular/router";
 export class PostPreviewComponent {
   @Input("post") post: PostPreview;
 
+  descLength : number = 100;
+
   //style
   activeClass: string;
   defaultClass: string;
@@ -29,6 +31,14 @@ export class PostPreviewComponent {
     this.defaultClass = "postpreview-default";
 
     this.useClass = this.defaultClass;
+  }
+
+  getDescription(): string {
+    const post = this.post;
+    if(post.description.length > this.descLength)
+      return post.description.substr(0, this.descLength) + "...";
+    else
+      return post.description;
   }
 
   getHeaderString(): string {
